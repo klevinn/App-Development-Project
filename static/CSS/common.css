@@ -1,3 +1,23 @@
+* {
+	font-family: sans-serif;
+}
+
+a {
+	text-decoration: none;
+}
+
+/* ============ Navbar ============ */
+
+#navbar {
+	background-color: #FFC0BE !important;
+}
+
+.navbar-nav {
+	color:#000000 !important
+}
+
+/* ============ End of Navbar ============ */
+
 /* ============ Footer ============ */
 
 .container {
@@ -16,8 +36,8 @@ ul {
 }
 
 .footer {
-	background-color: #7588FD;
-	padding: 70px 0;
+	background-color: #FFC0BE;
+	padding: 60px 0;
 	text-align: left;
 }
 
@@ -28,7 +48,7 @@ ul {
 
 .footer-col h4 {
 	font-size: 18px;
-	color: #fff;
+	color: #000000;
 	margin-bottom: 35px;
 	font-weight: bold;
 	position: relative;
@@ -39,7 +59,7 @@ ul {
 	position: absolute;
 	left: 0;
 	bottom: -10px;
-	background-color: #A375FD;
+	background-color: #FF82A9;
 	height: 2px;
 	box-sizing: border-box;
 	width: 60px;
@@ -52,7 +72,7 @@ ul {
 .footer-col ul li a {
 	text-decoration: none;
 	font-size: 16px;
-	color: #FFF;
+	color: #000000;
 	display: block;
 	transition: all 0.3s ease;
 }
@@ -60,12 +80,12 @@ ul {
 .footer-col ul li {
 	text-decoration: none;
 	font-size: 16px;
-	color: #fff;
+	color: #000000;
 	display: block;
 }
 
 .footer-col ul li a:hover {
-	text-decoration: underline;
+	font-weight: bold;
 	padding-left: 8px;
 }
 
@@ -78,13 +98,13 @@ ul {
 	text-align: center;
 	line-height: 40px;
 	border-radius: 50%;
-	color: #fff;
+	color: #000000;
 	transition: all 0.5s ease;
 }
 
 .footer-col .social-links a:hover {
-	color: #54c3fa;
-	background-color: #fff;
+	color: #7F95D1;
+	background-color: #FFEBE7;
 }
 
 @media (max-width: 1050px) {
@@ -103,7 +123,7 @@ ul {
 #copyright {
 	margin: auto;
 	font-size: 16px;
-	color: #FFF;
+	color: #000000;
 	text-align: center;
 }
 
