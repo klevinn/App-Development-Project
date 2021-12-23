@@ -26,5 +26,9 @@ def signup3():
 def signupC():
     return render_template('signupcomplete.html')
 
+@app.route('/user')
+def user():
+    return render_template('useraccount.html')
+
 if __name__ == '__main__':
     app.run()

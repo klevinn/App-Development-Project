@@ -1,0 +1,155 @@
+{% extends "user_base.html" %}
+{% block head %} <link rel="stylesheet" href="static/CSS/useraccount.css"> {% endblock %}
+{% block title %}Welcome User! | DoctorOnTheGo{% endblock %}
+
+{% block content %}
+<div class="main-body">
+    <div class="row gutters-sm">
+       <div class="col-md-4 mb-3">
+          <div class="card">
+             <div class="card-body">
+                <div class="d-flex flex-column align-items-center text-center">
+                   <img src="../static/images/default.png" alt="Admin" class="rounded-circle" width="150">
+                   <div class="mt-3">
+                      <h4>Samantha Wiggins</h4>
+                   </div>
+                   <form action="">
+                     <input type="file" id="myFile" name="filename">
+                     <input type="submit" value="Apply">
+                   </form>
+                </div>
+             </div>
+          </div>
+       </div>
+       <div class="col-md-8">
+          <div class="card mb-3">
+             <div class="card-body">
+                <div class="row">
+                   <div class="col-sm-3">
+                      <h6 class="mb-0">Full Name</h6>
+                   </div>
+                   <div class="col-sm-9 text-secondary">
+                      Samantha S. Wiggins
+                   </div>
+                </div>
+                <hr>
+                <div class="row">
+                   <div class="col-sm-3">
+                      <h6 class="mb-0">Email</h6>
+                   </div>
+                   <div class="col-sm-9 text-secondary">
+                      samanthaw@gmail.com
+                   </div>
+                </div>
+                <hr>
+                <div class="row">
+                   <div class="col-sm-3">
+                      <h6 class="mb-0">Password</h6>
+                   </div>
+                   <div class="col-sm-9 text-secondary">
+                      *******
+                   </div>
+                </div>
+                <hr>
+                <div class="row">
+                   <div class="col-sm-12">
+                      <a class="btn btn-info " target="__blank" href="/">Edit</a>
+                   </div>
+                </div>
+             </div>
+          </div>
+          <div class="row gutters-sm">
+             <div class="col-sm-6 mb-3">
+                <div class="card h-100">
+                   <div class="card-body">
+                      <div class="row">
+                         <div class="col-sm-3">
+                            <h6 class="mb-0">Shipping Address</h6>
+                         </div>
+                         <div class="col-sm-9 text-secondary">
+                            Blk 123 Underwear Lane
+                         </div>
+                      </div>
+                      <hr>
+                      <div class="row">
+                         <div class="col-sm-3">
+                            <h6 class="mb-0">Unit Number</h6>
+                         </div>
+                         <div class="col-sm-9 text-secondary">
+                            #02-05
+                         </div>
+                      </div>
+                      <hr>
+                      <div class="row">
+                         <div class="col-sm-3">
+                            <h6 class="mb-0">Postal Code</h6>
+                         </div>
+                         <div class="col-sm-9 text-secondary">
+                            (S)123456
+                         </div>
+                      </div>
+                      <hr>
+                      <div class="row">
+                         <div class="col-sm-3">
+                            <h6 class="mb-0">Phone Number</h6>
+                         </div>
+                         <div class="col-sm-9 text-secondary">
+                            +6512348765
+                         </div>
+                      </div>
+                      <hr>
+                      <div class="row">
+                         <div class="col-sm-12">
+                            <a class="btn btn-info " target="__blank" href="">Edit</a>
+                            <a class="btn btn-info " target="__blank" href="">Add</a>
+                            <a class="btn btn-info " target="__blank" href="">Delete</a>
+                         </div>
+                      </div>
+                   </div>
+                </div>
+             </div>
+             <div class="col-sm-6 mb-3">
+                <div class="card h-100">
+                   <div class="card-body">
+                      <div class="row">
+                         <div class="col-sm-3">
+                            <h6 class="mb-0">Card Number</h6>
+                         </div>
+                         <div class="col-sm-9 text-secondary">
+                            **** 1234
+                         </div>
+                      </div>
+                      <hr>
+                      <div class="row">
+                         <div class="col-sm-3">
+                            <h6 class="mb-0">Card Name</h6>
+                         </div>
+                         <div class="col-sm-9 text-secondary">
+                            Samantha Wiggins
+                         </div>
+                      </div>
+                      <hr>
+                      <div class="row">
+                         <div class="col-sm-3">
+                            <h6 class="mb-0">Expiry Date</h6>
+                         </div>
+                         <div class="col-sm-9 text-secondary">
+                            04-20
+                         </div>
+                      </div>
+                      <hr>
+                      <div class="row">
+                         <div class="col-sm-12">
+                            <a class="btn btn-info " target="__blank" href="">Edit</a>
+                            <a class="btn btn-info " target="__blank" href="">Add</a>
+                            <a class="btn btn-info " target="__blank" href="">Delete</a>
+                         </div>
+                      </div>
+                   </div>
+                </div>
+             </div>
+          </div>
+       </div>
+    </div>
+ </div>
+{% endblock %}
