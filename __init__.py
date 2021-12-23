@@ -14,5 +14,9 @@ def login():
 def signup():
     return render_template('signup.html')
 
+@app.route('/signup2')
+def signup2():
+    return render_template('signup2.html')
+
 if __name__ == '__main__':
     app.run()

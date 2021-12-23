@@ -1,0 +1,43 @@
+{% extends "default_base.html" %}
+{% block head %} <link rel="stylesheet" href="static/CSS/login_signup.css"> {% endblock %}
+{% block title %}Sign Up | DoctorOnTheGo{% endblock %}
+
+{% block content %}
+    <!-- Login Form https://www.markuptag.com/simple-login-form-design-in-bootstrap-5/ -->
+    <div class="background-image">
+        <div class="row">
+            <div class="col-md-4 offset-md-7">
+                <div class="login-form bg-colour mt-6 p-4" id="loginForm">
+                    <form action="" method="" class="row g-3">
+                        <h4 class="text-black">Create Your Account!</h4>
+                        <div class="col-12">
+                            <label>Card Name:</label>
+                            <input type="text" name="card_name" class="form-control" placeholder="Card name">
+                        </div>
+                        <div class="col-12">
+                            <label>Card Number:</label>
+                            <input type="number" name="cardnumber" class="form-control" placeholder="Card Number">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputEmail4">CVC</label>
+                            <input type="number" class="form-control" id="inputCVC" placeholder="CVC">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputPassword4">Expiry Date</label>
+                            <input type="date" class="form-control" id="inputDate" placeholder="Expiry Date">
+                        </div>
+                        
+                        <div class="form-group col-md-12 pl-3 pr-3">
+                            <button type="submit" class="btn btn-dark float-end">Next</button>
+                            <button type="submit" class="btn btn-dark float-end" style="margin-right:3px;" ><a href="/signup3">Skip</a></button>    
+                        </div>
+                    </form>
+                    <hr class="mt-4">
+                    <div class="col-12">
+                        <p class="text-center mb-0">Already a Member? <a href="#">Log In</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
