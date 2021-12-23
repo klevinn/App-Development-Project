@@ -2,6 +2,10 @@ body{
     background-color:#FFC0BE ;
 }
 
+a{
+    display:block;
+}
+
 /* ============ Background Image ============ */
 
 .background-image{

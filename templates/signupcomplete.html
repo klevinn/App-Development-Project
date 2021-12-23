@@ -1,0 +1,18 @@
+{% extends "default_base.html" %}
+{% block head %} <link rel="stylesheet" href="static/CSS/login_signup.css"> {% endblock %}
+{% block title %}Sign Up Complete! | DoctorOnTheGo{% endblock %}
+
+{% block content %} 
+    <div class="background-image">
+        <div class="row">
+            <div class="col-md-4 offset-md-4">
+                <div class="login-form bg-colour mt-6 p-4" id="loginForm">
+                    <img style="display:block; margin:auto;" src="../static/images/complete.png" alt="">
+                    <h4 class="mt-4" style="text-align:center">Congratulations! Sign Up Complete!</h4>
+                    <button type="submit" class="btn btn-dark"><a style="color:white;" href="/">Return To Home</a></button>
+                    <button type="submit" class="btn btn-dark float-end"><a style="color:white;" href="/user">Head to your account!</a></button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

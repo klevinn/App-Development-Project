@@ -22,5 +22,9 @@ def signup2():
 def signup3():
     return render_template('signup3.html')
 
+@app.route('/signupC')
+def signupC():
+    return render_template('signupcomplete.html')
+
 if __name__ == '__main__':
     app.run()
