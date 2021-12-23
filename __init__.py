@@ -30,5 +30,21 @@ def signupC():
 def user():
     return render_template('useraccount.html')
 
+@app.route('/infoedit')
+def userinfo():
+    return render_template('user_info_edit.html')
+
+@app.route('/pwedit')
+def userpw():
+    return render_template('user_password_edit.html')
+
+@app.route('/useraddress')
+def useraddress():
+    return render_template('user_address.html')
+
+@app.route('/usercard')
+def usercard():
+    return render_template('user_cardinfo.html')
+
 if __name__ == '__main__':
     app.run()
