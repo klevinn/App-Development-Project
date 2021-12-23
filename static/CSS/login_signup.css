@@ -18,6 +18,7 @@ body{
 
 .bg-colour{
     background-color: #FFC0BE;
+    opacity: 0.9;
 }
 
 /* ============ End of Login & Signup Form ============ */
