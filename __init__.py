@@ -21,6 +21,7 @@ def login():
         #Preset Variables for later codes
         validemail = False
         validpassword = False
+        validstaffemail = False
         passwordinshelve = ""
         emailinshelve = ""
 
@@ -43,9 +44,30 @@ def login():
                 print("Registered Email & Inputted Email: ", emailinshelve, emailInput)
                 break
             else:
-                print("Invalid Email.")
+                print("Invalid User Email.")
+                print("Now Trying Staff Email")
+                staffdb = shelve.open("staff" , "c")
+                try:
+                    if 'Users' in db:
+                            userDict = staffdb['Users']
+                    else:
+                        staffdb["Users"] = userDict
+                except:
+                    print("Error in retrieving Users from staff.db.")
 
-        
+                for key in userDict:
+                    print("hello")
+                    emailinshelve = userDict[key].get_email()
+                    if emailInput == emailinshelve:
+                        staff_email_key = userDict[key]
+                        validstaffemail = True
+                        print("Registered Email & Inputted Email: ", emailinshelve, emailInput)
+                        db.close()
+                        break
+                    else:
+                        print("Invalid Staff Email.")
+                
+             
         if validemail:
                 passwordinshelve = email_key.get_password()
                 if passwordInput == passwordinshelve:
@@ -54,6 +76,13 @@ def login():
                     print("Registered Password & Inputted Password: ", passwordinshelve, passwordInput)
                 else:
                     print("Wrong Password.")
+        
+        if validstaffemail:
+            print("Hello-New")
+            passwordinshelve = staff_email_key.get_password()
+            if passwordInput == "Staff1234":
+                staffdb.close()
+                return redirect(url_for("staffapp"))
                     
         if validemail == True and validpassword == True:
             db.close()
@@ -70,6 +99,7 @@ def login():
 def signup():
     signup_form = Forms.CreateSignUpForm(request.form)
     if request.method == 'POST' and signup_form.validate():
+        print("Successful Running")
         #For duplicates
         #Pre determining Variables
         duplicated_email = False
@@ -78,7 +108,6 @@ def signup():
         passwordInput = signup_form.password.data
         emailInput = signup_form.email.data
         usernameInput = signup_form.username.data
-
         if password_confirm == passwordInput:
                 matched_pw = False
                 #Console
@@ -124,15 +153,18 @@ def signup():
                     print("New Username")
         
         if (matched_pw == False) and (duplicated_email == False) and (duplicated_username == False):
+            print("Hello")
             user = User.User(usernameInput, emailInput, passwordInput)
             userDict[user.get_username()] = user
             db["Users"] = userDict
             db.close()
             return redirect(url_for("signup2"))
         else:
+            print("Hello2")
             db.close()
             return render_template('signup.html', form=signup_form, duplicated_email=duplicated_email, duplicated_username=duplicated_username, matched_pw=matched_pw) 
     else:
+        print("Hello3")
         return render_template('signup.html',  form=signup_form)
 
 @app.route('/signup2' , methods=["GET","POST"])
@@ -189,7 +221,62 @@ def staffprod():
 
 @app.route('/staffadd' , methods=["GET","POST"])
 def staffadd():
-    return render_template('staffadd.html')
+    staff_form = Forms.CreateStaffMemberForm(request.form)
+    if request.method == 'POST' and staff_form.validate():
+        print("Successful Running")
+        duplicated_email = False
+        duplicated_username = False
+        emailInput = staff_form.staff_email.data
+        nameInput = staff_form.staff_name.data
+        userDict = {}
+        db = shelve.open("staff", "c")
+        
+        try:
+            if 'Users' in db:
+                userDict = db['Users']
+            else:
+                db["Users"] = userDict
+        except:
+            print("Error in retrieving Users from staff.db")
+    
+        for key in userDict:
+            emailinshelve = userDict[key].get_email()
+            if emailInput == emailinshelve:
+                print("Registered email & inputted email:", emailinshelve, emailInput)
+                duplicated_email = True
+                print("Duplicate Email")
+                break
+            else:
+                print("Registered email & inputted email:", emailinshelve, emailInput)
+                email_duplicates = False
+                print("New Email")
+        
+        for key in userDict:
+                usernameinshelve = userDict[key].get_username()
+                if nameInput == usernameinshelve:
+                    print("Registered Username & inputted username:", usernameinshelve, nameInput)
+                    duplicated_username = True
+                    print("Duplicated Username")
+                    break
+                else:
+                    print("Registered Username & inputted username:", usernameinshelve, nameInput)
+                    username_duplicates = False
+                    print("New Username")
+            
+        if(duplicated_email == False) and (duplicated_username == False):
+            print("Hello")
+            user = Staff.Staff(nameInput, emailInput, 'Staff1234')
+            userDict[user.get_username()] = user
+            db["Users"] = userDict
+            db.close()
+            return redirect(url_for("stafflist"))
+        else:
+            print("Hello2")
+            db.close()
+            return render_template('staffadd.html', form=staff_form, duplicated_email=duplicated_email, duplicated_username=duplicated_username) 
+    else:
+        print("Hello3")
+        return render_template('staffadd.html',  form=staff_form)
 
 if __name__ == '__main__':
     app.run(debug=True)
