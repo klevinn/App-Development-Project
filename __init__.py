@@ -1,4 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session
+import Forms
+import shelve
+import User, Staff
 
 app = Flask(__name__)
 
@@ -6,9 +9,61 @@ app = Flask(__name__)
 def home():
     return render_template('home.html')
 
-@app.route('/login')
+@app.route('/login' , methods=["GET","POST"])
 def login():
-    return render_template('login.html')
+    login_form = Forms.CreateLoginForm(request.form)
+    if request.method == 'POST' and login_form.validate():
+        emailInput = login_form.email.data
+        passwordInput = login_form.password.data
+        userDict = {}
+        db = shelve.open("user", "c")
+
+        try:
+            if 'Users' in db:
+                    userDict = db['Users']
+            else:
+                db["Users"] = userDict
+        except:
+            print("Error in retrieving Users from user.db.")
+
+        #Preset Variables for later codes
+        validemail = False
+        validpassword = False
+        passwordinshelve = ""
+        emailinshelve = ""
+
+
+        for key in userDict:
+            emailinshelve = userDict[key].get_email()
+            if emailInput == emailinshelve:
+                email_key = userDict[key]
+                validemail = True
+                #Console Checking
+                print("Registered Email & Inputted Email: ", emailinshelve, emailInput)
+                break
+            else:
+                print("Invalid Email.")
+
+        
+        if validemail:
+                passwordinshelve = email_key.get_password()
+                if passwordInput == passwordinshelve:
+                    password_matched = True
+                    #Console Checking
+                    print("Registered Password & Inputted Password: ", passwordinshelve, passwordInput)
+                else:
+                    print("Wrong Password.")
+                    
+        if validemail == True and validpassword == True:
+            db.close()
+            return redirect(url_for("user"))
+
+        else:
+            db.close()
+            return render_template('login.html', form=login_form, failedAttempt=True)
+
+    else:
+        return render_template('login.html' , form=login_form)
 
 @app.route('/signup' , methods=["GET","POST"])
 def signup():
