@@ -32,7 +32,6 @@ def login():
         passwordinshelve = ""
         emailinshelve = ""
 
-
         for key in userDict:
             emailinshelve = userDict[key].get_email()
             if emailInput == emailinshelve:

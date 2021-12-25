@@ -3,6 +3,7 @@
 {% block title %}Sign Up | DoctorOnTheGo{% endblock %}
 
 {% block content %}
+{# from "includes/_formHelper.html" import render_field #}
     <!-- Login Form https://www.markuptag.com/simple-login-form-design-in-bootstrap-5/ -->
     <div class="background-image">
         <div class="row">
@@ -14,18 +15,22 @@
                             <div class="progress-bar bg-success" style="width:25%"></div>
                           </div>
                         <div class="col-12">
+                            {# render_field(form.username, class="form-control") #}
                             <label>Username:</label>
                             <input type="text" name="name" class="form-control" placeholder="Username">
                         </div>
                         <div class="col-12">
+                            {# render_field(form.email, class="form-control") #}
                             <label>Email:</label>
                             <input type="text" name="email" class="form-control" placeholder="Email">
                         </div>
                         <div class="col-12">
+                            {# render_field(form.password, class="form-control") #}
                             <label>Password:</label>
                             <input type="password" name="password" class="form-control" placeholder="Password">
                         </div>
                         <div class="col-12">
+                            {# render_field(form.password_confirm, class="form-control") #}
                             <label>Confirm Password:</label>
                             <input type="password" name="password" class="form-control" placeholder=" Confirm Password">
                         </div>
