@@ -66,5 +66,9 @@ def stafflist():
 def staffprod():
     return render_template('staffproduct.html')
 
+@app.route('/staffadd')
+def staffadd():
+    return render_template('staffadd.html')
+
 if __name__ == '__main__':
     app.run(debug=True)

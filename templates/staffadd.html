@@ -1,0 +1,28 @@
+{% extends "admin_base.html" %}
+{% block head %} <link rel="stylesheet" href="static/CSS/login_signup.css"> {% endblock %}
+{% block title %}Adding Staff Member | DoctorOnTheGo{% endblock %}
+
+{% block content %}
+ <div class="background-image">
+    <div class="row">
+        <div class="col-md-4 offset-md-4">
+            <div class="login-form bg-colour mt-6 p-4" id="loginForm">
+                <form action="" method="" class="row g-3">
+                    <h4 class="text-black">Add Staff Member</h4>
+                    <div class="col-12">
+                        <label>Name:</label>
+                        <input type="text" name="name" class="form-control" placeholder="Full Name">
+                    </div>
+                    <div class="col-12">
+                        <label>Email:</label>
+                        <input type="text" name="email" class="form-control" placeholder="Email">
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-dark float-end">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
