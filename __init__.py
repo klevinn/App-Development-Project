@@ -46,5 +46,25 @@ def useraddress():
 def usercard():
     return render_template('user_cardinfo.html')
 
+@app.route('/staffapp')
+def staffapp():
+    return render_template('staffappoint.html')
+
+@app.route('/stafffeed')
+def stafffeed():
+    return render_template('stafffeedback.html')
+
+@app.route('/staffinvent')
+def staffinvent():
+    return render_template('staffinventory.html')
+
+@app.route('/stafflist')
+def stafflist():
+    return render_template('stafflist.html')
+
+@app.route('/staffprod')
+def staffprod():
+    return render_template('staffproduct.html')
+
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
