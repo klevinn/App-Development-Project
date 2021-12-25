@@ -17,12 +17,14 @@ a{
 /* ============ Login & Signup Form ============ */
 
 #loginForm{
-    margin:60px 0;
+    margin-top:60px;
+    margin-bottom:60px;
 }
 
 .bg-colour{
     background-color: #FFC0BE;
     opacity: 0.9;
 }
+
 
 /* ============ End of Login & Signup Form ============ */
