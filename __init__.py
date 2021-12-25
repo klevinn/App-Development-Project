@@ -18,6 +18,12 @@ def login():
         userDict = {}
         db = shelve.open("user", "c")
 
+        #Preset Variables for later codes
+        validemail = False
+        validpassword = False
+        passwordinshelve = ""
+        emailinshelve = ""
+
         try:
             if 'Users' in db:
                     userDict = db['Users']
@@ -26,11 +32,7 @@ def login():
         except:
             print("Error in retrieving Users from user.db.")
 
-        #Preset Variables for later codes
-        validemail = False
-        validpassword = False
-        passwordinshelve = ""
-        emailinshelve = ""
+        
 
         for key in userDict:
             emailinshelve = userDict[key].get_email()
@@ -66,7 +68,72 @@ def login():
 
 @app.route('/signup' , methods=["GET","POST"])
 def signup():
-    return render_template('signup.html')
+    signup_form = Forms.CreateSignUpForm(request.form)
+    if request.method == 'POST' and signup_form.validate():
+        #For duplicates
+        #Pre determining Variables
+        duplicated_email = False
+        duplicated_username = False
+        password_confirm = signup_form.password_confirm.data
+        passwordInput = signup_form.password.data
+        emailInput = signup_form.email.data
+        usernameInput = signup_form.username.data
+
+        if password_confirm == passwordInput:
+                matched_pw = False
+                #Console
+                print("Matched Passwords")
+        else:
+            matched_pw = True
+            #Console
+            print("Password not matched")
+
+        userDict = {}
+        db = shelve.open("user", "c")
+
+        try:
+            if 'Users' in db:
+                userDict = db['Users']
+            else:
+                db["Users"] = userDict
+        except:
+            print("Error in retrieving Users from user.db")
+        
+        for key in userDict:
+                emailinshelve = userDict[key].get_email()
+                if emailInput == emailinshelve:
+                    print("Registered email & inputted email:", emailinshelve, emailInput)
+                    duplicated_email = True
+                    print("Duplicate Email")
+                    break
+                else:
+                    print("Registered email & inputted email:", emailinshelve, emailInput)
+                    email_duplicates = False
+                    print("New Email")
+        
+        for key in userDict:
+                usernameinshelve = userDict[key].get_username()
+                if usernameInput == usernameinshelve:
+                    print("Registered Username & inputted username:", usernameinshelve, usernameInput)
+                    duplicated_username = True
+                    print("Duplicated Username")
+                    break
+                else:
+                    print("Registered Username & inputted username:", usernameinshelve, usernameInput)
+                    username_duplicates = False
+                    print("New Username")
+        
+        if (matched_pw == False) and (duplicated_email == False) and (duplicated_username == False):
+            user = User.User(usernameInput, emailInput, passwordInput)
+            userDict[user.get_username()] = user
+            db["Users"] = userDict
+            db.close()
+            return redirect(url_for("signup2"))
+        else:
+            db.close()
+            return render_template('signup.html', form=signup_form, duplicated_email=duplicated_email, duplicated_username=duplicated_username, matched_pw=matched_pw) 
+    else:
+        return render_template('signup.html',  form=signup_form)
 
 @app.route('/signup2' , methods=["GET","POST"])
 def signup2():
