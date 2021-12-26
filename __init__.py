@@ -249,7 +249,6 @@ def staffadd():
         emailInput = staff_form.staff_email.data.lower()
         nameInput = staff_form.staff_name.data
         userDict = {}
-        txt = open('staff.txt' , 'a')
         db = shelve.open("staff", "c")
         
         try:
