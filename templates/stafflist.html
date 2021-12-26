@@ -87,7 +87,7 @@
                             </span>{{ staff.get_email() }}</span>
                             </div>
                             <div class="col-sm-3">
-                              <a class="btn btn-warning " target="__blank" href="/staffupdate/{{staff.get_user_id }}">Edit</a>
+                              <a class="btn btn-warning " target="__blank" href="/staffupdate/{{ staff.get_staff_id() }}">Edit</a>
                               <form action="" method="POST">
                                 <input type="submit" value="Delete" class="btn btn-danger">
                               </form>

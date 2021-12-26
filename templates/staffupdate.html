@@ -1,0 +1,31 @@
+{% extends "admin_base.html" %}
+{% block head %} <link rel="stylesheet" href="/static/CSS/login_signup.css"> {% endblock %}
+{% block title %}Updating Staff Member | DoctorOnTheGo{% endblock %}
+
+{% block content %}
+{% from "includes/_formHelper.html" import render_field %}
+ <div class="background-image">
+    <div class="row">
+        <div class="col-md-4 offset-md-4">
+            <div class="login-form bg-colour mt-6 p-4" id="loginForm">
+                <form action="" method="POST" class="row g-3">
+                    <h4 class="text-black">Update Staff Member</h4>
+                    <div class="col-12">
+                        {{ render_field(form.staff_name, class="form-control") }}
+                        <!--label>Name:</label>
+                        <input type="text" name="name" class="form-control" placeholder="Full Name"-->
+                    </div>
+                    <div class="col-12">
+                        {{ render_field(form.staff_email, class="form-control") }}
+                        <!--label>Email:</label>
+                        <input type="text" name="email" class="form-control" placeholder="Email"-->
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-dark float-end">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

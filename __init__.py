@@ -239,7 +239,7 @@ def stafflist():
 def staffprod():
     return render_template('staffproduct.html')
 
-"""
+
 @app.route('/staffupdate/<int:id>/', methods=['GET', 'POST'])
 def staffupdate(id):
     update_staff = Forms.CreateStaffMemberForm(request.form)
@@ -257,7 +257,7 @@ def staffupdate(id):
 
         user = users_dict.get(id)
         user.set_username(update_staff.staff_name.data)
-        user.set_username(update_staff.staff_email.data)
+        user.set_email(update_staff.staff_email.data)
 
         db['Users'] = users_dict
         db.close()
@@ -266,16 +266,22 @@ def staffupdate(id):
 
     else:
         users_dict = {}
-        db = shelve.open('user.db', 'r')
-        users_dict = db['Users']
+        db = shelve.open('staff', 'r')
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving Users from staff.db")
         db.close()
 
         user = users_dict.get(id)
         update_staff.staff_name.data = user.get_username()
         update_staff.staff_email.data = user.get_email()
 
-        return render_template('staffadd.html', form=update_staff)
-"""
+        return render_template('staffupdate.html', form=update_staff)
+
 
 @app.route('/staffadd' , methods=["GET","POST"])
 def staffadd():
