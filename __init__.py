@@ -5,6 +5,8 @@ import User, Staff
 
 app = Flask(__name__)
 
+app.secret_key = "session_key"
+
 @app.route('/' , methods=["GET","POST"])
 def home():
     return render_template('home.html')
@@ -75,9 +77,11 @@ def login():
                     #Console Checking
                     print("Registered Password & Inputted Password: ", passwordinshelve, passwordInput)
                 else:
-                    print("Trrying Staff Password")
+                    print("Trying Staff Password")
                     if passwordInput == "Staff1234":
                         return redirect(url_for("staffapp"))
+                    else:
+                        print("Wrong Password")
         
         if validstaffemail:
             print("Hello-New")
@@ -99,79 +103,147 @@ def login():
 
 @app.route('/signup' , methods=["GET","POST"])
 def signup():
-    signup_form = Forms.CreateSignUpForm(request.form)
-    if request.method == 'POST' and signup_form.validate():
-        print("Successful Running")
-        #For duplicates
-        #Pre determining Variables
-        duplicated_email = False
-        duplicated_username = False
-        password_confirm = signup_form.password_confirm.data
-        passwordInput = signup_form.password.data
-        emailInput = signup_form.email.data.lower()
-        usernameInput = signup_form.username.data
-        if password_confirm == passwordInput:
-                matched_pw = False
-                #Console
-                print("Matched Passwords")
-        else:
-            matched_pw = True
-            #Console
-            print("Password not matched")
-
-        userDict = {}
-        db = shelve.open("user", "c")
-
-        try:
-            if 'Users' in db:
-                userDict = db['Users']
+    if "userSession" not in session:
+        signup_form = Forms.CreateSignUpForm(request.form)
+        if request.method == 'POST' and signup_form.validate():
+            print("Successful Running")
+            #For duplicates
+            #Pre determining Variables
+            duplicated_email = False
+            duplicated_username = False
+            password_confirm = signup_form.password_confirm.data
+            passwordInput = signup_form.password.data
+            emailInput = signup_form.email.data.lower()
+            usernameInput = signup_form.username.data
+            
+            if password_confirm == passwordInput:
+                    matched_pw = False
+                    #Console
+                    print("Matched Passwords")
             else:
+                matched_pw = True
+                #Console
+                print("Password not matched")
+
+            userDict = {}
+            db = shelve.open("user", "c")
+
+            try:
+                if 'Users' in db:
+                    userDict = db['Users']
+                else:
+                    db["Users"] = userDict
+            except:
+                print("Error in retrieving Users from user.db")
+            
+            for key in userDict:
+                    emailinshelve = userDict[key].get_email()
+                    if emailInput == emailinshelve.lower():
+                        print("Registered email & inputted email:", emailinshelve, emailInput)
+                        duplicated_email = True
+                        print("Duplicate Email")
+                        break
+                    else:
+                        print("Registered email & inputted email:", emailinshelve, emailInput)
+                        email_duplicates = False
+                        print("New Email")
+            
+            for key in userDict:
+                    usernameinshelve = userDict[key].get_username()
+                    if usernameInput == usernameinshelve:
+                        print("Registered Username & inputted username:", usernameinshelve, usernameInput)
+                        duplicated_username = True
+                        print("Duplicated Username")
+                        break
+                    else:
+                        print("Registered Username & inputted username:", usernameinshelve, usernameInput)
+                        username_duplicates = False
+                        print("New Username")
+            
+            if (matched_pw == False) and (duplicated_email == False) and (duplicated_username == False):
+                print("Hello")
+                user = User.User(usernameInput, emailInput, passwordInput)
+                userDict[user.get_username()] = user
                 db["Users"] = userDict
-        except:
-            print("Error in retrieving Users from user.db")
-        
-        for key in userDict:
-                emailinshelve = userDict[key].get_email()
-                if emailInput == emailinshelve.lower():
-                    print("Registered email & inputted email:", emailinshelve, emailInput)
-                    duplicated_email = True
-                    print("Duplicate Email")
-                    break
-                else:
-                    print("Registered email & inputted email:", emailinshelve, emailInput)
-                    email_duplicates = False
-                    print("New Email")
-        
-        for key in userDict:
-                usernameinshelve = userDict[key].get_username()
-                if usernameInput == usernameinshelve:
-                    print("Registered Username & inputted username:", usernameinshelve, usernameInput)
-                    duplicated_username = True
-                    print("Duplicated Username")
-                    break
-                else:
-                    print("Registered Username & inputted username:", usernameinshelve, usernameInput)
-                    username_duplicates = False
-                    print("New Username")
-        
-        if (matched_pw == False) and (duplicated_email == False) and (duplicated_username == False):
-            print("Hello")
-            user = User.User(usernameInput, emailInput, passwordInput)
-            userDict[user.get_username()] = user
-            db["Users"] = userDict
-            db.close()
-            return redirect(url_for("signup2"))
+                db.close()
+
+                session["Customer"] = emailInput
+                session["userSession"] = usernameInput
+
+                return redirect(url_for("signup2"))
+            else:
+                print("Hello2")
+                db.close()
+                return render_template('signup.html', form=signup_form, duplicated_email=duplicated_email, duplicated_username=duplicated_username, matched_pw=matched_pw) 
         else:
-            print("Hello2")
-            db.close()
-            return render_template('signup.html', form=signup_form, duplicated_email=duplicated_email, duplicated_username=duplicated_username, matched_pw=matched_pw) 
+            print("Hello3")
+            return render_template('signup.html',  form=signup_form)
     else:
-        print("Hello3")
-        return render_template('signup.html',  form=signup_form)
+        return redirect(url_for("home"))
+
 
 @app.route('/signup2' , methods=["GET","POST"])
 def signup2():
-    return render_template('signup2.html')
+    if "userSession" in session:
+        if "Customer" in session:
+            CustEmail = session["Customer"]
+        
+            print(CustEmail)
+            payment_form = Forms.CreateAddPaymentForm(request.form)
+            if request.method == 'POST' and payment_form.validate():
+                print("Running")
+                CustFound = False
+
+                card_name = payment_form.card_name.data
+                card_num = payment_form.card_no.data
+                card_expiry = str(payment_form.card_expiry.data)
+                card_cvv = payment_form.card_CVV.data
+
+                year = card_expiry[:4]
+                print(year)
+                month = card_expiry[5:7] # to get the month from the date format "YYYY-MM-DD"
+                card_expiry = "%s / %s " %(month, year)
+
+                users_dict = {}
+                db = shelve.open("user", "c")
+                try:
+                    if 'Users' in db:
+                        users_dict = db['Users']
+                    else:
+                        session.clear()
+                        return redirect(url_for("home"))
+                except:
+                    print("Error in retrieving Users from user.db")
+                
+                for key in users_dict:
+                    print("retrieving")
+                    emailinshelve = users_dict[key].get_email()
+                    if CustEmail == emailinshelve:
+                        customerkey = users_dict[key]
+                        CustFound = True
+                        break
+
+                if CustFound == False:
+                    session.clear()
+                    return redirect(url_for("home"))
+
+                customerkey.set_card_name(card_name)
+                customerkey.set_card_no(card_num)
+                customerkey.set_card_expiry(card_expiry)
+                customerkey.set_card_cvv(card_cvv)
+
+                db['Users'] = users_dict
+                print("Payment added")
+
+                db.close()
+                return redirect(url_for("signup3"))
+            else:
+                return render_template('signup2.html', form=payment_form)
+        else:
+            return redirect(url_for("home"))
+    else:
+        return redirect(url_for("home"))
+
 
 @app.route('/signup3' , methods=["GET","POST"])
 def signup3():
@@ -371,6 +443,10 @@ def deleteStaff(id):
 
     return redirect(url_for('stafflist'))
 
+
+@app.route('/staffaccountlist' , methods=["GET","POST"])
+def staffaccountlist():
+    return render_template('staffaccountlist.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

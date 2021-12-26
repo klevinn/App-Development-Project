@@ -13,7 +13,7 @@ class CreateSignUpForm(Form):
 
 class CreateAddPaymentForm(Form):
     card_name = StringField("Card Name:", [validators.Length(min=1, max=150), validators.DataRequired()])
-    card_no = IntegerField("Card Number:", [validators.DataRequired()])
+    card_no = IntegerField("Card Number:", [validators.Length(min=0, max=16), validators.DataRequired()])
     card_expiry = MonthField("Expiry Date:", [validators.DataRequired()])
     card_CVV = IntegerField("CVV:", [validators.NumberRange(min=0, max=3), validators.DataRequired()])
 
