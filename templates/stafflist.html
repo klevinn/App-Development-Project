@@ -88,8 +88,40 @@
                             </div>
                             <div class="col-sm-3">
                               <a class="btn btn-warning " target="__blank" href="/staffupdate/{{ staff.get_staff_id() }}">Edit</a>
-                              <form action="" method="POST">
-                                <input type="submit" value="Delete" class="btn btn-danger">
+                              <form action="{{ url_for('deleteStaff', id=staff.get_staff_id()) }}" method="POST">
+                                <!--input type="submit" value="Delete" class="btn btn-danger"-->
+                                
+                                <!-- w3 schools modal button-->
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#myModal_{{ staff.get_staff_id() }}">
+                                  Delete
+                                </button>
+                            
+                                <!-- The Modal -->
+                                <div class="modal" id="myModal_{{ staff.get_staff_id() }}">
+                                  <div class="modal-dialog">
+                                    <div class="modal-content">
+                            
+                                      <!-- Modal Header -->
+                                      <div class="modal-header">
+                                        <h4 class="modal-title">Delete Confirmation</h4>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                      </div>
+                            
+                                      <!-- Modal body -->
+                                      <div class="modal-body">
+                                        Are you sure you want to delete {{ staff.get_username() }} ?
+                                      </div>
+                            
+                                      <!-- Modal footer -->
+                                      <div class="modal-footer">
+                                        <input type="submit" value="Delete" class="btn btn-danger">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                      </div>
+                            
+                                    </div>
+                                  </div>
+                                </div>
+                            
                               </form>
                             </div>
                           </div>

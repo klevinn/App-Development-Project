@@ -351,5 +351,26 @@ def staffadd():
         print("Hello3")
         return render_template('staffadd.html',  form=staff_form)
 
+
+@app.route('/deleteUser/<int:id>', methods=["GET", 'POST'])
+def deleteStaff(id):
+    users_dict = {}
+    db = shelve.open('staff', 'w')
+    try:
+        if 'Users' in db:
+            users_dict = db['Users']
+        else:
+            db["Users"] = users_dict
+    except:
+        print("Error in retrieving Users from staff.db")
+
+    users_dict.pop(id)
+
+    db['Users'] = users_dict
+    db.close()
+
+    return redirect(url_for('stafflist'))
+
+
 if __name__ == '__main__':
     app.run(debug=True)
