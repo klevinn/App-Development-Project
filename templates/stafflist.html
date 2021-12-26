@@ -60,7 +60,37 @@
                 <div class="row">
                     <h3>Staff Member List</h3>
                     <div id="Appointments">
-                        <div class="row">
+                      <div class=row>
+                        <div style="font-weight: bold;" class="col mb-0">
+                          Staff Name
+                       </div>
+                       <div style="font-weight: bold;" class="col">
+                          Staff Email
+                       </div>
+                       <div class="col-sm-3">
+
+                       </div>
+                      </div>
+                      <hr>
+                         {% for staff in staff_list %}
+                          <div class="row">
+                            <div class="col mb-0">
+                              <span>{{ staff.get_username() }}</span>
+                            </div>
+                            <div class="col">
+                            </span>{{ staff.get_email() }}</span>
+                            </div>
+                            <div class="col-sm-3">
+                              <a class="btn btn-warning " target="__blank" href="">Edit</a>
+                              <form action="" method="POST">
+                                <input type="submit" value="Delete" class="btn btn-danger">
+                              </form>
+                            </div>
+                          </div>
+                          <hr>
+                       {% endfor %}
+                   
+                         <!--div class="row">
                             <div class="col mb-0">
                                [Staff Name]
                             </div>
@@ -69,21 +99,9 @@
                             </div>
                              <div class="col">
                                 <a class="btn btn-info " target="__blank" href="">Edit</a>
+                                <a class="btn btn-danger " target="__blank" href="">Delete</a>
                              </div>
-                         </div>
-                         <hr>
-                         <div class="row">
-                            <div class="col mb-0">
-                               [Staff Name]
-                            </div>
-                            <div class="col">
-                               [Staff Email]
-                            </div>
-                             <div class="col">
-                                <a class="btn btn-info " target="__blank" href="">Edit</a>
-                             </div>
-                         </div>
-                         <hr>
+                            </div-->
                          <div class="row">
                             <div class="col-sm-12">
                                <a class="btn btn-info " target="__blank" href="/staffadd">Add</a>

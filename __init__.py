@@ -13,7 +13,7 @@ def home():
 def login():
     login_form = Forms.CreateLoginForm(request.form)
     if request.method == 'POST' and login_form.validate():
-        emailInput = login_form.email.data
+        emailInput = login_form.email.data.lower()
         passwordInput = login_form.password.data
         userDict = {}
         db = shelve.open("user", "c")
@@ -37,7 +37,7 @@ def login():
 
         for key in userDict:
             emailinshelve = userDict[key].get_email()
-            if emailInput == emailinshelve:
+            if emailInput == emailinshelve.lower():
                 email_key = userDict[key]
                 validemail = True
                 #Console Checking
@@ -58,7 +58,7 @@ def login():
                 for key in userDict:
                     print("hello")
                     emailinshelve = userDict[key].get_email()
-                    if emailInput == emailinshelve:
+                    if emailInput == emailinshelve.lower():
                         staff_email_key = userDict[key]
                         validstaffemail = True
                         print("Registered Email & Inputted Email: ", emailinshelve, emailInput)
@@ -75,7 +75,9 @@ def login():
                     #Console Checking
                     print("Registered Password & Inputted Password: ", passwordinshelve, passwordInput)
                 else:
-                    print("Wrong Password.")
+                    print("Trrying Staff Password")
+                    if passwordInput == "Staff1234":
+                        return redirect(url_for("staffapp"))
         
         if validstaffemail:
             print("Hello-New")
@@ -106,7 +108,7 @@ def signup():
         duplicated_username = False
         password_confirm = signup_form.password_confirm.data
         passwordInput = signup_form.password.data
-        emailInput = signup_form.email.data
+        emailInput = signup_form.email.data.lower()
         usernameInput = signup_form.username.data
         if password_confirm == passwordInput:
                 matched_pw = False
@@ -130,7 +132,7 @@ def signup():
         
         for key in userDict:
                 emailinshelve = userDict[key].get_email()
-                if emailInput == emailinshelve:
+                if emailInput == emailinshelve.lower():
                     print("Registered email & inputted email:", emailinshelve, emailInput)
                     duplicated_email = True
                     print("Duplicate Email")
@@ -213,7 +215,25 @@ def staffinvent():
 
 @app.route('/stafflist' , methods=["GET","POST"])
 def stafflist():
-    return render_template('stafflist.html')
+    staff_dict = {}
+    db = shelve.open('staff', 'r')
+    try:
+        if 'Users' in db:
+            staff_dict = db['Users']
+        else:
+            db["Users"] = staff_dict
+    except:
+        print("Error in retrieving User from staff.db")
+
+    db.close()
+
+    staff_list = []
+    for key in staff_dict:
+        staff = staff_dict.get(key)
+        staff_list.append(staff)
+
+
+    return render_template('stafflist.html', count=len(staff_list), staff_list=staff_list)
 
 @app.route('/staffprod' , methods=["GET","POST"])
 def staffprod():
@@ -226,9 +246,10 @@ def staffadd():
         print("Successful Running")
         duplicated_email = False
         duplicated_username = False
-        emailInput = staff_form.staff_email.data
+        emailInput = staff_form.staff_email.data.lower()
         nameInput = staff_form.staff_name.data
         userDict = {}
+        txt = open('staff.txt' , 'a')
         db = shelve.open("staff", "c")
         
         try:
@@ -241,7 +262,7 @@ def staffadd():
     
         for key in userDict:
             emailinshelve = userDict[key].get_email()
-            if emailInput == emailinshelve:
+            if emailInput == emailinshelve.lower():
                 print("Registered email & inputted email:", emailinshelve, emailInput)
                 duplicated_email = True
                 print("Duplicate Email")
