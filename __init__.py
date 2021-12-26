@@ -27,7 +27,7 @@ def login():
 
         try:
             if 'Users' in db:
-                    userDict = db['Users']
+                userDict = db['Users']
             else:
                 db["Users"] = userDict
         except:
@@ -239,6 +239,44 @@ def stafflist():
 def staffprod():
     return render_template('staffproduct.html')
 
+"""
+@app.route('/staffupdate/<int:id>/', methods=['GET', 'POST'])
+def staffupdate(id):
+    update_staff = Forms.CreateStaffMemberForm(request.form)
+    if request.method == 'POST' and update_staff.validate():
+        users_dict = {}
+        db = shelve.open('staff', 'c')
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving Users from staff.db")
+
+
+        user = users_dict.get(id)
+        user.set_username(update_staff.staff_name.data)
+        user.set_username(update_staff.staff_email.data)
+
+        db['Users'] = users_dict
+        db.close()
+
+        return redirect(url_for('stafflist'))
+
+    else:
+        users_dict = {}
+        db = shelve.open('user.db', 'r')
+        users_dict = db['Users']
+        db.close()
+
+        user = users_dict.get(id)
+        update_staff.staff_name.data = user.get_username()
+        update_staff.staff_email.data = user.get_email()
+
+        return render_template('staffadd.html', form=update_staff)
+"""
+
 @app.route('/staffadd' , methods=["GET","POST"])
 def staffadd():
     staff_form = Forms.CreateStaffMemberForm(request.form)
@@ -258,7 +296,7 @@ def staffadd():
                 db["Users"] = userDict
         except:
             print("Error in retrieving Users from staff.db")
-    
+
         for key in userDict:
             emailinshelve = userDict[key].get_email()
             if emailInput == emailinshelve.lower():
@@ -272,21 +310,30 @@ def staffadd():
                 print("New Email")
         
         for key in userDict:
-                usernameinshelve = userDict[key].get_username()
-                if nameInput == usernameinshelve:
-                    print("Registered Username & inputted username:", usernameinshelve, nameInput)
-                    duplicated_username = True
-                    print("Duplicated Username")
-                    break
-                else:
-                    print("Registered Username & inputted username:", usernameinshelve, nameInput)
-                    username_duplicates = False
-                    print("New Username")
-            
+            usernameinshelve = userDict[key].get_username()
+            if nameInput == usernameinshelve:
+                print("Registered Username & inputted username:", usernameinshelve, nameInput)
+                duplicated_username = True
+                print("Duplicated Username")
+                break
+            else:
+                print("Registered Username & inputted username:", usernameinshelve, nameInput)
+                username_duplicates = False
+                print("New Username")
+
         if(duplicated_email == False) and (duplicated_username == False):
             print("Hello")
             user = Staff.Staff(nameInput, emailInput, 'Staff1234')
-            userDict[user.get_username()] = user
+            for key in userDict:
+                staffidshelve = userDict[key].get_staff_id()
+                if user.get_staff_id() == staffidshelve or user.get_staff_id() < staffidshelve:
+                    print(str(user.get_staff_id()), str(userDict[key].get_staff_id()))
+                    user.set_staff_id(user.get_staff_id() + 1)
+                    print(str(user.get_staff_id()) + "Hello1")
+                else:
+                    print("Hello-olleH")
+                    
+            userDict[user.get_staff_id()] = user
             db["Users"] = userDict
             db.close()
             return redirect(url_for("stafflist"))

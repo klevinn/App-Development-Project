@@ -31,7 +31,7 @@ body{
 
 #sidebar{
 
-    height:100vh;
+    height:100%;
     border-radius:10px 0 0 10px;
     background-color: #FFC0BE;
     border:2px solid black;
@@ -40,7 +40,7 @@ body{
 
 #data{
 
-    height:100vh;
+    height:100%;
     border-radius:0 10px 10px 0;
     border: 2px solid black;
     padding: 10px;

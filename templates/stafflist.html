@@ -62,6 +62,9 @@
                     <div id="Appointments">
                       <div class=row>
                         <div style="font-weight: bold;" class="col mb-0">
+                          Staff ID
+                       </div>
+                        <div style="font-weight: bold;" class="col mb-0">
                           Staff Name
                        </div>
                        <div style="font-weight: bold;" class="col">
@@ -75,13 +78,16 @@
                          {% for staff in staff_list %}
                           <div class="row">
                             <div class="col mb-0">
+                              <span>{{ staff.get_staff_id() }}</span>
+                            </div>
+                            <div class="col mb-0">
                               <span>{{ staff.get_username() }}</span>
                             </div>
                             <div class="col">
                             </span>{{ staff.get_email() }}</span>
                             </div>
                             <div class="col-sm-3">
-                              <a class="btn btn-warning " target="__blank" href="">Edit</a>
+                              <a class="btn btn-warning " target="__blank" href="/staffupdate/{{staff.get_user_id }}">Edit</a>
                               <form action="" method="POST">
                                 <input type="submit" value="Delete" class="btn btn-danger">
                               </form>
