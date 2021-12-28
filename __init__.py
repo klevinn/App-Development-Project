@@ -16,105 +16,108 @@ def home():
 
 @app.route('/login' , methods=["GET","POST"])
 def login():
-    login_form = Forms.CreateLoginForm(request.form)
-    if request.method == 'POST' and login_form.validate():
-        #.lower() for email because capitalisation is not important in emails.
-        emailInput = login_form.email.data.lower()
-        passwordInput = login_form.password.data
-        userDict = {}
-        db = shelve.open("user", "c")
-        #Using Flagname = "C" because if DB doesn't exist a file will be created instead of showing an error
+    if "user" not in session:
+        login_form = Forms.CreateLoginForm(request.form)
+        if request.method == 'POST' and login_form.validate():
+            #.lower() for email because capitalisation is not important in emails.
+            emailInput = login_form.email.data.lower()
+            passwordInput = login_form.password.data
+            userDict = {}
+            db = shelve.open("user", "c")
+            #Using Flagname = "C" because if DB doesn't exist a file will be created instead of showing an error
 
-        try:
-            if 'Users' in db:
-                userDict = db['Users']
-            else:
-                db["Users"] = userDict
-        except:
-            print("Error in retrieving Users from user.db.")
-
-        #Preset Variables for later codes
-        #Prevents UnboundLocalError
-
-        validemail = False #Set to True if email is in shelve
-        validpassword = False #Set to True if password is matching to the one in the shelf
-        validstaffemail = False #Set to True if email inputted is in the staff database
-        #These will store the data that is taken out from the shelve, used for comparison with input
-        passwordinshelve = ""
-        emailinshelve = ""
-
-        for key in userDict:
-            #getting email stored in the shelve
-            emailinshelve = userDict[key].get_email()
-            #comparing the data and seeing if matched
-            if emailInput == emailinshelve.lower():
-                email_key = userDict[key]
-                validemail = True #As previously mentioned, set to true if found in shelve
-                #Console Checking
-                print("Registered Email & Inputted Email: ", emailinshelve, emailInput)
-                break
-            else:
-                #For Console
-                #Tries looking through the Staff Database to see if email inputted is inside
-                print("Invalid User Email.")
-                print("Now Trying Staff Email")
-                #Flagname = "c" to create if not present == Prevents any error
-                staffdb = shelve.open("staff" , "c")
-                try:
-                    if 'Users' in db:
-                            userDict = staffdb['Users']
-                    else:
-                        staffdb["Users"] = userDict
-                except:
-                    print("Error in retrieving Users from staff.db.")
-
-                for key in userDict:
-                    print("Staff Email Retrieved")
-                    emailinshelve = userDict[key].get_email()
-                    if emailInput == emailinshelve.lower():
-                        staff_email_key = userDict[key]
-                        validstaffemail = True
-                        print("Registered Email & Inputted Email: ", emailinshelve, emailInput)
-                        db.close()
-                        break
-                    else:
-                        print("Invalid Staff Email.")
-                
-             
-        if validemail == True:
-                passwordinshelve = email_key.get_password()
-                if passwordInput == passwordinshelve:
-                    password_matched = True
-                    #Console Checking
-                    print("Registered Password & Inputted Password: ", passwordinshelve, passwordInput)
+            try:
+                if 'Users' in db:
+                    userDict = db['Users']
                 else:
-                    print("Trying Staff Password")
-                    if passwordInput == "Staff1234":
-                        return redirect(url_for("staffapp"))
-                    else:
-                        print("Wrong Password")
-        
-        if validstaffemail == True:
-            print("Hello-New")
-            passwordinshelve = staff_email_key.get_password()
-            if passwordInput == "Staff1234":
-                staffdb.close()
-                return redirect(url_for("staffapp"))
+                    db["Users"] = userDict
+            except:
+                print("Error in retrieving Users from user.db.")
+
+            #Preset Variables for later codes
+            #Prevents UnboundLocalError
+
+            validemail = False #Set to True if email is in shelve
+            validpassword = False #Set to True if password is matching to the one in the shelf
+            validstaffemail = False #Set to True if email inputted is in the staff database
+            #These will store the data that is taken out from the shelve, used for comparison with input
+            passwordinshelve = ""
+            emailinshelve = ""
+
+            for key in userDict:
+                #getting email stored in the shelve
+                emailinshelve = userDict[key].get_email()
+                #comparing the data and seeing if matched
+                if emailInput == emailinshelve.lower():
+                    email_key = userDict[key]
+                    validemail = True #As previously mentioned, set to true if found in shelve
+                    #Console Checking
+                    print("Registered Email & Inputted Email: ", emailinshelve, emailInput)
+                    break
+                
+                    #For Console
+                    #Tries looking through the Staff Database to see if email inputted is inside
+                
+            print("Now Trying Staff Email")
+            #Flagname = "c" to create if not present == Prevents any error
+            staffdb = shelve.open("staff" , "c")
+            try:
+                if 'Users' in staffdb:
+                        userDict = staffdb['Users']
+                else:
+                    staffdb["Users"] = userDict
+            except:
+                print("Error in retrieving Users from staff.db.")
+
+            for key in userDict:
+                print("Staff Email Retrieved")
+                emailinshelve = userDict[key].get_email()
+                if emailInput == emailinshelve.lower():
+                    staff_email_key = userDict[key]
+                    validstaffemail = True
+                    print("STAFF -- Registered Email & Inputted Email: ", emailinshelve, emailInput)
+                    staffdb.close()
+                    break
+                else:
+                    print("Invalid Staff Email.")
                     
-        if validemail == True and validpassword == True:
-            db.close()
-            return redirect(url_for("user"))
+                
+            if validemail == True:
+                    passwordinshelve = email_key.get_password()
+                    if passwordInput == passwordinshelve:
+                        validpassword = True
+                        #Console Checking
+                        print("Registered Password & Inputted Password: ", passwordinshelve, passwordInput)
+            
+            if validstaffemail == True:
+                print("Hello-New")
+                passwordinshelve = staff_email_key.get_password()
+                if passwordInput == passwordinshelve:
+                    staffdb.close()
+                    return redirect(url_for("staffapp"))
+                        
+            if validemail == True and validpassword == True:
+                print("Successful Login")
+                db.close()
+                return redirect(url_for("user"))
+
+            else:
+                db.close()
+                return render_template('user/guest/login.html', form=login_form, failedAttempt=True)
 
         else:
-            db.close()
-            return render_template('user/guest/login.html', form=login_form, failedAttempt=True)
-
+            return render_template('user/guest/login.html' , form=login_form)
     else:
-        return render_template('user/guest/login.html' , form=login_form)
+        return redirect(url_for("home"))
+
+@app.route('/logout')
+def logout():
+    session.pop("user", None)
+    return redirect(url_for("home"))
 
 @app.route('/signup' , methods=["GET","POST"])
 def signup():
-    if "userSession" not in session:
+    #if "userSession" not in session:
         signup_form = Forms.CreateSignUpForm(request.form)
         if request.method == 'POST' and signup_form.validate():
             print("Successful Running")
@@ -190,8 +193,8 @@ def signup():
         else:
             print("Hello3")
             return render_template('user/guest/signup.html',  form=signup_form)
-    else:
-        return redirect(url_for("home"))
+    #else:
+        #return redirect(url_for("home"))
 
 
 @app.route('/signup2' , methods=["GET","POST"])
