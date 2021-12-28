@@ -27,12 +27,12 @@
 
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item dropdown main-nav-icons">
-                    <a class="nav-link text-black dropdown-toggle" href="#" data-bs-toggle="dropdown"><i class="fas fa-user-circle fa-lg"></i>STAFF {%block staff_name%}{%endblock%}</a>
+                    <a class="nav-link text-black dropdown-toggle" href="#" data-bs-toggle="dropdown"><i class="fas fa-user-circle fa-lg"></i>STAFF {{ staff }}</a>
                     <ul class="dropdown-menu dropdown-menu-right">
                         <li><a class="dropdown-item" href="#">User Input</a></li>
                         <li><a class="dropdown-item" href="#">Inventory Management</a></li>
                         <li><a class="dropdown-item" href="#">Staff Managementt</a></li>
-                        <li><a class="dropdown-item" href="#">Logout</a></li>
+                        <li><a class="dropdown-item" href="/logout">Logout</a></li>
                     </ul>
                 </li>
                 <li class="nav-item main-nav-icons"><a class="nav-link text-black" href="#"><i class="fas fa-shopping-cart fa-lg"></i> Cart</a></li>
