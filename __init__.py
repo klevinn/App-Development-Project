@@ -1,20 +1,29 @@
+#imported modules
 from flask import Flask, render_template, request, redirect, url_for, session
 import shelve
 import os
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
+#imported files
 import Forms
 import User, Staff
+
+#Functions that are repeated
 
 app = Flask(__name__)
 
 #Secret Key Required for sessions
 app.secret_key = "session_key"
+#Limiter for login security
+limiter = Limiter(app, key_func=get_remote_address)
 
 @app.route('/' , methods=["GET","POST"])
 def home():
     return render_template('home.html')
 
 @app.route('/login' , methods=["GET","POST"])
+@limiter.limit("2/second")
 def login():
     if "user" not in session or "staff" not in session:
         login_form = Forms.CreateLoginForm(request.form)
@@ -103,6 +112,10 @@ def login():
             if validemail == True and validpassword == True:
                 print("Successful Login")
                 db.close()
+
+                username = email_key.get_username()
+                session["user"] = username
+
                 return redirect(url_for("user"))
 
             else:
