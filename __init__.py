@@ -96,10 +96,10 @@ def login():
 
         else:
             db.close()
-            return render_template('user/guest/login.html', form=login_form, failedAttempt=True)
+            return render_template('login.html', form=login_form, failedAttempt=True)
 
     else:
-        return render_template('user/guest/login.html' , form=login_form)
+        return render_template('login.html' , form=login_form)
 
 @app.route('/signup' , methods=["GET","POST"])
 def signup():
@@ -174,10 +174,10 @@ def signup():
             else:
                 print("Hello2")
                 db.close()
-                return render_template('user/guest/signup.html', form=signup_form, duplicated_email=duplicated_email, duplicated_username=duplicated_username, matched_pw=matched_pw) 
+                return render_template('signup.html', form=signup_form, duplicated_email=duplicated_email, duplicated_username=duplicated_username, matched_pw=matched_pw) 
         else:
             print("Hello3")
-            return render_template('user/guest/signup.html',  form=signup_form)
+            return render_template('signup.html',  form=signup_form)
     else:
         return redirect(url_for("home"))
 
@@ -238,7 +238,7 @@ def signup2():
                 db.close()
                 return redirect(url_for("signup3"))
             else:
-                return render_template('user/guest/signup2.html', form=payment_form)
+                return render_template('signup2.html', form=payment_form)
         else:
             return redirect(url_for("home"))
     else:
@@ -247,48 +247,48 @@ def signup2():
 
 @app.route('/signup3' , methods=["GET","POST"])
 def signup3():
-    return render_template('user/guest/signup3.html')
+    return render_template('signup3.html')
 
 @app.route('/signupC' , methods=["GET","POST"])
 def signupC():
-    return render_template('user/guest/signupcomplete.html')
+    return render_template('signupcomplete.html')
 
 @app.route('/user' , methods=["GET","POST"])
 def user():
-    return render_template('user/loggedin/useraccount.html')
+    return render_template('useraccount.html')
 
 @app.route('/infoedit' , methods=["GET","POST"])
 def userinfo():
-    return render_template('user/loggedin/user_info_edit.html')
+    return render_template('user_info_edit.html')
 
 @app.route('/pwedit' , methods=["GET","POST"])
 def userpw():
-    return render_template('user/loggedin/user_password_edit.html')
+    return render_template('user_password_edit.html')
 
 @app.route('/useraddress' , methods=["GET","POST"])
 def useraddress():
-    return render_template('user/loggedin/user_address.html')
+    return render_template('user_address.html')
 
 @app.route('/usercard' , methods=["GET","POST"])
 def usercard():
-    return render_template('user/loggedin/user_cardinfo.html')
+    return render_template('user_cardinfo.html')
 
 @app.route('/staffapp' , methods=["GET","POST"])
 def staffapp():
-    return render_template('user/staff/staffappoint.html')
+    return render_template('staffappoint.html')
 
 @app.route('/stafffeed' , methods=["GET","POST"])
 def stafffeed():
-    return render_template('user/staff/stafffeedback.html')
+    return render_template('stafffeedback.html')
 
 @app.route('/staffinvent' , methods=["GET","POST"])
 def staffinvent():
-    return render_template('user/staff/staffinventory.html')
+    return render_template('staffinventory.html')
 
 @app.route('/stafflist' , methods=["GET","POST"])
 def stafflist():
     staff_dict = {}
-    db = shelve.open('staff', 'c')
+    db = shelve.open('staff', 'r')
     try:
         if 'Users' in db:
             staff_dict = db['Users']
@@ -305,11 +305,11 @@ def stafflist():
         staff_list.append(staff)
 
 
-    return render_template('user/staff/stafflist.html', count=len(staff_list), staff_list=staff_list)
+    return render_template('stafflist.html', count=len(staff_list), staff_list=staff_list)
 
 @app.route('/staffprod' , methods=["GET","POST"])
 def staffprod():
-    return render_template('user/staff/staffproduct.html')
+    return render_template('staffproduct.html')
 
 
 @app.route('/staffupdate/<int:id>/', methods=['GET', 'POST'])
@@ -352,7 +352,7 @@ def staffupdate(id):
         update_staff.staff_name.data = user.get_username()
         update_staff.staff_email.data = user.get_email()
 
-        return render_template('user/staff/staffupdate.html', form=update_staff)
+        return render_template('staffupdate.html', form=update_staff)
 
 
 @app.route('/staffadd' , methods=["GET","POST"])
@@ -418,10 +418,10 @@ def staffadd():
         else:
             print("Hello2")
             db.close()
-            return render_template('user/staff/staffadd.html', form=staff_form, duplicated_email=duplicated_email, duplicated_username=duplicated_username) 
+            return render_template('staffadd.html', form=staff_form, duplicated_email=duplicated_email, duplicated_username=duplicated_username) 
     else:
         print("Hello3")
-        return render_template('user/staff/staffadd.html',  form=staff_form)
+        return render_template('staffadd.html',  form=staff_form)
 
 
 @app.route('/deleteUser/<int:id>', methods=["GET", 'POST'])
@@ -446,7 +446,7 @@ def deleteStaff(id):
 
 @app.route('/staffaccountlist' , methods=["GET","POST"])
 def staffaccountlist():
-    return render_template('user/staff/staffaccountlist.html')
+    return render_template('staffaccountlist.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
