@@ -1,5 +1,8 @@
 from Person import Person
 
+#Child Class
+#Used for storing user-relevant info into the shelve
+
 class User(Person):
     def __init__(self, username, email, password):
         super().__init__(username, email, password)

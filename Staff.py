@@ -1,4 +1,6 @@
 from Person import Person
+#Child Class
+#Class Used for staff to store staff member ID 
 
 class Staff(Person):
     staff_id = 0

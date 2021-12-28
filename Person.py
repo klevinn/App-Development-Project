@@ -1,3 +1,5 @@
+#Default Class == Used for storing accounts inside the shelve
+
 class Person:
 
     def __init__(self, username, email, password):

@@ -5,6 +5,7 @@ import User, Staff
 
 app = Flask(__name__)
 
+#Secret Key Required for sessions
 app.secret_key = "session_key"
 
 @app.route('/' , methods=["GET","POST"])
@@ -15,17 +16,12 @@ def home():
 def login():
     login_form = Forms.CreateLoginForm(request.form)
     if request.method == 'POST' and login_form.validate():
+        #.lower() for email because capitalisation is not important in emails.
         emailInput = login_form.email.data.lower()
         passwordInput = login_form.password.data
         userDict = {}
         db = shelve.open("user", "c")
-
-        #Preset Variables for later codes
-        validemail = False
-        validpassword = False
-        validstaffemail = False
-        passwordinshelve = ""
-        emailinshelve = ""
+        #Using Flagname = "C" because if DB doesn't exist a file will be created instead of showing an error
 
         try:
             if 'Users' in db:
@@ -35,19 +31,32 @@ def login():
         except:
             print("Error in retrieving Users from user.db.")
 
-        
+        #Preset Variables for later codes
+        #Prevents UnboundLocalError
+
+        validemail = False #Set to True if email is in shelve
+        validpassword = False #Set to True if password is matching to the one in the shelf
+        validstaffemail = False #Set to True if email inputted is in the staff database
+        #These will store the data that is taken out from the shelve, used for comparison with input
+        passwordinshelve = ""
+        emailinshelve = ""
 
         for key in userDict:
+            #getting email stored in the shelve
             emailinshelve = userDict[key].get_email()
+            #comparing the data and seeing if matched
             if emailInput == emailinshelve.lower():
                 email_key = userDict[key]
-                validemail = True
+                validemail = True #As previously mentioned, set to true if found in shelve
                 #Console Checking
                 print("Registered Email & Inputted Email: ", emailinshelve, emailInput)
                 break
             else:
+                #For Console
+                #Tries looking through the Staff Database to see if email inputted is inside
                 print("Invalid User Email.")
                 print("Now Trying Staff Email")
+                #Flagname = "c" to create if not present == Prevents any error
                 staffdb = shelve.open("staff" , "c")
                 try:
                     if 'Users' in db:
@@ -58,7 +67,7 @@ def login():
                     print("Error in retrieving Users from staff.db.")
 
                 for key in userDict:
-                    print("hello")
+                    print("Staff Email Retrieved")
                     emailinshelve = userDict[key].get_email()
                     if emailInput == emailinshelve.lower():
                         staff_email_key = userDict[key]
@@ -70,7 +79,7 @@ def login():
                         print("Invalid Staff Email.")
                 
              
-        if validemail:
+        if validemail == True:
                 passwordinshelve = email_key.get_password()
                 if passwordInput == passwordinshelve:
                     password_matched = True
@@ -83,7 +92,7 @@ def login():
                     else:
                         print("Wrong Password")
         
-        if validstaffemail:
+        if validstaffemail == True:
             print("Hello-New")
             passwordinshelve = staff_email_key.get_password()
             if passwordInput == "Staff1234":
@@ -109,13 +118,14 @@ def signup():
             print("Successful Running")
             #For duplicates
             #Pre determining Variables
-            duplicated_email = False
-            duplicated_username = False
+            duplicated_email = False #Set to true if another email is already registered in the shelve
+            duplicated_username = False #Set to true if another username is already registered in the shelve
             password_confirm = signup_form.password_confirm.data
             passwordInput = signup_form.password.data
             emailInput = signup_form.email.data.lower()
             usernameInput = signup_form.username.data
             
+            #To determine if passwords are matched or not
             if password_confirm == passwordInput:
                     matched_pw = False
                     #Console
@@ -199,6 +209,7 @@ def signup2():
                 card_expiry = str(payment_form.card_expiry.data)
                 card_cvv = payment_form.card_CVV.data
 
+                #Splitting because card expiry dont have days
                 year = card_expiry[:4]
                 print(year)
                 month = card_expiry[5:7] # to get the month from the date format "YYYY-MM-DD"
@@ -299,6 +310,7 @@ def stafflist():
 
     db.close()
 
+    #Displaying the appending data into the stafflist so that it can be used to display data on the site
     staff_list = []
     for key in staff_dict:
         staff = staff_dict.get(key)
@@ -326,8 +338,9 @@ def staffupdate(id):
         except:
             print("Error in retrieving Users from staff.db")
 
-
+        #key is the id, so it will edit the data of the staff member and its corresponding key
         user = users_dict.get(id)
+        #using accessor methods to update data
         user.set_username(update_staff.staff_name.data)
         user.set_email(update_staff.staff_email.data)
 
@@ -403,6 +416,7 @@ def staffadd():
             print("Hello")
             user = Staff.Staff(nameInput, emailInput, 'Staff1234')
             for key in userDict:
+                #To assign Staff ID, ensure that it is persistent and is accurate to the list
                 staffidshelve = userDict[key].get_staff_id()
                 if user.get_staff_id() == staffidshelve or user.get_staff_id() < staffidshelve:
                     print(str(user.get_staff_id()), str(userDict[key].get_staff_id()))

@@ -1,6 +1,10 @@
 from wtforms import Form, StringField, RadioField, SelectField, TextAreaField, validators, MonthField, EmailField, DateField, IntegerField
 from wtforms.fields.simple import PasswordField
 
+#Form Validation for all Forms in the website
+
+
+# Done By Calvin
 class CreateLoginForm(Form):
     email = EmailField("Email:", [validators.Email(), validators.DataRequired()])
     password = PasswordField("Password:", [validators.DataRequired()])
@@ -26,3 +30,6 @@ class CreateAddShippingAddressForm(Form):
 class CreateStaffMemberForm(Form):
     staff_name = StringField("Staff Name:", [validators.DataRequired()])
     staff_email = EmailField("Email:", [validators.Email(), validators.DataRequired()])
+
+
+#Done By
