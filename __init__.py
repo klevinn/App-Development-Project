@@ -135,7 +135,7 @@ def logout():
 
 @app.route('/signup' , methods=["GET","POST"])
 def signup():
-    #if "userSession" not in session:
+    if "user" not in session:
         signup_form = Forms.CreateSignUpForm(request.form)
         if request.method == 'POST' and signup_form.validate():
             print("Successful Running")
@@ -201,7 +201,7 @@ def signup():
                 db.close()
 
                 session["Customer"] = emailInput
-                session["userSession"] = usernameInput
+                session["user"] = usernameInput
 
                 return redirect(url_for("signup2"))
             else:
@@ -211,32 +211,31 @@ def signup():
         else:
             print("Hello3")
             return render_template('user/guest/signup.html',  form=signup_form)
-    #else:
-        #return redirect(url_for("home"))
+    else:
+        return redirect(url_for("home"))
 
 
 @app.route('/signup2' , methods=["GET","POST"])
 def signup2():
-    if "userSession" in session:
+    if "user" in session:
         if "Customer" in session:
             CustEmail = session["Customer"]
-        
             print(CustEmail)
+
             payment_form = Forms.CreateAddPaymentForm(request.form)
-            if request.method == 'POST' and payment_form.validate():
+            if request.method == 'POST':
                 print("Running")
                 CustFound = False
 
                 card_name = payment_form.card_name.data
+                print(card_name)
                 card_num = payment_form.card_no.data
-                card_expiry = str(payment_form.card_expiry.data)
+                print(card_num)
+                card_expiry = payment_form.card_expiry.data
+                print(card_expiry)
                 card_cvv = payment_form.card_CVV.data
-
-                #Splitting because card expiry dont have days
-                year = card_expiry[:4]
-                print(year)
-                month = card_expiry[5:7] # to get the month from the date format "YYYY-MM-DD"
-                card_expiry = "%s / %s " %(month, year)
+                print(card_cvv)
+            
 
                 users_dict = {}
                 db = shelve.open("user", "c")
@@ -269,9 +268,11 @@ def signup2():
                 db['Users'] = users_dict
                 print("Payment added")
 
+
                 db.close()
                 return redirect(url_for("signup3"))
             else:
+                print("Error")
                 return render_template('user/guest/signup2.html', form=payment_form)
         else:
             return redirect(url_for("home"))
@@ -281,7 +282,68 @@ def signup2():
 
 @app.route('/signup3' , methods=["GET","POST"])
 def signup3():
-    return render_template('user/guest/signup3.html')
+    if "user" in session:
+        if "Customer" in session:
+            CustEmail = session["Customer"]
+            print(CustEmail)
+
+            shipping_form = Forms.CreateAddShippingAddressForm(request.form)
+            if request.method == 'POST':
+                print("Running")
+                CustFound = False
+
+                shipping_address = shipping_form.shipping_address.data
+                print(shipping_address)
+                postal_code = shipping_form.postal_code.data
+                print(postal_code)
+                unit_number = shipping_form.unit_number.data
+                print(unit_number)
+                phone_no = shipping_form.phone_no.data
+                print(phone_no)
+
+
+                users_dict = {}
+                db = shelve.open("user", "c")
+                try:
+                    if 'Users' in db:
+                        users_dict = db['Users']
+                    else:
+                        session.clear()
+                        return redirect(url_for("home"))
+                except:
+                    print("Error in retrieving Users from user.db")
+                
+                for key in users_dict:
+                    print("retrieving")
+                    emailinshelve = users_dict[key].get_email()
+                    if CustEmail == emailinshelve:
+                        customerkey = users_dict[key]
+                        CustFound = True
+                        break
+
+                if CustFound == False:
+                    session.clear()
+                    return redirect(url_for("home"))
+
+                customerkey.set_shipping_address(shipping_address)
+                customerkey.set_unit_number(postal_code)
+                customerkey.set_postal_code(unit_number)
+                customerkey.set_phone_number(phone_no)
+
+                db['Users'] = users_dict
+                print("Address added")
+
+
+                db.close()
+                session.pop("Customer" , None)
+                return redirect(url_for("signupC"))
+            else:
+                return render_template('user/guest/signup3.html' , form = shipping_form)
+        else:
+            return redirect(url_for("home"))
+    else:
+        return redirect(url_for("home"))
+    
 
 @app.route('/signupC' , methods=["GET","POST"])
 def signupC():
