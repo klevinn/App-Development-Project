@@ -351,7 +351,32 @@ def signupC():
 
 @app.route('/user' , methods=["GET","POST"])
 def user():
-    return render_template('user/loggedin/useraccount.html')
+    if "user" in session:
+        UserName = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
+
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+
+        db.close()
+
+
+        user_list = []
+        for key in users_dict:
+            if key == UserName:
+                user = users_dict.get(key)
+                user_list.append(user)
+                break
+
+        return render_template('user/loggedin/useraccount.html' , user = UserName, count=len(user_list), user_list=user_list)
+    else:
+        return redirect(url_for("login"))
 
 @app.route('/infoedit' , methods=["GET","POST"])
 def userinfo():
