@@ -519,5 +519,43 @@ def staffaccountlist():
     else:
         return redirect(url_for('login'))
 
+"""Custom Error Page"""
+
+@app.errorhandler(401)
+def error401(error):
+    return render_template('errors/error401.html'), 401
+
+@app.errorhandler(403)
+def error403(error):
+    return render_template('errors/error403.html'), 403
+
+@app.errorhandler(404)
+def error404(error):
+    return render_template('errors/error404.html'), 404
+
+@app.errorhandler(413)
+def error413(error):
+    return render_template('errors/error413.html'), 413
+
+@app.errorhandler(429)
+def error429(error):
+    return render_template('errors/error429.html'), 429
+
+@app.errorhandler(500)
+def error500(error):
+    return render_template('errors/error500.html'), 500
+
+@app.errorhandler(501)
+def error501(error):
+    return render_template('errors/error501.html'), 501
+
+@app.errorhandler(502)
+def error502(error):
+    return render_template('errors/error502.html'), 502
+
+@app.errorhandler(503)
+def error503(error):
+    return render_template('errors/error503.html'), 503
+
 if __name__ == '__main__':
     app.run(debug=True)
