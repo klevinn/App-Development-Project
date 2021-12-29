@@ -22,6 +22,9 @@ limiter = Limiter(app, key_func=get_remote_address)
 def home():
     return render_template('home.html')
 
+
+"""Account Management -- (login, signup, etc) By Calvin"""
+
 @app.route('/login' , methods=["GET","POST"])
 @limiter.limit("2/second")
 def login():
@@ -606,7 +609,7 @@ def staffaccountlist():
     else:
         return redirect(url_for('login'))
 
-"""Custom Error Page"""
+"""Custom Error Pages Made By Calvin"""
 
 @app.errorhandler(401)
 def error401(error):
