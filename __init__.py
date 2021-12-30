@@ -116,8 +116,8 @@ def login():
                 print("Successful Login")
                 db.close()
 
-                username = email_key.get_username()
-                session["user"] = username
+                userid = email_key.get_user_id()
+                session["user"] = userid
 
                 return redirect(url_for("user"))
 
@@ -367,7 +367,7 @@ def signupC():
 @app.route('/user' , methods=["GET","POST"])
 def user():
     if "user" in session:
-        UserName = session["user"]
+        userid = session["user"]
         users_dict ={}
         db = shelve.open('user', 'c')
 
@@ -386,7 +386,7 @@ def user():
 
         user_list = []
         for key in users_dict:
-            if key == UserName:
+            if key == userid:
                 user = users_dict.get(key)
                 user_list.append(user)
                 name = user.get_username()
@@ -509,7 +509,77 @@ def userpw():
 
 @app.route('/useraddress' , methods=["GET","POST"])
 def useraddress():
-    return render_template('user/loggedin/user_address.html')
+    if "user" in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
+
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+        
+        for key in users_dict:
+            if idNumber == key:
+                UserName = users_dict[key].get_username()
+        
+        db.close()
+
+        update_address = Forms.CreateUserAddressInfoForm(request.form)
+        if request.method == "POST" and update_address.validate():
+            print("Successful Running")
+            address = update_address.shipping_address.data
+            postal_code = update_address.postal_code.data
+            unit_number = update_address.unit_number.data
+            phone_no = update_address.phone_no.data
+
+            users_dict ={}
+            db = shelve.open('user', 'c')
+
+            try:
+                if 'Users' in db:
+                    users_dict = db['Users']
+                else:
+                    db["Users"] = users_dict
+            except:
+                print("Error in retrieving User from user.db")
+
+            user = users_dict.get(idNumber)
+            #using accessor methods to update data
+            user.set_shipping_address(update_address.shipping_address.data)
+            user.set_postal_code(postal_code)
+            user.set_unit_number(unit_number)
+            user.set_phone_number(phone_no)
+
+            db['Users'] = users_dict
+            db.close()
+
+            return render_template('user/loggedin/user_address.html', user = UserName)
+        
+        else:
+            users_dict = {}
+            db = shelve.open('user', 'r')
+            try:
+                if 'Users' in db:
+                    users_dict = db['Users']
+                else:
+                    db["Users"] = users_dict
+            except:
+                print("Error in retrieving Users from user.db")
+            db.close()
+
+            user = users_dict.get(idNumber)
+            update_address.shipping_address.data = user.get_shipping_address()
+            update_address.postal_code.data = user.get_postal_code()
+            update_address.unit_number.data = user.get_unit_number()
+            update_address.phone_no.data = user.get_phone_number()
+            return render_template('user/loggedin/user_address.html', form=update_address, user = UserName)
+    
+    else:
+        return redirect(url_for('login'))
 
 @app.route('/usercard' , methods=["GET","POST"])
 def usercard():

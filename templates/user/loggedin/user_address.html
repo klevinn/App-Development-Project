@@ -3,27 +3,32 @@
 {% block title %}Updating... | DoctorOnTheGo{% endblock %}
 
 {% block content %}
+{% from "includes/_formHelper.html" import render_field %}
 <div class="background-image">
     <div class="row">
         <div class="col-md-4 offset-md-4">
             <div class="login-form bg-colour mt-6 p-4" id="loginForm">
-                <form action="" method="" class="row g-3">
+                <form action="" method="POST" class="row g-3">
                     <h4 class="text-black">Update Your Account!</h4>
                     <div class="col-12">
-                        <label>Shipping Address:</label>
-                        <input type="text" name="address" class="form-control" placeholder="Enter Block Number and Street Name">
+                        {{ render_field(form.shipping_address, class="form-control") }}
+                        <!--label>Shipping Address:</label>
+                        <input type="text" name="address" class="form-control" placeholder="Enter Block Number and Street Name"-->
                     </div>
                     <div class="form-group col-md-6">
-                        <label for="inputEmail4">Unit Number</label>
-                        <input type="number" class="form-control" id="unit_number" placeholder="#00-00">
+                        {{ render_field(form.unit_number, class="form-control") }}
+                        <!--label for="inputEmail4">Unit Number</label>
+                        <input type="number" class="form-control" id="unit_number" placeholder="#00-00"-->
                     </div>
                     <div class="form-group col-md-6">
-                        <label for="inputPassword4">Postal Code</label>
-                        <input type="text" class="form-control" id="shipping_address" placeholder="(S)######">
+                        {{ render_field(form.postal_code, class="form-control") }}
+                        <!--label for="inputPassword4">Postal Code</label>
+                        <input type="text" class="form-control" id="shipping_address" placeholder="(S)######"-->
                     </div>
                     <div class="col-12">
-                        <label>Contact Number:</label>
-                        <input type="number" name="phone_num" class="form-control" placeholder="Phone Number">
+                        {{ render_field(form.phone_no, class="form-control") }}
+                        <!--label>Contact Number:</label>
+                        <input type="number" name="phone_num" class="form-control" placeholder="Phone Number"-->
                     </div> 
                     <div class="form-group col-md-12 pl-3 pr-3">
                         <button type="submit" class="btn btn-dark float-end">Update</button>
