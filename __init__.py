@@ -589,7 +589,84 @@ def useraddress():
 
 @app.route('/usercard' , methods=["GET","POST"])
 def usercard():
-    return render_template('user/loggedin/user_cardinfo.html')
+    if "user" in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
+
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+        
+        for key in users_dict:
+            if idNumber == key:
+                UserName = users_dict[key].get_username()
+        
+        db.close()
+
+        update_card = Forms.CreateAddPaymentForm(request.form)
+        if request.method == 'POST':
+            print("Successful Running")
+            card_name =  update_card.card_name.data
+            card_no = update_card.card_no.data
+            card_expiry = update_card.card_expiry.data
+            card_cvv = update_card.card_CVV.data
+
+            users_dict ={}
+            db = shelve.open('user', 'c')
+
+            try:
+                if 'Users' in db:
+                    users_dict = db['Users']
+                else:
+                    db["Users"] = users_dict
+            except:
+                print("Error in retrieving User from user.db")
+            
+            user = users_dict.get(idNumber)
+            #using accessor methods to update data
+            user.set_card_no(card_no)
+            user.set_card_name(card_name)
+            user.set_card_expiry(card_expiry)
+            user.set_card_cvv(card_cvv)
+
+
+            db['Users'] = users_dict
+            db.close()
+
+            return redirect(url_for("user"))
+        else:
+            users_dict = {}
+            db = shelve.open('user', 'r')
+            try:
+                if 'Users' in db:
+                    users_dict = db['Users']
+                else:
+                    db["Users"] = users_dict
+            except:
+                print("Error in retrieving Users from user.db")
+            db.close()
+
+            user = users_dict.get(idNumber)
+            update_card.card_name.data = user.get_card_name()
+            print(user.get_card_name())
+            update_card.card_no.data = user.get_card_no()
+            print(user.get_card_no())
+            update_card.card_expiry.data = user.get_card_expiry()
+            print(user.get_card_expiry())
+            update_card.card_CVV.data = user.get_card_cvv()
+            print(user.get_card_cvv())
+            return render_template('user/loggedin/user_cardinfo.html', form=update_card, user = UserName)
+    
+    else:
+        return redirect(url_for('login'))
+
+
+    #return render_template('user/loggedin/user_cardinfo.html')
 
 @app.route('/staffapp' , methods=["GET","POST"])
 def staffapp():
