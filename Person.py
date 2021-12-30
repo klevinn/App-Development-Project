@@ -23,3 +23,7 @@ class Person:
     def get_password(self):
         return self.__password
  
+    def get_censored_password(self):
+        length = len(self.__password)
+        s = "*" * length
+        return s

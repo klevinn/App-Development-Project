@@ -58,3 +58,10 @@ class User(Person):
     def get_phone_number(self):
         return self.__phone_number
 
+    def get_censored_credit_card(self):
+        string_card = str(self.__card_no)
+        s = string_card[-4:]
+        length = len(string_card) - 4
+        z = "*" * length
+        card = z + s
+        return card
