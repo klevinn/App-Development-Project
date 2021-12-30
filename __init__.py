@@ -341,8 +341,8 @@ def signup3():
                     return redirect(url_for("home"))
 
                 customerkey.set_shipping_address(shipping_address)
-                customerkey.set_unit_number(postal_code)
-                customerkey.set_postal_code(unit_number)
+                customerkey.set_unit_number(unit_number)
+                customerkey.set_postal_code(postal_code)
                 customerkey.set_phone_number(phone_no)
 
                 db['Users'] = users_dict
@@ -528,7 +528,7 @@ def useraddress():
         
         db.close()
 
-        update_address = Forms.CreateUserAddressInfoForm(request.form)
+        update_address = Forms.CreateAddShippingAddressForm(request.form)
         if request.method == "POST" and update_address.validate():
             print("Successful Running")
             address = update_address.shipping_address.data
@@ -549,7 +549,7 @@ def useraddress():
 
             user = users_dict.get(idNumber)
             #using accessor methods to update data
-            user.set_shipping_address(update_address.shipping_address.data)
+            user.set_shipping_address(address)
             user.set_postal_code(postal_code)
             user.set_unit_number(unit_number)
             user.set_phone_number(phone_no)
@@ -557,7 +557,7 @@ def useraddress():
             db['Users'] = users_dict
             db.close()
 
-            return render_template('user/loggedin/user_address.html', user = UserName)
+            return render_template('user/loggedin/user.html', user = UserName)
         
         else:
             users_dict = {}
@@ -573,9 +573,13 @@ def useraddress():
 
             user = users_dict.get(idNumber)
             update_address.shipping_address.data = user.get_shipping_address()
-            update_address.postal_code.data = user.get_postal_code()
+            print(user.get_shipping_address())
             update_address.unit_number.data = user.get_unit_number()
+            print(user.get_postal_code())
+            update_address.postal_code.data = user.get_postal_code()
+            print(user.get_unit_number())
             update_address.phone_no.data = user.get_phone_number()
+            print(user.get_phone_number())
             return render_template('user/loggedin/user_address.html', form=update_address, user = UserName)
     
     else:
