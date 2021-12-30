@@ -69,7 +69,15 @@ def login():
                 
                     #For Console
                     #Tries looking through the Staff Database to see if email inputted is inside
-                
+            if validemail == True:
+                passwordinshelve = email_key.get_password()
+                if passwordInput == passwordinshelve:
+                    validpassword = True
+                    #Console Checking
+                    print("Registered Password & Inputted Password: ", passwordinshelve, passwordInput)
+
+            db.close()
+
             print("Now Trying Staff Email")
             #Flagname = "c" to create if not present == Prevents any error
             staffdb = shelve.open("staff" , "c")
@@ -94,12 +102,7 @@ def login():
                     print("Invalid Staff Email.")
                     
                 
-            if validemail == True:
-                    passwordinshelve = email_key.get_password()
-                    if passwordInput == passwordinshelve:
-                        validpassword = True
-                        #Console Checking
-                        print("Registered Password & Inputted Password: ", passwordinshelve, passwordInput)
+            
             
             if validstaffemail == True:
                 print("Hello-New")
@@ -114,7 +117,6 @@ def login():
                         
             if validemail == True and validpassword == True:
                 print("Successful Login")
-                db.close()
 
                 userid = email_key.get_user_id()
                 session["user"] = userid
