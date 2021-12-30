@@ -199,12 +199,24 @@ def signup():
             if (matched_pw == False) and (duplicated_email == False) and (duplicated_username == False):
                 print("Hello")
                 user = User.User(usernameInput, emailInput, passwordInput)
-                userDict[user.get_username()] = user
+                print(user.get_user_id())
+                for key in userDict:
+                    useridshelve = userDict[key].get_user_id()
+                    print("Running")
+                    if user.get_user_id() != useridshelve and user.get_user_id() < useridshelve:
+                        user.set_user_id(user.get_user_id())
+                    if user.get_user_id() == useridshelve or user.get_user_id() < useridshelve:
+                        print(str(user.get_user_id()), str(userDict[key].get_user_id()))
+                        user.set_user_id(user.get_user_id() + 1)
+                        print(str(user.get_user_id()) + "Hello1")
+
+                print(user.get_user_id())
+                userDict[user.get_user_id()] = user
                 db["Users"] = userDict
                 db.close()
 
                 session["Customer"] = emailInput
-                session["user"] = usernameInput
+                session["user"] = user.get_user_id()
 
                 return redirect(url_for("signup2"))
             else:
@@ -367,6 +379,8 @@ def user():
         except:
             print("Error in retrieving User from staff.db")
 
+        
+
         db.close()
 
 
@@ -375,15 +389,119 @@ def user():
             if key == UserName:
                 user = users_dict.get(key)
                 user_list.append(user)
+                name = user.get_username()
                 break
+        
 
-        return render_template('user/loggedin/useraccount.html' , user = UserName, count=len(user_list), user_list=user_list)
+        return render_template('user/loggedin/useraccount.html' , user = name, count=len(user_list), user_list=user_list)
     else:
         return redirect(url_for("login"))
 
 @app.route('/infoedit' , methods=["GET","POST"])
 def userinfo():
-    return render_template('user/loggedin/user_info_edit.html')
+    if "user" in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
+
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+        
+        for key in users_dict:
+            if idNumber == key:
+                UserName = users_dict[key].get_username()
+        
+        db.close()
+
+        update_user = Forms.CreateUserInfoForm(request.form)
+        if request.method == "POST" and update_user.validate():
+            print("Successful Running")
+            existing_email = False
+            existing_username = False
+            nameInput = update_user.new_username.data
+            emailInput = update_user.new_email.data.lower()
+            users_dict ={}
+            db = shelve.open('user', 'c')
+
+            try:
+                if 'Users' in db:
+                    users_dict = db['Users']
+                else:
+                    db["Users"] = users_dict
+            except:
+                print("Error in retrieving User from user.db")
+
+            
+            
+            for key in users_dict:
+                if key != idNumber:
+                    emailinshelve = users_dict[key].get_email()
+                    if emailInput == emailinshelve.lower():
+                        print("Registered email & inputted email:", emailinshelve, emailInput)
+                        existing_email = True
+                        print("Duplicate Email")
+                        break
+                    else:
+                        print("Registered email & inputted email:", emailinshelve, emailInput)
+                        existing_email = False
+                        print("New Email")
+            
+            for key in users_dict:
+                if key != idNumber:
+                    usernameinshelve = users_dict[key].get_username()
+                    if nameInput == usernameinshelve:
+                        print("Registered Username & inputted username:", usernameinshelve, nameInput)
+                        existing_username = True
+                        print("Duplicated Username")
+                        break
+                    else:
+                        print("Registered Username & inputted username:", usernameinshelve, nameInput)
+                        existing_username = False
+                        print("New Username")
+
+            if(existing_email == False) and (existing_username == False):
+                for key in users_dict:
+                    if key == idNumber:
+                        user = users_dict[key]
+                        user.set_username(nameInput)
+                        user.set_email(emailInput)
+                        db["Users"] = users_dict
+
+                        """
+                        session["user"] = idNumber
+                        idNumber = session["user"]
+                        """
+
+                db.close()
+                return redirect(url_for("user"))
+
+            else:
+                print("Hello2")
+                db.close()
+                return render_template('user/loggedin/user_info_edit.html', form=update_user, duplicated_email=existing_email, duplicated_username=existing_username, user = UserName) 
+        else:
+            users_dict = {}
+            db = shelve.open('user', 'r')
+            try:
+                if 'Users' in db:
+                    users_dict = db['Users']
+                else:
+                    db["Users"] = users_dict
+            except:
+                print("Error in retrieving Users from user.db")
+            db.close()
+
+            user = users_dict.get(idNumber)
+            update_user.new_username.data = user.get_username()
+            update_user.new_email.data = user.get_email()
+            return render_template('user/loggedin/user_info_edit.html', form=update_user, user = UserName) 
+    else:
+        return redirect(url_for("login"))
 
 @app.route('/pwedit' , methods=["GET","POST"])
 def userpw():
@@ -555,12 +673,16 @@ def staffadd():
                 for key in userDict:
                     #To assign Staff ID, ensure that it is persistent and is accurate to the list
                     staffidshelve = userDict[key].get_staff_id()
-                    if user.get_staff_id() == staffidshelve or user.get_staff_id() < staffidshelve:
-                        print(str(user.get_staff_id()), str(userDict[key].get_staff_id()))
-                        user.set_staff_id(user.get_staff_id() + 1)
-                        print(str(user.get_staff_id()) + "Hello1")
+                    print(staffidshelve , user.get_staff_id())
+
+                    if user.get_staff_id() != staffidshelve and user.get_staff_id() < staffidshelve:
+                        user.set_staff_id(user.get_staff_id())
                     else:
-                        print("Hello-olleH")
+                        if user.get_staff_id() == staffidshelve or user.get_staff_id() < staffidshelve:
+                            print(str(user.get_staff_id()), str(userDict[key].get_staff_id()))
+                            user.set_staff_id(user.get_staff_id() + 1)
+                            print(str(user.get_staff_id()) + "Hello1")
+
                         
                 userDict[user.get_staff_id()] = user
                 db["Users"] = userDict

@@ -4,8 +4,12 @@ from Person import Person
 #Used for storing user-relevant info into the shelve
 
 class User(Person):
+
     def __init__(self, username, email, password):
         super().__init__(username, email, password)
+        user_id = 0
+        user_id += 1
+        self.__user_id = user_id
         self.__card_name = ""
         self.__card_no = ""
         self.__card_expiry = ""
@@ -31,8 +35,12 @@ class User(Person):
         self.__postal_code = postal_code
     def set_phone_number(self, phone_number):
         self.__phone_number = phone_number
-
-
+    def set_user_id(self, user_id):
+        self.__user_id = user_id
+    
+    
+    def get_user_id(self):
+        return self.__user_id
     def get_card_name(self):
         return self.__card_name
     def get_card_no(self):

@@ -49,12 +49,15 @@ if(duplicated_email == False) and (duplicated_username == False):
     for key in userDict:
         #To assign Staff ID, ensure that it is persistent and is accurate to the list
         staffidshelve = userDict[key].get_staff_id()
-        if user.get_staff_id() == staffidshelve or user.get_staff_id() < staffidshelve:
-            print(str(user.get_staff_id()), str(userDict[key].get_staff_id()))
-            user.set_staff_id(user.get_staff_id() + 1)
-            print(str(user.get_staff_id()) + "Hello1")
+        if user.get_staff_id() != staffidshelve and user.get_staff_id() < staffidshelve:
+            print(user.get_staff_id())
+            user.set_staff_id(user.get_staff_id())
         else:
-            print("Hello-olleH")
+            if user.get_staff_id() == staffidshelve or user.get_staff_id() < staffidshelve:
+                print(str(user.get_staff_id()), str(userDict[key].get_staff_id()))
+                user.set_staff_id(user.get_staff_id() + 1)
+                print(str(user.get_staff_id()) + "Hello1")
+
             
     userDict[user.get_staff_id()] = user
     db["Users"] = userDict

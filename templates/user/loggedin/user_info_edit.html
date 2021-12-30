@@ -3,19 +3,24 @@
 {% block title %}Updating... | DoctorOnTheGo{% endblock %}
 
 {% block content %}
+{% from "includes/_formHelper.html" import render_field %}
 <div class="background-image">
     <div class="row">
         <div class="col-md-4 offset-md-4">
             <div class="login-form bg-colour mt-6 p-4" id="loginForm">
-                <form action="" method="" class="row g-3">
+                <form action="" method="POST" class="row g-3">
                     <h4 class="text-black">Update Your Account!</h4>
                     <div class="col-12">
-                        <label>Username:</label>
-                        <input type="text" name="name" class="form-control" placeholder="Username">
+                        {{ render_field(form.new_username, class="form-control") }}
+                        {% if duplicated_username %}<div class="text-danger"><span id="error">Taken Username</span></div>{% endif %}
+                        <!--label>Username:</label>
+                        <input type="text" name="name" class="form-control" placeholder="Username"-->
                     </div>
                     <div class="col-12">
-                        <label>Email:</label>
-                        <input type="text" name="email" class="form-control" placeholder="Email">
+                        {{ render_field(form.new_email, class="form-control") }}
+                        {% if duplicated_email %}<div class="text-danger"><span id="error">Taken Email</span></div>{% endif %}
+                        <!--label>Email:</label>
+                        <input type="text" name="email" class="form-control" placeholder="Email"-->
                     </div>
                     <div class="col-12">
                         <button type="submit" class="btn btn-dark float-end">Update</button>
