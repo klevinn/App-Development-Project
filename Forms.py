@@ -51,8 +51,9 @@ class CreateUserAddressInfoForm(Form):
 """
 
 class CreateNewPasswordForm(Form):
-    password = PasswordField("Password:", [validators.Length(min=6, max=20), validators.DataRequired()])
-    password_confirm = PasswordField("Confirm Password:", [validators.Length(min=6, max=20), validators.DataRequired()])
+    old_password = PasswordField("Password:", [validators.Length(min=6, max=20)])
+    password = PasswordField("Password:", [validators.Length(min=6, max=20)])
+    password_confirm = PasswordField("Confirm Password:", [validators.Length(min=6, max=20)])
 
 
 #Done By

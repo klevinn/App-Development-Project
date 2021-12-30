@@ -507,7 +507,75 @@ def userinfo():
 
 @app.route('/pwedit' , methods=["GET","POST"])
 def userpw():
-    return render_template('user/loggedin/user_password_edit.html')
+    if "user" in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
+
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+        
+        for key in users_dict:
+            if idNumber == key:
+                UserName = users_dict[key].get_username()
+        
+        db.close()
+
+        update_password = Forms.CreateNewPasswordForm(request.form)
+        if request.method == "POST":
+            print("Successful Running")
+            matched_pw = True
+            old_password = update_password.old_password.data 
+            password = update_password.password.data
+            password_cfm = update_password.password_confirm.data
+
+            if password == password_cfm:
+                matched_pw = False
+            else:
+                matched_pw = True
+
+
+            users_dict ={}
+            db = shelve.open('user', 'c')
+
+            try:
+                if 'Users' in db:
+                    users_dict = db['Users']
+                else:
+                    db["Users"] = users_dict
+            except:
+                print("Error in retrieving User from user.db")
+
+            user = users_dict.get(idNumber)
+            #using accessor methods to update data
+            registered_password = user.get_password()
+
+            if old_password == registered_password:
+                same_pw = False
+            else:
+                same_pw = True
+
+            if (matched_pw == False) and (same_pw == False):
+                user.set_password(password)
+                db['Users'] = users_dict
+                db.close()
+                return redirect(url_for("user"))
+            
+            else:
+                db.close()
+                return render_template('user/loggedin/user_password_edit.html', form=update_password, matched_pw=matched_pw, same_pw = same_pw) 
+
+
+        else:
+
+            return render_template('user/loggedin/user_password_edit.html', form=update_password, user = UserName)
+    else:
+        return redirect(url_for("login"))
 
 @app.route('/useraddress' , methods=["GET","POST"])
 def useraddress():
