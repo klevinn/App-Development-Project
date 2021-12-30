@@ -531,7 +531,7 @@ def useraddress():
         db.close()
 
         update_address = Forms.CreateAddShippingAddressForm(request.form)
-        if request.method == "POST" and update_address.validate():
+        if request.method == "POST":
             print("Successful Running")
             address = update_address.shipping_address.data
             postal_code = update_address.postal_code.data
@@ -559,7 +559,7 @@ def useraddress():
             db['Users'] = users_dict
             db.close()
 
-            return render_template('user/loggedin/user.html', user = UserName)
+            return redirect(url_for("user"))
         
         else:
             users_dict = {}
