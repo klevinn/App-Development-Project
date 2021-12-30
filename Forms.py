@@ -12,8 +12,8 @@ class CreateLoginForm(Form):
 class CreateSignUpForm(Form):
     username = StringField("Username:", [validators.DataRequired()])
     email = EmailField("Email:", [validators.Email(), validators.DataRequired()])
-    password = PasswordField("Password:", [validators.Length(min=10, max=20), validators.DataRequired()])
-    password_confirm = PasswordField("Confirm Password:", [validators.Length(min=10, max=20), validators.DataRequired()])
+    password = PasswordField("Password:", [validators.Length(min=6, max=20), validators.DataRequired()])
+    password_confirm = PasswordField("Confirm Password:", [validators.Length(min=6, max=20), validators.DataRequired()])
 
 class CreateAddPaymentForm(Form):
     card_name = StringField("Card Name:", [validators.Length(min=1, max=150)])
@@ -50,8 +50,8 @@ class CreateUserAddressInfoForm(Form):
 """
 
 class CreateNewPasswordForm(Form):
-    password = PasswordField("Password:", [validators.Length(min=10, max=20), validators.DataRequired()])
-    password_confirm = PasswordField("Confirm Password:", [validators.Length(min=10, max=20), validators.DataRequired()])
+    password = PasswordField("Password:", [validators.Length(min=6, max=20), validators.DataRequired()])
+    password_confirm = PasswordField("Confirm Password:", [validators.Length(min=6, max=20), validators.DataRequired()])
 
 
 #Done By
