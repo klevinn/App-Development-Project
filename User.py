@@ -62,6 +62,7 @@ class User(Person):
     def get_phone_number(self):
         return self.__phone_number
 
+#Gets last 4 digits of card number and only displays that while censoring the rest
     def get_censored_credit_card(self):
         string_card = str(self.__card_no)
         s = string_card[-4:]
