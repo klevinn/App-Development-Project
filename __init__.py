@@ -4,6 +4,7 @@ import shelve
 import os
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from flask_bcrypt import Bcrypt
 
 #imported files
 import Forms
@@ -12,6 +13,8 @@ import User, Staff
 #Functions that are repeated
 
 app = Flask(__name__)
+#Hashing of passwords
+bcrypt = Bcrypt(app)
 
 #Secret Key Required for sessions
 app.secret_key = "session_key"
@@ -71,10 +74,10 @@ def login():
                     #Tries looking through the Staff Database to see if email inputted is inside
             if validemail == True:
                 passwordinshelve = email_key.get_password()
-                if passwordInput == passwordinshelve:
+                matching_pw = bcrypt.check_password_hash(passwordinshelve , passwordInput)
+                if matching_pw == True:
                     validpassword = True
                     #Console Checking
-                    print("Registered Password & Inputted Password: ", passwordinshelve, passwordInput)
 
             db.close()
 
@@ -156,6 +159,7 @@ def signup():
             #To determine if passwords are matched or not
             if password_confirm == passwordInput:
                     matched_pw = False
+                    pw_hash = bcrypt.generate_password_hash(passwordInput)
                     #Console
                     print("Matched Passwords")
             else:
@@ -200,7 +204,7 @@ def signup():
             
             if (matched_pw == False) and (duplicated_email == False) and (duplicated_username == False):
                 print("Hello")
-                user = User.User(usernameInput, emailInput, passwordInput)
+                user = User.User(usernameInput, emailInput, pw_hash)
                 print(user.get_user_id())
                 for key in userDict:
                     useridshelve = userDict[key].get_user_id()

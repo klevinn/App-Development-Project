@@ -1,3 +1,4 @@
+import random
 #Default Class == Used for storing accounts inside the shelve
 
 class Person:
@@ -24,6 +25,6 @@ class Person:
         return self.__password
  
     def get_censored_password(self):
-        length = len(self.__password)
+        length = random.randint(6,10)
         s = "*" * length
         return s

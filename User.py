@@ -18,6 +18,7 @@ class User(Person):
         self.__unit_number = ''
         self.__postal_code = ''
         self.__phone_number = 0
+        self.__account_status = "Active"
 
     def set_card_name(self, card_name):
         self.__card_name = card_name
@@ -37,8 +38,11 @@ class User(Person):
         self.__phone_number = phone_number
     def set_user_id(self, user_id):
         self.__user_id = user_id
+    def set_account_status(self, status):
+        self.__account_status = status
     
-    
+    def get_account_status(self):
+        return self.__account_status
     def get_user_id(self):
         return self.__user_id
     def get_card_name(self):
