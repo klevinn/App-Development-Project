@@ -244,7 +244,7 @@ def signup2():
                 print("Running")
                 CustFound = False
 
-                card_name = payment_form.card_name.data
+                card_name = payment_form.card_name.data.upper()
                 print(card_name)
                 card_num = payment_form.card_no.data
                 print(card_num)
@@ -309,7 +309,7 @@ def signup3():
                 print("Running")
                 CustFound = False
 
-                shipping_address = shipping_form.shipping_address.data
+                shipping_address = shipping_form.shipping_address.data.upper()
                 print(shipping_address)
                 postal_code = shipping_form.postal_code.data
                 print(postal_code)
@@ -601,7 +601,7 @@ def useraddress():
         update_address = Forms.CreateAddShippingAddressForm(request.form)
         if request.method == "POST":
             print("Successful Running")
-            address = update_address.shipping_address.data
+            address = update_address.shipping_address.data.upper()
             postal_code = update_address.postal_code.data
             unit_number = update_address.unit_number.data
             phone_no = update_address.phone_no.data
@@ -679,7 +679,7 @@ def usercard():
         update_card = Forms.CreateAddPaymentForm(request.form)
         if request.method == 'POST':
             print("Successful Running")
-            card_name =  update_card.card_name.data
+            card_name =  update_card.card_name.data.upper()
             card_no = update_card.card_no.data
             card_expiry = update_card.card_expiry.data
             card_cvv = update_card.card_CVV.data
@@ -735,6 +735,75 @@ def usercard():
 
 
     #return render_template('user/loggedin/user_cardinfo.html')
+
+@app.route('/deletecard' , methods = ["GET", "POST"])
+def deleteCard():
+    if "user" in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
+
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+        
+        for key in users_dict:
+            if idNumber == key:
+                UserName = users_dict[key].get_username()
+        
+        emptyString = ""
+        user = users_dict.get(idNumber)
+        user.set_card_no(emptyString)
+        user.set_card_name(emptyString)
+        user.set_card_expiry(emptyString)
+        user.set_card_cvv(emptyString)
+
+        db['Users'] = users_dict
+        db.close()
+
+        return redirect(url_for("user" , user = UserName))
+    
+    else:
+        return redirect(url_for('login'))
+
+
+@app.route('/deleteaddress' , methods=["GET" , "POST"])
+def deleteAddress():
+    if "user" in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
+
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+        
+        for key in users_dict:
+            if idNumber == key:
+                UserName = users_dict[key].get_username()
+        
+        emptyString = ""
+        user = users_dict.get(idNumber)
+        user.set_shipping_address(emptyString)
+        user.set_postal_code(emptyString)
+        user.set_unit_number(emptyString)
+        user.set_phone_number(emptyString)
+
+        db['Users'] = users_dict
+        db.close()
+
+        return redirect(url_for("user" , user = UserName))
+    
+    else:
+        return redirect(url_for("login"))
 
 @app.route('/staffapp' , methods=["GET","POST"])
 def staffapp():
