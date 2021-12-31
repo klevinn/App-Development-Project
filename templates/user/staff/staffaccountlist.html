@@ -1,0 +1,161 @@
+{% extends "admin_base.html" %}
+{% block head %} <link rel="stylesheet" href="static/CSS/staff.css"> {% endblock %}
+{% block title %}Account - List | DoctorOnTheGo{% endblock %}
+
+{% block content %}
+<div class="row" id="dashboard">
+    <div class="col-lg-3 merge-boxes pe-0">
+        <div class="d-flex flex-column flex-shrink-0 p-3" id="sidebar">
+            <h3 class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark">
+                <span class="fs-4">STAFF DASHBOARD</span>
+            </h3>
+            <hr>
+            <div class="accordion" id="accordionPanelsStayOpenExample">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="false" aria-controls="panelsStayOpen-collapseOne">
+                        User Inputs
+                      </button>
+                    </h2>
+                    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingOne">
+                      <div class="accordion-body">
+                        <a href="">Appointments Made</a>
+                        <hr style="color:black;">
+                        <a href="">Feedback Forms</a>
+                      </div>
+                    </div>
+                  </div>
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
+                      Product Management
+                    </button>
+                  </h2>
+                  <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingTwo">
+                    <div class="accordion-body">
+                        <a href="">Product Sales</a>
+                      <hr style="color:black;">
+                      <a href="">Inventory Management</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="panelsStayOpen-headingThree">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false" aria-controls="panelsStayOpen-collapseThree">
+                      Staff Management
+                    </button>
+                  </h2>
+                  <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingThree">
+                    <div class="accordion-body">
+                        <a href="/stafflist">Staff List</a>
+                        <hr style="color:black;">
+                        <a id="active" href="#">Account List</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+        </div>
+    </div>
+    <div class="col-lg-9 merge-boxes ps-0">
+        <div id="data">
+            <div class="container">
+                <div class="row">
+                    <h3>Member Account List</h3>
+                    <div id="Appointments">
+                        {% for user in user_list %}
+                        <div class="row table-responsive">
+                            <table class="table table-striped">
+                                <thead class = "table-dark">
+                                  <td style="font-weight: bold;">Account ID</td>
+                                  <td style="font-weight: bold;">Account Name</td>
+                                  <td style="font-weight: bold;">Account Email</td>
+                                </thead>
+                                <tbody>
+                                  <td style="font-weight: bold;">{{ user.get_user_id() }}</td>
+                                  <td style="font-weight: bold;"> {{ user.get_username() }}</td>
+                                  <td style="font-weight: bold;">{{ user.get_email() }}</td>
+                                  <tr>
+                                    <td colspan="4">
+                                      <table class="table mb-0">
+                                        <thead>
+                                            <td>Credit Card Name</td>
+                                            <td>Credit Number</td>
+                                            <td>Expiry Date</td>
+                                        </thead>
+                                        <tbody>
+                                            <td>{{ user.get_card_name() }}</td>
+                                            <td>{{ user.get_card_no() }}</td>
+                                            <td>{{ user.get_card_expiry() }}</td>
+                                        </tbody>
+                                      </table>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td colspan="4">
+                                        <table class="table mb-0">
+                                          <thead>
+                                              <td>Shipping Address</td>
+                                              <td>Postal Code</td>
+                                              <td>Unit Number</td>
+                                              <td>Phone Number</td>
+                                          </thead>
+                                          <tbody>
+                                              <td>{{ user.get_shipping_address() }}</td>
+                                              <td>{{ user.get_postal_code() }}</td>
+                                              <td>{{ user.get_unit_number() }}</td>
+                                              <td>{{ user.get_phone_number() }}</td>
+                                          </tbody>
+                                        </table>
+                                      </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                        </div>
+                         <div class="row">
+                            <div class="col">
+                                <form action="{{ url_for('banUser', id=user.get_user_id()) }}" method="POST">
+                                    <!--input type="submit" value="Delete" class="btn btn-danger"-->
+                                    
+                                    <!-- w3 schools modal button-->
+                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#myModal_{{ user.get_user_id() }}">
+                                      Ban
+                                    </button>
+                                
+                                    <!-- The Modal -->
+                                    <div class="modal" id="myModal_{{ user.get_user_id() }}">
+                                      <div class="modal-dialog">
+                                        <div class="modal-content">
+                                
+                                          <!-- Modal Header -->
+                                          <div class="modal-header">
+                                            <h4 class="modal-title">Ban Confirmation</h4>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                          </div>
+                                
+                                          <!-- Modal body -->
+                                          <div class="modal-body">
+                                            Are you sure you want to ban {{ user.get_username() }} ?
+                                          </div>
+                                
+                                          <!-- Modal footer -->
+                                          <div class="modal-footer">
+                                            <input type="submit" value="Delete" class="btn btn-danger">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                          </div>
+                                
+                                        </div>
+                                      </div>
+                                    </div>
+                                
+                                  </form>
+                            </div>
+                         </div>
+                         <hr>
+                         {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

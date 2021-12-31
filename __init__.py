@@ -1017,9 +1017,51 @@ def deleteStaff(id):
 def staffaccountlist():
     if "staff" in session:
         StaffName = session["staff"]
-        return render_template('user/staff/staffaccountlist.html', staff = StaffName)
+        user_dict = {}
+        db = shelve.open('user', 'c')
+        try:
+            if 'Users' in db:
+                user_dict = db['Users']
+            else:
+                db["Users"] = user_dict
+        except:
+            print("Error in retrieving User from user.db")
+
+        db.close()
+
+        #Displaying the appending data into the stafflist so that it can be used to display data on the site
+        user_list = []
+        for key in user_dict:
+            user = user_dict.get(key)
+            user_list.append(user)
+
+        return render_template('user/staff/staffaccountlist.html', count=len(user_list), user_list=user_list , staff = StaffName)
     else:
         return redirect(url_for('login'))
+
+@app.route('/banUser/<int:id>' , methods=["GET","POST"])
+def banUser(id):
+    if "staff" in session:
+        StaffName = session["staff"]
+        users_dict = {}
+        db = shelve.open('user', 'w')
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving Users from user.db")
+
+        users_dict.pop(id)
+
+        db['Users'] = users_dict
+        db.close()
+
+        return redirect(url_for('staffaccountlist', staff = StaffName))
+    else:
+        return redirect(url_for('login'))
+
 
 """Custom Error Pages Made By Calvin"""
 
