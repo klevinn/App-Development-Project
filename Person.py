@@ -24,6 +24,7 @@ class Person:
     def get_password(self):
         return self.__password
  
+ #Since hashed passwords are very long, generate a random number of stars as a string to display the password
     def get_censored_password(self):
         length = random.randint(6,10)
         s = "*" * length
