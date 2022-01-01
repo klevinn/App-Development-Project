@@ -17,6 +17,7 @@
                     </div>
                     <div class="col-12">
                         {{ render_field(form.card_no, class="form-control") }}
+                        {% if valid_card_num == False %}<div class="text-danger"><span id="error">Invalid Card</span></div>{% endif %}
                         <!--label>Card Number:</label>
                         <input type="number" name="cardnumber" class="form-control" placeholder="Card Number"-->
                     </div>

@@ -9,6 +9,7 @@ from flask_bcrypt import Bcrypt
 #imported files
 import Forms
 import User, Staff
+from CreditCardValidation import validate_card_number
 
 #Functions that are repeated
 
@@ -252,46 +253,50 @@ def signup2():
                 print(card_name)
                 card_num = payment_form.card_no.data
                 print(card_num)
+                valid_card_num = validate_card_number(card_num)
                 card_expiry = payment_form.card_expiry.data
                 print(card_expiry)
                 card_cvv = payment_form.card_CVV.data
                 print(card_cvv)
             
+                if valid_card_num == True:
+                    users_dict = {}
+                    db = shelve.open("user", "c")
+                    try:
+                        if 'Users' in db:
+                            users_dict = db['Users']
+                        else:
+                            session.clear()
+                            return redirect(url_for("home"))
+                    except:
+                        print("Error in retrieving Users from user.db")
+                    
+                    for key in users_dict:
+                        print("retrieving")
+                        emailinshelve = users_dict[key].get_email()
+                        if CustEmail == emailinshelve:
+                            customerkey = users_dict[key]
+                            CustFound = True
+                            break
 
-                users_dict = {}
-                db = shelve.open("user", "c")
-                try:
-                    if 'Users' in db:
-                        users_dict = db['Users']
-                    else:
+                    if CustFound == False:
                         session.clear()
                         return redirect(url_for("home"))
-                except:
-                    print("Error in retrieving Users from user.db")
-                
-                for key in users_dict:
-                    print("retrieving")
-                    emailinshelve = users_dict[key].get_email()
-                    if CustEmail == emailinshelve:
-                        customerkey = users_dict[key]
-                        CustFound = True
-                        break
 
-                if CustFound == False:
-                    session.clear()
-                    return redirect(url_for("home"))
+                    customerkey.set_card_name(card_name)
+                    customerkey.set_card_no(card_num)
+                    customerkey.set_card_expiry(card_expiry)
+                    customerkey.set_card_cvv(card_cvv)
 
-                customerkey.set_card_name(card_name)
-                customerkey.set_card_no(card_num)
-                customerkey.set_card_expiry(card_expiry)
-                customerkey.set_card_cvv(card_cvv)
-
-                db['Users'] = users_dict
-                print("Payment added")
+                    db['Users'] = users_dict
+                    print("Payment added")
 
 
-                db.close()
-                return redirect(url_for("signup3"))
+                    db.close()
+                    return redirect(url_for("signup3"))
+                else:
+                    print("Invalid Card Number")
+                    return render_template('user/guest/signup2.html' , form=payment_form, valid_card_num = valid_card_num)
             else:
                 print("Error")
                 return render_template('user/guest/signup2.html', form=payment_form)
@@ -687,32 +692,55 @@ def usercard():
             print("Successful Running")
             card_name =  update_card.card_name.data.upper()
             card_no = update_card.card_no.data
+            valid_card_num = validate_card_number(card_no)
             card_expiry = update_card.card_expiry.data
             card_cvv = update_card.card_CVV.data
+            if valid_card_num == True:
+                users_dict ={}
+                db = shelve.open('user', 'c')
 
-            users_dict ={}
-            db = shelve.open('user', 'c')
-
-            try:
-                if 'Users' in db:
-                    users_dict = db['Users']
-                else:
-                    db["Users"] = users_dict
-            except:
-                print("Error in retrieving User from user.db")
-            
-            user = users_dict.get(idNumber)
-            #using accessor methods to update data
-            user.set_card_no(card_no)
-            user.set_card_name(card_name)
-            user.set_card_expiry(card_expiry)
-            user.set_card_cvv(card_cvv)
+                try:
+                    if 'Users' in db:
+                        users_dict = db['Users']
+                    else:
+                        db["Users"] = users_dict
+                except:
+                    print("Error in retrieving User from user.db")
+                
+                user = users_dict.get(idNumber)
+                #using accessor methods to update data
+                user.set_card_no(card_no)
+                user.set_card_name(card_name)
+                user.set_card_expiry(card_expiry)
+                user.set_card_cvv(card_cvv)
 
 
-            db['Users'] = users_dict
-            db.close()
+                db['Users'] = users_dict
+                db.close()
 
-            return redirect(url_for("user"))
+                return redirect(url_for("user"))
+            else:
+                users_dict = {}
+                db = shelve.open('user', 'r')
+                try:
+                    if 'Users' in db:
+                        users_dict = db['Users']
+                    else:
+                        db["Users"] = users_dict
+                except:
+                    print("Error in retrieving Users from user.db")
+                db.close()
+
+                user = users_dict.get(idNumber)
+                update_card.card_name.data = user.get_card_name()
+                print(user.get_card_name())
+                #update_card.card_no.data = user.get_card_no()
+                #print(user.get_card_no())
+                update_card.card_expiry.data = user.get_card_expiry()
+                print(user.get_card_expiry())
+                update_card.card_CVV.data = user.get_card_cvv()
+                print(user.get_card_cvv())
+                return render_template('user/loggedin/user_cardinfo.html', form=update_card, user = UserName, valid_card_num = valid_card_num)
         else:
             users_dict = {}
             db = shelve.open('user', 'r')
