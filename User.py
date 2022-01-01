@@ -70,3 +70,7 @@ class User(Person):
         z = "*" * length
         card = z + s
         return card
+
+    def display_card_expiry_date(self):
+        expiry_date = self.__card_expiry
+        

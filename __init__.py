@@ -9,7 +9,7 @@ from flask_bcrypt import Bcrypt
 #imported files
 import Forms
 import User, Staff
-from CreditCardValidation import validate_card_number
+from Security_Validation import validate_card_number, Sanitise
 
 #Functions that are repeated
 
@@ -154,8 +154,8 @@ def signup():
             duplicated_username = False #Set to true if another username is already registered in the shelve
             password_confirm = signup_form.password_confirm.data
             passwordInput = signup_form.password.data
-            emailInput = signup_form.email.data.lower()
-            usernameInput = signup_form.username.data
+            emailInput = Sanitise(signup_form.email.data.lower())
+            usernameInput = Sanitise(signup_form.username.data)
             
             #To determine if passwords are matched or not
             if password_confirm == passwordInput:
@@ -249,7 +249,7 @@ def signup2():
                 print("Running")
                 CustFound = False
 
-                card_name = payment_form.card_name.data.upper()
+                card_name = Sanitise(payment_form.card_name.data.upper())
                 print(card_name)
                 card_num = payment_form.card_no.data
                 print(card_num)
@@ -318,11 +318,11 @@ def signup3():
                 print("Running")
                 CustFound = False
 
-                shipping_address = shipping_form.shipping_address.data.upper()
+                shipping_address = Sanitise(shipping_form.shipping_address.data.upper())
                 print(shipping_address)
                 postal_code = shipping_form.postal_code.data
                 print(postal_code)
-                unit_number = shipping_form.unit_number.data
+                unit_number = Sanitise(shipping_form.unit_number.data)
                 print(unit_number)
                 phone_no = shipping_form.phone_no.data
                 print(phone_no)
@@ -434,8 +434,8 @@ def userinfo():
             print("Successful Running")
             existing_email = False
             existing_username = False
-            nameInput = update_user.new_username.data
-            emailInput = update_user.new_email.data.lower()
+            nameInput = Sanitise(update_user.new_username.data)
+            emailInput = Sanitise(update_user.new_email.data.lower())
             users_dict ={}
             db = shelve.open('user', 'c')
 
@@ -612,9 +612,9 @@ def useraddress():
         update_address = Forms.CreateAddShippingAddressForm(request.form)
         if request.method == "POST":
             print("Successful Running")
-            address = update_address.shipping_address.data.upper()
+            address = Sanitise(update_address.shipping_address.data.upper())
             postal_code = update_address.postal_code.data
-            unit_number = update_address.unit_number.data
+            unit_number = Sanitise(update_address.unit_number.data)
             phone_no = update_address.phone_no.data
 
             users_dict ={}
@@ -690,7 +690,7 @@ def usercard():
         update_card = Forms.CreateAddPaymentForm(request.form)
         if request.method == 'POST':
             print("Successful Running")
-            card_name =  update_card.card_name.data.upper()
+            card_name =  Sanitise(update_card.card_name.data.upper())
             card_no = update_card.card_no.data
             valid_card_num = validate_card_number(card_no)
             card_expiry = update_card.card_expiry.data
@@ -917,8 +917,8 @@ def staffupdate(id):
             #key is the id, so it will edit the data of the staff member and its corresponding key
             user = users_dict.get(id)
             #using accessor methods to update data
-            user.set_username(update_staff.staff_name.data)
-            user.set_email(update_staff.staff_email.data)
+            user.set_username(Sanitise(update_staff.staff_name.data))
+            user.set_email(Sanitise(update_staff.staff_email.data))
 
             db['Users'] = users_dict
             db.close()
@@ -954,8 +954,8 @@ def staffadd():
             print("Successful Running")
             duplicated_email = False
             duplicated_username = False
-            emailInput = staff_form.staff_email.data.lower()
-            nameInput = staff_form.staff_name.data
+            emailInput = Sanitise(staff_form.staff_email.data.lower())
+            nameInput = Sanitise(staff_form.staff_name.data)
             userDict = {}
             db = shelve.open("staff", "c")
             
