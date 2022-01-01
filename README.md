@@ -12,4 +12,5 @@ Modules Used:
  2. Flask
  3. Jinja2
  4. email-validator
+ 5. Bcrypt
 
