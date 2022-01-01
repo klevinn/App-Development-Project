@@ -540,6 +540,7 @@ def userpw():
 
             if password == password_cfm:
                 matched_pw = False
+                hashed_pw = bcrypt.generate_password_hash(password)
             else:
                 matched_pw = True
 
@@ -558,14 +559,15 @@ def userpw():
             user = users_dict.get(idNumber)
             #using accessor methods to update data
             registered_password = user.get_password()
+            same_password_hash = bcrypt.check_password_hash(registered_password, old_password)
 
-            if old_password == registered_password:
+            if same_password_hash == True:
                 same_pw = False
             else:
                 same_pw = True
 
             if (matched_pw == False) and (same_pw == False):
-                user.set_password(password)
+                user.set_password(hashed_pw)
                 db['Users'] = users_dict
                 db.close()
                 return redirect(url_for("user"))
