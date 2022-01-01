@@ -72,5 +72,6 @@ class User(Person):
         return card
 
     def display_card_expiry_date(self):
-        expiry_date = self.__card_expiry
-        
+        expiry_date = str(self.__card_expiry)
+        e = expiry_date[:7]
+        return e
