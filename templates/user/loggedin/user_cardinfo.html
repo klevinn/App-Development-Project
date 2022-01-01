@@ -28,6 +28,7 @@
                     </div>
                     <div class="form-group col-md-6">
                         {{ render_field(form.card_expiry, class="form-control") }}
+                        {% if valid_card_expiry == False %}<div class="text-danger"><span id="error">Expired Card</span></div>{% endif %}
                         <!--label for="inputPassword4">Expiry Date</label>
                         <input type="date" class="form-control" id="inputDate" placeholder="Expiry Date"-->
                     </div>

@@ -1,3 +1,6 @@
+
+from datetime import date
+
 # using Luhn's Algorithms 
 """
 Outline of Luhn's Algo:
@@ -54,6 +57,14 @@ def validate_card_number(credit_card_number):
         else:
             return False
 
+
+def validate_expiry_date(expiry_date):
+    currentDate = date.today().replace(day=1) #changing day to 1 becuase monthfield sets days as 1
+    if expiry_date >= currentDate:
+        return True
+    else:
+        return False
+    
 """
 Testing Codes
 print(IntegerList(12334))

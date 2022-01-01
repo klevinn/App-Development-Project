@@ -9,7 +9,7 @@ from flask_bcrypt import Bcrypt
 #imported files
 import Forms
 import User, Staff
-from Security_Validation import validate_card_number, Sanitise
+from Security_Validation import validate_card_number, Sanitise, validate_expiry_date
 
 #Functions that are repeated
 
@@ -256,10 +256,11 @@ def signup2():
                 valid_card_num = validate_card_number(card_num)
                 card_expiry = payment_form.card_expiry.data
                 print(card_expiry)
+                valid_card_expiry = validate_expiry_date(card_expiry)
                 card_cvv = payment_form.card_CVV.data
                 print(card_cvv)
             
-                if valid_card_num == True:
+                if valid_card_num == True & valid_card_expiry == True:
                     users_dict = {}
                     db = shelve.open("user", "c")
                     try:
@@ -296,7 +297,7 @@ def signup2():
                     return redirect(url_for("signup3"))
                 else:
                     print("Invalid Card Number")
-                    return render_template('user/guest/signup2.html' , form=payment_form, valid_card_num = valid_card_num)
+                    return render_template('user/guest/signup2.html' , form=payment_form, valid_card_num = valid_card_num, valid_card_expiry = valid_card_expiry)
             else:
                 print("Error")
                 return render_template('user/guest/signup2.html', form=payment_form)
@@ -694,8 +695,10 @@ def usercard():
             card_no = update_card.card_no.data
             valid_card_num = validate_card_number(card_no)
             card_expiry = update_card.card_expiry.data
+            valid_card_expiry = validate_expiry_date(card_expiry)
             card_cvv = update_card.card_CVV.data
-            if valid_card_num == True:
+
+            if valid_card_num == True and valid_card_expiry == True:
                 users_dict ={}
                 db = shelve.open('user', 'c')
 
@@ -740,7 +743,7 @@ def usercard():
                 print(user.get_card_expiry())
                 update_card.card_CVV.data = user.get_card_cvv()
                 print(user.get_card_cvv())
-                return render_template('user/loggedin/user_cardinfo.html', form=update_card, user = UserName, valid_card_num = valid_card_num)
+                return render_template('user/loggedin/user_cardinfo.html', form=update_card, user = UserName, valid_card_num = valid_card_num, valid_card_expiry=valid_card_expiry)
         else:
             users_dict = {}
             db = shelve.open('user', 'r')
