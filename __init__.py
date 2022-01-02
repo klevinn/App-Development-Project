@@ -1141,13 +1141,13 @@ def error503(error):
 
 
 
-
+"""
 //Unrefined Pt1 code
 from flask_bootstrap import Bootstrap
 
 
-app = Flask(__name__)
-bootstrap = Bootstrap(app)
+app = Flask(__name__) #Not Needed already previously mentioned
+bootstrap = Bootstrap(app) #Quite Unsure what this is for?, Bootstrap incorporated into HTML not WTForms
 
 @app.route('/contactUs')
 def contact_us():
@@ -1159,6 +1159,16 @@ def News():
 @app.route('/consultatioPg1.html')
 def consultatioPg1():
     return render_template('consultatioPg1.html')
+
+!!!
+#Most of these codes are copied from the Practicals
+#Please ensure they fulfill their function before pushing it onto the github
+!!!
+
+#In shelve.open you are not suppsoed to add the .db.
+#No Use of Adding CreateForm Fucntions if Forms.py is not updated.
+#Our customer database is called user
+#Our staff database is called staff
 
 @app.route('/createConsultation', methods=['GET', 'POST'])
 def create_customer():
@@ -1288,6 +1298,7 @@ def delete_customer(id):
     db.close()
 
     return redirect(url_for('retrieve_customers'))
+"""
 
 if __name__ == '__main__':
     app.run(debug=True)
