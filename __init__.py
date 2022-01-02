@@ -1137,6 +1137,158 @@ def error502(error):
 @app.errorhandler(503)
 def error503(error):
     return render_template('errors/error503.html'), 503
+app = Flask(__name__)
+bootstrap = Bootstrap(app)
+
+
+
+
+//Unrefined Pt1 code
+from flask_bootstrap import Bootstrap
+
+
+app = Flask(__name__)
+bootstrap = Bootstrap(app)
+
+@app.route('/contactUs')
+def contact_us():
+    return render_template('contactUs.html')
+@app.route('/News')
+def News():
+    return render_template('News.html')
+
+@app.route('/consultatioPg1.html')
+def consultatioPg1():
+    return render_template('consultatioPg1.html')
+
+@app.route('/createConsultation', methods=['GET', 'POST'])
+def create_customer():
+    create_customer_form = CreateForm(request.form)
+    if request.method == 'POST' and create_customer_form.validate():
+        customers_dict = {}
+        db = shelve.open('customer.db', 'c')
+
+        try:
+            customers_dict = db['Customers']
+        except:
+            print("Error in retrieving Customers from customer.db.")
+
+        consultation = Customer.Customer(create_customer_form.first_name.data, create_customer_form.last_name.data,
+                                     create_customer_form.gender.data,
+                                     create_customer_form.remarks.data, create_customer_form.email.data,
+                                     create_customer_form.date_joined.data,
+                                     create_customer_form.doc.data)
+        customers_dict[consultation.get_customer_id()] = consultation
+        db['Customers'] = customers_dict
+
+        db.close()
+
+        return redirect(url_for('retrieve_customers'))
+    return render_template('createConsultation.html', form=create_customer_form)
+
+
+
+
+@app.route('/retrieveCustomer')
+def retrieve_customers():
+    customers_dict = {}
+    db = shelve.open('customer.db', 'r')
+    customers_dict = db['Customers']
+    db.close()
+
+    customers_list = []
+    for key in customers_dict:
+        customer = customers_dict.get(key)
+        customers_list.append(customer)
+        print(key)
+
+
+    return render_template('retrieveCustomer.html', count=len(customers_list), customers_list=customers_list)
+
+@app.route('/viewandchose')
+def retrieve_cus():
+    customers_dict = {}
+    db = shelve.open('customer.db', 'r')
+    customers_dict = db['Customers']
+    db.close()
+
+    customers_list = []
+    for key in customers_dict:
+        customer = customers_dict.get(key)
+        customers_list.append(customer)
+        print(key)
+
+
+    return render_template('viewandchose.html', count=len(customers_list), customers_list=customers_list)
+
+
+
+@app.route('/updateCustomer/<int:id>/', methods=['GET', 'POST'])
+def update_customer(id):
+    update_customer_form = CreateForm(request.form)
+    if request.method == 'POST' and update_customer_form.validate():
+        users_dict = {}
+        db = shelve.open('customer.db', 'w')
+
+        customer_dict = db['Customers']
+
+        customer = customer_dict.get(id)
+        customer.set_doc(update_customer_form.doc.data)
+        customer.set_first_name(update_customer_form.first_name.data)
+        customer.set_last_name(update_customer_form.last_name.data)
+        customer.set_gender(update_customer_form.gender.data)
+        customer.set_membership(update_customer_form.membership.data)
+        customer.set_remarks(update_customer_form.remarks.data)
+
+        db['Customers'] = users_dict
+        db.close()
+
+        return redirect(url_for('retrieve_customers'))
+    else:
+        users_dict = {}
+        oc = shelve.open('user.db', 'w')
+        db = shelve.open('customer.db', 'r')
+        customer_dict = db['Customers']
+
+        users_dict = oc['Users']
+        customer = customer_dict.get(id)
+        user=users_dict.get(id)
+        db.close()
+        oc.close()
+
+        update_customer_form.first_name.data = user.get_first_name()
+        update_customer_form.last_name.data = user.get_last_name()
+        update_customer_form.gender.data = user.get_gender()
+        update_customer_form.remarks.data = user.get_remarks()
+
+        return render_template('updateCustomer.html', form=update_customer_form)
+
+
+
+@app.route('/deleteUser/<int:id>', methods=['POST'])
+def delete_user(id):
+    users_dict = {}
+    db = shelve.open('user.db', 'w')
+    users_dict = db['Users']
+
+    users_dict.pop(id)
+
+    db['Users'] = users_dict
+    db.close()
+
+    return redirect(url_for('retrieve_users'))
+@app.route('/deleteCustomer/<int:id>', methods=['POST'])
+def delete_customer(id):
+    users_dict = {}
+    db = shelve.open('customer.db', 'w')
+    customer_dict = db['Customers']
+
+    customer_dict.pop(id)
+
+    db['Customers'] = customer_dict
+    db.close()
+
+    return redirect(url_for('retrieve_customers'))
 
 if __name__ == '__main__':
     app.run(debug=True)
