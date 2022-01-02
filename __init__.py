@@ -1137,8 +1137,7 @@ def error502(error):
 @app.errorhandler(503)
 def error503(error):
     return render_template('errors/error503.html'), 503
-app = Flask(__name__)
-bootstrap = Bootstrap(app)
+
 
 
 
