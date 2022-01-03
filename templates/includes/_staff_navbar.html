@@ -2,7 +2,7 @@
     <div class="container-fluid">
         <!-- Brand/logo -->
         <a class="navbar-brand" href="/">
-            <img src="static/images/logo.png" alt="DoctorOnTheGo" style="width:100px">
+            <img src="{{ url_for('static',filename='images/logo.png') }}" alt="DoctorOnTheGo" style="width:100px">
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#main_nav"  aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -29,9 +29,9 @@
                 <li class="nav-item dropdown main-nav-icons">
                     <a class="nav-link text-black dropdown-toggle" href="#" data-bs-toggle="dropdown"><i class="fas fa-user-circle fa-lg"></i>STAFF {{ staff }}</a>
                     <ul class="dropdown-menu dropdown-menu-right">
-                        <li><a class="dropdown-item" href="#">User Input</a></li>
-                        <li><a class="dropdown-item" href="#">Inventory Management</a></li>
-                        <li><a class="dropdown-item" href="#">Staff Managementt</a></li>
+                        <li><a class="dropdown-item" href="/staffapp">User Input</a></li>
+                        <li><a class="dropdown-item" href="/staffinvent">Inventory Management</a></li>
+                        <li><a class="dropdown-item" href="/stafflist">Staff Managementt</a></li>
                         <li><a class="dropdown-item" href="/logout">Logout</a></li>
                     </ul>
                 </li>

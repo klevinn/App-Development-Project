@@ -1153,8 +1153,8 @@ def deleteStaff(id):
         return redirect(url_for('login'))
 
 
-@app.route('/staffaccountlist' , methods=["GET","POST"])
-def staffaccountlist():
+@app.route('/staffaccountlist/<int:page>' , methods=["GET","POST"])
+def staffaccountlist(page=1):
     if "staff" in session:
         StaffName = session["staff"]
         user_dict = {}
@@ -1172,14 +1172,31 @@ def staffaccountlist():
         db.close()
 
         if valid_session:
+            display_dict = {}
+            page_num = 1
         #Displaying the appending data into the stafflist so that it can be used to display data on the site
             user_list = []
             for key in user_dict:
-                user = user_dict.get(key)
-                if user.get_ban_status() != True:
-                    user_list.append(user)
+                if len(user_list) == 5:
+                    display_dict[page_num] = user_list
+                    page_num += 1
 
-            return render_template('user/staff/staffaccountlist.html', count=len(user_list), user_list=user_list , staff = name)
+                    user_list = []
+                    user = user_dict.get(key)
+                    if user.get_ban_status() != True:
+                        user_list.append(user)
+                        display_dict[page_num] = user_list
+                else:
+                    user = user_dict.get(key)
+                    if user.get_ban_status() != True:
+                        user_list.append(user)
+                        display_dict[page_num] = user_list
+            
+            user_list = display_dict[page]
+            all_keys = display_dict.keys()
+            max_value = max(all_keys)
+
+            return render_template('user/staff/staffaccountlist.html', count=len(user_list), user_list=user_list , display_dict = display_dict, staff = name,  page=page, max_value = max_value)
         else:
             session.clear()
             return redirect(url_for('home'))
