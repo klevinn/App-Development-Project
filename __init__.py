@@ -10,6 +10,7 @@ from flask_bcrypt import Bcrypt
 import Forms
 import User, Staff
 from Security_Validation import validate_card_number, Sanitise, validate_expiry_date, validate_session, validate_session_open_file_admin, validate_session_admin
+from Functions import duplicate_email, duplicate_username, get_user_name
 
 #Functions that are repeated
 
@@ -222,29 +223,9 @@ def signup():
             except:
                 print("Error in retrieving Users from user.db")
             
-            for key in userDict:
-                    emailinshelve = userDict[key].get_email()
-                    if emailInput == emailinshelve.lower():
-                        print("Registered email & inputted email:", emailinshelve, emailInput)
-                        duplicated_email = True
-                        print("Duplicate Email")
-                        break
-                    else:
-                        print("Registered email & inputted email:", emailinshelve, emailInput)
-                        email_duplicates = False
-                        print("New Email")
-            
-            for key in userDict:
-                    usernameinshelve = userDict[key].get_username()
-                    if usernameInput == usernameinshelve:
-                        print("Registered Username & inputted username:", usernameinshelve, usernameInput)
-                        duplicated_username = True
-                        print("Duplicated Username")
-                        break
-                    else:
-                        print("Registered Username & inputted username:", usernameinshelve, usernameInput)
-                        username_duplicates = False
-                        print("New Username")
+            duplicated_email = duplicate_email(emailInput, userDict)
+            duplicated_username = duplicate_username(usernameInput, userDict)
+
             
             if (matched_pw == False) and (duplicated_email == False) and (duplicated_username == False):
                 print("Hello")
@@ -430,9 +411,7 @@ def signupC():
         except:
             print("Error in retrieving User from staff.db")
         
-        for key in users_dict:
-            if idNumber == key:
-                UserName = users_dict[key].get_username()
+        UserName =  get_user_name(idNumber, users_dict)
         
         valid_session = validate_session(idNumber, users_dict)
 
@@ -498,10 +477,8 @@ def userinfo():
                 db["Users"] = users_dict
         except:
             print("Error in retrieving User from staff.db")
-        
-        for key in users_dict:
-            if idNumber == key:
-                UserName = users_dict[key].get_username()
+
+        UserName =  get_user_name(idNumber, users_dict)
         
         valid_session = validate_session(idNumber, users_dict)
 
@@ -611,9 +588,7 @@ def userpw():
         except:
             print("Error in retrieving User from staff.db")
         
-        for key in users_dict:
-            if idNumber == key:
-                UserName = users_dict[key].get_username()
+        UserName =  get_user_name(idNumber, users_dict)
         
         valid_session = validate_session(idNumber, users_dict)
         
@@ -689,10 +664,8 @@ def useraddress():
         except:
             print("Error in retrieving User from staff.db")
         
-        for key in users_dict:
-            if idNumber == key:
-                UserName = users_dict[key].get_username()
-        
+
+        UserName =  get_user_name(idNumber, users_dict)
         valid_session = validate_session(idNumber, users_dict)
         
         db.close()
@@ -772,9 +745,7 @@ def usercard():
         except:
             print("Error in retrieving User from staff.db")
         
-        for key in users_dict:
-            if idNumber == key:
-                UserName = users_dict[key].get_username()
+        UserName =  get_user_name(idNumber, users_dict)
         
         valid_session = validate_session(idNumber, users_dict)
 
@@ -884,9 +855,7 @@ def deleteCard():
         except:
             print("Error in retrieving User from staff.db")
         
-        for key in users_dict:
-            if idNumber == key:
-                UserName = users_dict[key].get_username()
+        UserName =  get_user_name(idNumber, users_dict)
 
         valid_session = validate_session(idNumber, users_dict)
 
@@ -926,10 +895,7 @@ def deleteAddress():
         except:
             print("Error in retrieving User from staff.db")
         
-        for key in users_dict:
-            if idNumber == key:
-                UserName = users_dict[key].get_username()
-
+        UserName =  get_user_name(idNumber, users_dict)
         valid_session = validate_session(idNumber, users_dict)
 
         if valid_session:
@@ -1116,29 +1082,9 @@ def staffadd():
                 except:
                     print("Error in retrieving Users from staff.db")
 
-                for key in userDict:
-                    emailinshelve = userDict[key].get_email()
-                    if emailInput == emailinshelve.lower():
-                        print("Registered email & inputted email:", emailinshelve, emailInput)
-                        duplicated_email = True
-                        print("Duplicate Email")
-                        break
-                    else:
-                        print("Registered email & inputted email:", emailinshelve, emailInput)
-                        email_duplicates = False
-                        print("New Email")
+                duplicated_email = duplicate_email(emailInput, userDict)
+                duplicated_username = duplicate_username(nameInput, userDict)
                 
-                for key in userDict:
-                    usernameinshelve = userDict[key].get_username()
-                    if nameInput == usernameinshelve:
-                        print("Registered Username & inputted username:", usernameinshelve, nameInput)
-                        duplicated_username = True
-                        print("Duplicated Username")
-                        break
-                    else:
-                        print("Registered Username & inputted username:", usernameinshelve, nameInput)
-                        duplicated_username = False
-                        print("New Username")
 
                 if(duplicated_email == False) and (duplicated_username == False):
                     print("Hello")
