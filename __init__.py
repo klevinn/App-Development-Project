@@ -958,8 +958,8 @@ def staffinvent():
     else:
         return redirect(url_for('login'))
 
-@app.route('/stafflist' , methods=["GET","POST"])
-def stafflist():
+@app.route('/stafflist/<int:page>' , methods=["GET","POST"])
+def stafflist(page=1):
     if "staff" in session:
         StaffName = session["staff"]
         staff_dict = {}
@@ -978,13 +978,30 @@ def stafflist():
 
         #Displaying the appending data into the stafflist so that it can be used to display data on the site
         if valid_session:
+            display_dict = {}
+            page_num = 1
+        #Displaying the appending data into the stafflist so that it can be used to display data on the site
             staff_list = []
             for key in staff_dict:
-                staff = staff_dict.get(key)
-                staff_list.append(staff)
+                if len(staff_list) == 10:
+                    display_dict[page_num] = staff_list
+                    page_num += 1
+
+                    staff_list = []
+                    staff = staff_dict.get(key)
+                    staff_list.append(staff)
+                    display_dict[page_num] = staff_list
+                else:
+                    staff = staff_dict.get(key)
+                    staff_list.append(staff)
+                    display_dict[page_num] = staff_list
+            
+            staff_list = display_dict[page]
+            all_keys = display_dict.keys()
+            max_value = max(all_keys)
 
 
-            return render_template('user/staff/stafflist.html', count=len(staff_list), staff_list=staff_list , staff = name)
+            return render_template('user/staff/stafflist.html', count=len(staff_list), staff_list=staff_list , staff = name, display_dict = display_dict, page=page, max_value=max_value)
         else:
             session.clear()
             return redirect(url_for('home'))
@@ -1032,7 +1049,7 @@ def staffupdate(id):
                 db['Users'] = users_dict
                 db.close()
 
-                return redirect(url_for('stafflist'))
+                return redirect(url_for('stafflist', page =1))
 
             else:
                 users_dict = {}
@@ -1106,7 +1123,7 @@ def staffadd():
                     userDict[user.get_staff_id()] = user
                     db["Users"] = userDict
                     db.close()
-                    return redirect(url_for("stafflist"))
+                    return redirect(url_for("stafflist", page = 1))
                 else:
                     print("Hello2")
                     db.close()
@@ -1144,7 +1161,7 @@ def deleteStaff(id):
             db['Users'] = users_dict
             db.close()
 
-            return redirect(url_for('stafflist', staff = name))
+            return redirect(url_for('stafflist', page=1, staff = name))
         else:
             db.close()
             session.clear()
