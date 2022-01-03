@@ -1142,6 +1142,24 @@ def error503(error):
 
 
 """
+
+@app.route("/News")
+def News():
+    data=[
+        ("01-01-2022",20),
+        ("02-01-2022",40),
+        ("03-01-2022",30),
+        ("04-01-2022",27),
+        ("05-01-2022",42),
+        ("06-01-2022",36),
+        ("07-01-2022",41),
+        ("08-01-2022",20)
+
+    ]
+
+    labels = [row[0] for row in data]
+    values = [row[1] for row in data]
+    return render_template('News.html', labels=labels, values=values)
 //Unrefined Pt1 code
 from flask_bootstrap import Bootstrap
 
