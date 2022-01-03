@@ -24,8 +24,42 @@ limiter = Limiter(app, key_func=get_remote_address)
 
 @app.route('/' , methods=["GET","POST"])
 def home():
-    return render_template('home.html')
+    if 'user' in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
 
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+        
+        for key in users_dict:
+            if idNumber == key:
+                UserName = users_dict[key].get_username()
+        
+        valid_session = validate_session(idNumber, users_dict)
+
+        db.close()
+        if valid_session:
+            return render_template('user_home.html' , user = UserName)
+        else:
+            session.clear()
+            return render_template('home.html')
+
+    elif 'staff' in session:
+        StaffName = session["staff"]
+        valid_session, name = validate_session_open_file_admin(StaffName)
+        if valid_session:
+            return render_template('admin_home.html' , staff = name)
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+    else:
+        return render_template('home.html')
 
 """Account Management -- (login, signup, etc) By Calvin"""
 
@@ -59,16 +93,22 @@ def login():
             #These will store the data that is taken out from the shelve, used for comparison with input
             passwordinshelve = ""
             emailinshelve = ""
+            banned = False
+
+
 
             for key in userDict:
                 #getting email stored in the shelve
                 emailinshelve = userDict[key].get_email()
+                ban_status = userDict[key].get_ban_status()
                 #comparing the data and seeing if matched
                 if emailInput == emailinshelve.lower():
                     email_key = userDict[key]
                     validemail = True #As previously mentioned, set to true if found in shelve
                     #Console Checking
                     print("Registered Email & Inputted Email: ", emailinshelve, emailInput)
+                    if ban_status == True:
+                        banned = True
                     break
                 
                     #For Console
@@ -119,12 +159,16 @@ def login():
                     return redirect(url_for("staffapp" , staff = staffname))
                         
             if validemail == True and validpassword == True:
-                print("Successful Login")
+                if banned != True:
+                    print("Successful Login")
 
-                userid = email_key.get_user_id()
-                session["user"] = userid
+                    userid = email_key.get_user_id()
+                    session["user"] = userid
 
-                return redirect(url_for("user"))
+                    return redirect(url_for("user"))
+
+                else:
+                    return render_template('user/guest/login.html', form=login_form, bannedUser=True)
 
             else:
                 db.close()
@@ -373,7 +417,35 @@ def signup3():
 
 @app.route('/signupC' , methods=["GET","POST"])
 def signupC():
-    return render_template('user/guest/signupcomplete.html')
+    if "user" in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
+
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+        
+        for key in users_dict:
+            if idNumber == key:
+                UserName = users_dict[key].get_username()
+        
+        valid_session = validate_session(idNumber, users_dict)
+
+        db.close()
+
+        if valid_session:
+            return render_template('user/guest/signupcomplete.html' , user = UserName)
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+    
+    else:
+        return redirect(url_for("login"))
 
 @app.route('/user' , methods=["GET","POST"])
 def user():
@@ -1158,7 +1230,8 @@ def staffaccountlist():
             user_list = []
             for key in user_dict:
                 user = user_dict.get(key)
-                user_list.append(user)
+                if user.get_ban_status() != True:
+                    user_list.append(user)
 
             return render_template('user/staff/staffaccountlist.html', count=len(user_list), user_list=user_list , staff = name)
         else:
@@ -1172,7 +1245,7 @@ def banUser(id):
     if "staff" in session:
         StaffName = session["staff"]
         users_dict = {}
-        db = shelve.open('user', 'w')
+        db = shelve.open('user', 'c')
         try:
             if 'Users' in db:
                 users_dict = db['Users']
@@ -1184,7 +1257,7 @@ def banUser(id):
         valid_session , name = validate_session_open_file_admin(StaffName)
 
         if valid_session:
-            users_dict.pop(id)
+            users_dict[id].set_banned()
 
             db['Users'] = users_dict
             db.close()

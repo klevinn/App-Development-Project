@@ -18,7 +18,8 @@ class User(Person):
         self.__unit_number = ''
         self.__postal_code = ''
         self.__phone_number = 0
-        self.__account_status = "Active"
+        self.__ban_status = False
+
 
     def set_card_name(self, card_name):
         self.__card_name = card_name
@@ -38,8 +39,6 @@ class User(Person):
         self.__phone_number = phone_number
     def set_user_id(self, user_id):
         self.__user_id = user_id
-    def set_account_status(self, status):
-        self.__account_status = status
     
     def get_account_status(self):
         return self.__account_status
@@ -61,6 +60,12 @@ class User(Person):
         return self.__postal_code
     def get_phone_number(self):
         return self.__phone_number
+
+    def set_banned(self):
+        self.__ban_status = True
+
+    def get_ban_status(self):
+        return self.__ban_status
 
 #Gets last 4 digits of card number and only displays that while censoring the rest
     def get_censored_credit_card(self):

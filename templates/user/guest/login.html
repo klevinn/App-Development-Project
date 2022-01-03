@@ -15,6 +15,12 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                       </div>
                       {% endif %}
+                      {% if bannedUser %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Holy guacamole!</strong> You are a banned User!
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                      </div>
+                      {% endif %}
                     <form action="" method="POST" class="row g-3">
                         <h4 class="text-black">Log In</h4>
                         <div class="col-12">
