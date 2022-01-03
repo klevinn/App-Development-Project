@@ -9,7 +9,7 @@ from flask_bcrypt import Bcrypt
 #imported files
 import Forms
 import User, Staff
-from Security_Validation import validate_card_number, Sanitise, validate_expiry_date
+from Security_Validation import validate_card_number, Sanitise, validate_expiry_date, validate_session, validate_session_open_file_admin, validate_session_admin
 
 #Functions that are repeated
 
@@ -112,11 +112,10 @@ def login():
                 print("Hello-New")
                 passwordinshelve = staff_email_key.get_password()
                 if passwordInput == passwordinshelve:
-                    staffdb.close()
 
-                    staffname = staff_email_key.get_username()
+                    staffname = staff_email_key.get_staff_id()
                     session["staff"] = staffname
-
+                    staffdb.close()
                     return redirect(url_for("staffapp" , staff = staffname))
                         
             if validemail == True and validpassword == True:
@@ -392,20 +391,24 @@ def user():
             print("Error in retrieving User from staff.db")
 
         
+        valid_session = validate_session(userid, users_dict)
 
         db.close()
 
+        if valid_session:
+            user_list = []
+            for key in users_dict:
+                if key == userid:
+                    user = users_dict.get(key)
+                    user_list.append(user)
+                    name = user.get_username()
+                    break
+            
 
-        user_list = []
-        for key in users_dict:
-            if key == userid:
-                user = users_dict.get(key)
-                user_list.append(user)
-                name = user.get_username()
-                break
-        
-
-        return render_template('user/loggedin/useraccount.html' , user = name, count=len(user_list), user_list=user_list)
+            return render_template('user/loggedin/useraccount.html' , user = name, count=len(user_list), user_list=user_list)
+        else:
+            session.clear()
+            return redirect(url_for("home"))
     else:
         return redirect(url_for("login"))
 
@@ -428,90 +431,96 @@ def userinfo():
             if idNumber == key:
                 UserName = users_dict[key].get_username()
         
+        valid_session = validate_session(idNumber, users_dict)
+
         db.close()
 
-        update_user = Forms.CreateUserInfoForm(request.form)
-        if request.method == "POST" and update_user.validate():
-            print("Successful Running")
-            existing_email = False
-            existing_username = False
-            nameInput = Sanitise(update_user.new_username.data)
-            emailInput = Sanitise(update_user.new_email.data.lower())
-            users_dict ={}
-            db = shelve.open('user', 'c')
+        if valid_session:
+            update_user = Forms.CreateUserInfoForm(request.form)
+            if request.method == "POST" and update_user.validate():
+                print("Successful Running")
+                existing_email = False
+                existing_username = False
+                nameInput = Sanitise(update_user.new_username.data)
+                emailInput = Sanitise(update_user.new_email.data.lower())
+                users_dict ={}
+                db = shelve.open('user', 'c')
 
-            try:
-                if 'Users' in db:
-                    users_dict = db['Users']
-                else:
-                    db["Users"] = users_dict
-            except:
-                print("Error in retrieving User from user.db")
-
-            
-            
-            for key in users_dict:
-                if key != idNumber:
-                    emailinshelve = users_dict[key].get_email()
-                    if emailInput == emailinshelve.lower():
-                        print("Registered email & inputted email:", emailinshelve, emailInput)
-                        existing_email = True
-                        print("Duplicate Email")
-                        break
+                try:
+                    if 'Users' in db:
+                        users_dict = db['Users']
                     else:
-                        print("Registered email & inputted email:", emailinshelve, emailInput)
-                        existing_email = False
-                        print("New Email")
-            
-            for key in users_dict:
-                if key != idNumber:
-                    usernameinshelve = users_dict[key].get_username()
-                    if nameInput == usernameinshelve:
-                        print("Registered Username & inputted username:", usernameinshelve, nameInput)
-                        existing_username = True
-                        print("Duplicated Username")
-                        break
-                    else:
-                        print("Registered Username & inputted username:", usernameinshelve, nameInput)
-                        existing_username = False
-                        print("New Username")
-
-            if(existing_email == False) and (existing_username == False):
-                for key in users_dict:
-                    if key == idNumber:
-                        user = users_dict[key]
-                        user.set_username(nameInput)
-                        user.set_email(emailInput)
                         db["Users"] = users_dict
+                except:
+                    print("Error in retrieving User from user.db")
 
-                        """
-                        session["user"] = idNumber
-                        idNumber = session["user"]
-                        """
+                
+                
+                for key in users_dict:
+                    if key != idNumber:
+                        emailinshelve = users_dict[key].get_email()
+                        if emailInput == emailinshelve.lower():
+                            print("Registered email & inputted email:", emailinshelve, emailInput)
+                            existing_email = True
+                            print("Duplicate Email")
+                            break
+                        else:
+                            print("Registered email & inputted email:", emailinshelve, emailInput)
+                            existing_email = False
+                            print("New Email")
+                
+                for key in users_dict:
+                    if key != idNumber:
+                        usernameinshelve = users_dict[key].get_username()
+                        if nameInput == usernameinshelve:
+                            print("Registered Username & inputted username:", usernameinshelve, nameInput)
+                            existing_username = True
+                            print("Duplicated Username")
+                            break
+                        else:
+                            print("Registered Username & inputted username:", usernameinshelve, nameInput)
+                            existing_username = False
+                            print("New Username")
 
-                db.close()
-                return redirect(url_for("user"))
+                if(existing_email == False) and (existing_username == False):
+                    for key in users_dict:
+                        if key == idNumber:
+                            user = users_dict[key]
+                            user.set_username(nameInput)
+                            user.set_email(emailInput)
+                            db["Users"] = users_dict
 
-            else:
-                print("Hello2")
-                db.close()
-                return render_template('user/loggedin/user_info_edit.html', form=update_user, duplicated_email=existing_email, duplicated_username=existing_username, user = UserName) 
-        else:
-            users_dict = {}
-            db = shelve.open('user', 'r')
-            try:
-                if 'Users' in db:
-                    users_dict = db['Users']
+                            """
+                            session["user"] = idNumber
+                            idNumber = session["user"]
+                            """
+
+                    db.close()
+                    return redirect(url_for("user"))
+
                 else:
-                    db["Users"] = users_dict
-            except:
-                print("Error in retrieving Users from user.db")
-            db.close()
+                    print("Hello2")
+                    db.close()
+                    return render_template('user/loggedin/user_info_edit.html', form=update_user, duplicated_email=existing_email, duplicated_username=existing_username, user = UserName) 
+            else:
+                users_dict = {}
+                db = shelve.open('user', 'r')
+                try:
+                    if 'Users' in db:
+                        users_dict = db['Users']
+                    else:
+                        db["Users"] = users_dict
+                except:
+                    print("Error in retrieving Users from user.db")
+                db.close()
 
-            user = users_dict.get(idNumber)
-            update_user.new_username.data = user.get_username()
-            update_user.new_email.data = user.get_email()
-            return render_template('user/loggedin/user_info_edit.html', form=update_user, user = UserName) 
+                user = users_dict.get(idNumber)
+                update_user.new_username.data = user.get_username()
+                update_user.new_email.data = user.get_email()
+                return render_template('user/loggedin/user_info_edit.html', form=update_user, user = UserName)
+        else:
+            session.clear()
+            return redirect(url_for("home"))
     else:
         return redirect(url_for("login"))
 
@@ -534,58 +543,62 @@ def userpw():
             if idNumber == key:
                 UserName = users_dict[key].get_username()
         
+        valid_session = validate_session(idNumber, users_dict)
+        
         db.close()
 
-        update_password = Forms.CreateNewPasswordForm(request.form)
-        if request.method == "POST":
-            print("Successful Running")
-            matched_pw = True
-            old_password = update_password.old_password.data 
-            password = update_password.password.data
-            password_cfm = update_password.password_confirm.data
-
-            if password == password_cfm:
-                matched_pw = False
-                hashed_pw = bcrypt.generate_password_hash(password)
-            else:
+        if valid_session:
+            update_password = Forms.CreateNewPasswordForm(request.form)
+            if request.method == "POST":
+                print("Successful Running")
                 matched_pw = True
+                old_password = update_password.old_password.data 
+                password = update_password.password.data
+                password_cfm = update_password.password_confirm.data
 
-
-            users_dict ={}
-            db = shelve.open('user', 'c')
-
-            try:
-                if 'Users' in db:
-                    users_dict = db['Users']
+                if password == password_cfm:
+                    matched_pw = False
+                    hashed_pw = bcrypt.generate_password_hash(password)
                 else:
-                    db["Users"] = users_dict
-            except:
-                print("Error in retrieving User from user.db")
+                    matched_pw = True
 
-            user = users_dict.get(idNumber)
-            #using accessor methods to update data
-            registered_password = user.get_password()
-            same_password_hash = bcrypt.check_password_hash(registered_password, old_password)
 
-            if same_password_hash == True:
-                same_pw = False
+                users_dict ={}
+                db = shelve.open('user', 'c')
+
+                try:
+                    if 'Users' in db:
+                        users_dict = db['Users']
+                    else:
+                        db["Users"] = users_dict
+                except:
+                    print("Error in retrieving User from user.db")
+
+                user = users_dict.get(idNumber)
+                #using accessor methods to update data
+                registered_password = user.get_password()
+                same_password_hash = bcrypt.check_password_hash(registered_password, old_password)
+
+                if same_password_hash == True:
+                    same_pw = False
+                else:
+                    same_pw = True
+
+                if (matched_pw == False) and (same_pw == False):
+                    user.set_password(hashed_pw)
+                    db['Users'] = users_dict
+                    db.close()
+                    return redirect(url_for("user"))
+                
+                else:
+                    db.close()
+                    return render_template('user/loggedin/user_password_edit.html', form=update_password, matched_pw=matched_pw, same_pw = same_pw) 
             else:
-                same_pw = True
 
-            if (matched_pw == False) and (same_pw == False):
-                user.set_password(hashed_pw)
-                db['Users'] = users_dict
-                db.close()
-                return redirect(url_for("user"))
-            
-            else:
-                db.close()
-                return render_template('user/loggedin/user_password_edit.html', form=update_password, matched_pw=matched_pw, same_pw = same_pw) 
-
-
+                return render_template('user/loggedin/user_password_edit.html', form=update_password, user = UserName)
         else:
-
-            return render_template('user/loggedin/user_password_edit.html', form=update_password, user = UserName)
+            session.clear()
+            return redirect(url_for("home"))
     else:
         return redirect(url_for("login"))
 
@@ -608,61 +621,66 @@ def useraddress():
             if idNumber == key:
                 UserName = users_dict[key].get_username()
         
-        db.close()
-
-        update_address = Forms.CreateAddShippingAddressForm(request.form)
-        if request.method == "POST":
-            print("Successful Running")
-            address = Sanitise(update_address.shipping_address.data.upper())
-            postal_code = update_address.postal_code.data
-            unit_number = Sanitise(update_address.unit_number.data)
-            phone_no = update_address.phone_no.data
-
-            users_dict ={}
-            db = shelve.open('user', 'c')
-
-            try:
-                if 'Users' in db:
-                    users_dict = db['Users']
-                else:
-                    db["Users"] = users_dict
-            except:
-                print("Error in retrieving User from user.db")
-
-            user = users_dict.get(idNumber)
-            #using accessor methods to update data
-            user.set_shipping_address(address)
-            user.set_postal_code(postal_code)
-            user.set_unit_number(unit_number)
-            user.set_phone_number(phone_no)
-
-            db['Users'] = users_dict
-            db.close()
-
-            return redirect(url_for("user"))
+        valid_session = validate_session(idNumber, users_dict)
         
-        else:
-            users_dict = {}
-            db = shelve.open('user', 'r')
-            try:
-                if 'Users' in db:
-                    users_dict = db['Users']
-                else:
-                    db["Users"] = users_dict
-            except:
-                print("Error in retrieving Users from user.db")
-            db.close()
+        db.close()
+        if valid_session:
+            update_address = Forms.CreateAddShippingAddressForm(request.form)
+            if request.method == "POST":
+                print("Successful Running")
+                address = Sanitise(update_address.shipping_address.data.upper())
+                postal_code = update_address.postal_code.data
+                unit_number = Sanitise(update_address.unit_number.data)
+                phone_no = update_address.phone_no.data
 
-            user = users_dict.get(idNumber)
-            update_address.shipping_address.data = user.get_shipping_address()
-            print(user.get_shipping_address())
-            update_address.unit_number.data = user.get_unit_number()
-            print(user.get_postal_code())
-            update_address.postal_code.data = user.get_postal_code()
-            print(user.get_unit_number())
-            update_address.phone_no.data = user.get_phone_number()
-            print(user.get_phone_number())
-            return render_template('user/loggedin/user_address.html', form=update_address, user = UserName)
+                users_dict ={}
+                db = shelve.open('user', 'c')
+
+                try:
+                    if 'Users' in db:
+                        users_dict = db['Users']
+                    else:
+                        db["Users"] = users_dict
+                except:
+                    print("Error in retrieving User from user.db")
+
+                user = users_dict.get(idNumber)
+                #using accessor methods to update data
+                user.set_shipping_address(address)
+                user.set_postal_code(postal_code)
+                user.set_unit_number(unit_number)
+                user.set_phone_number(phone_no)
+
+                db['Users'] = users_dict
+                db.close()
+
+                return redirect(url_for("user"))
+            
+            else:
+                users_dict = {}
+                db = shelve.open('user', 'r')
+                try:
+                    if 'Users' in db:
+                        users_dict = db['Users']
+                    else:
+                        db["Users"] = users_dict
+                except:
+                    print("Error in retrieving Users from user.db")
+                db.close()
+
+                user = users_dict.get(idNumber)
+                update_address.shipping_address.data = user.get_shipping_address()
+                print(user.get_shipping_address())
+                update_address.unit_number.data = user.get_unit_number()
+                print(user.get_postal_code())
+                update_address.postal_code.data = user.get_postal_code()
+                print(user.get_unit_number())
+                update_address.phone_no.data = user.get_phone_number()
+                print(user.get_phone_number())
+                return render_template('user/loggedin/user_address.html', form=update_address, user = UserName)
+        else:
+            session.clear()
+            return redirect(url_for("home"))
     
     else:
         return redirect(url_for('login'))
@@ -686,42 +704,67 @@ def usercard():
             if idNumber == key:
                 UserName = users_dict[key].get_username()
         
+        valid_session = validate_session(idNumber, users_dict)
+
         db.close()
 
-        update_card = Forms.CreateAddPaymentForm(request.form)
-        if request.method == 'POST':
-            print("Successful Running")
-            card_name =  Sanitise(update_card.card_name.data.upper())
-            card_no = update_card.card_no.data
-            valid_card_num = validate_card_number(card_no)
-            card_expiry = update_card.card_expiry.data
-            valid_card_expiry = validate_expiry_date(card_expiry)
-            card_cvv = update_card.card_CVV.data
+        if valid_session:
+            update_card = Forms.CreateAddPaymentForm(request.form)
+            if request.method == 'POST':
+                print("Successful Running")
+                card_name =  Sanitise(update_card.card_name.data.upper())
+                card_no = update_card.card_no.data
+                valid_card_num = validate_card_number(card_no)
+                card_expiry = update_card.card_expiry.data
+                valid_card_expiry = validate_expiry_date(card_expiry)
+                card_cvv = update_card.card_CVV.data
 
-            if valid_card_num == True and valid_card_expiry == True:
-                users_dict ={}
-                db = shelve.open('user', 'c')
+                if valid_card_num == True and valid_card_expiry == True:
+                    users_dict ={}
+                    db = shelve.open('user', 'c')
 
-                try:
-                    if 'Users' in db:
-                        users_dict = db['Users']
-                    else:
-                        db["Users"] = users_dict
-                except:
-                    print("Error in retrieving User from user.db")
-                
-                user = users_dict.get(idNumber)
-                #using accessor methods to update data
-                user.set_card_no(card_no)
-                user.set_card_name(card_name)
-                user.set_card_expiry(card_expiry)
-                user.set_card_cvv(card_cvv)
+                    try:
+                        if 'Users' in db:
+                            users_dict = db['Users']
+                        else:
+                            db["Users"] = users_dict
+                    except:
+                        print("Error in retrieving User from user.db")
+                    
+                    user = users_dict.get(idNumber)
+                    #using accessor methods to update data
+                    user.set_card_no(card_no)
+                    user.set_card_name(card_name)
+                    user.set_card_expiry(card_expiry)
+                    user.set_card_cvv(card_cvv)
 
 
-                db['Users'] = users_dict
-                db.close()
+                    db['Users'] = users_dict
+                    db.close()
 
-                return redirect(url_for("user"))
+                    return redirect(url_for("user"))
+                else:
+                    users_dict = {}
+                    db = shelve.open('user', 'r')
+                    try:
+                        if 'Users' in db:
+                            users_dict = db['Users']
+                        else:
+                            db["Users"] = users_dict
+                    except:
+                        print("Error in retrieving Users from user.db")
+                    db.close()
+
+                    user = users_dict.get(idNumber)
+                    update_card.card_name.data = user.get_card_name()
+                    print(user.get_card_name())
+                    #update_card.card_no.data = user.get_card_no()
+                    #print(user.get_card_no())
+                    update_card.card_expiry.data = user.get_card_expiry()
+                    print(user.get_card_expiry())
+                    update_card.card_CVV.data = user.get_card_cvv()
+                    print(user.get_card_cvv())
+                    return render_template('user/loggedin/user_cardinfo.html', form=update_card, user = UserName, valid_card_num = valid_card_num, valid_card_expiry=valid_card_expiry)
             else:
                 users_dict = {}
                 db = shelve.open('user', 'r')
@@ -737,35 +780,16 @@ def usercard():
                 user = users_dict.get(idNumber)
                 update_card.card_name.data = user.get_card_name()
                 print(user.get_card_name())
-                #update_card.card_no.data = user.get_card_no()
-                #print(user.get_card_no())
+                update_card.card_no.data = user.get_card_no()
+                print(user.get_card_no())
                 update_card.card_expiry.data = user.get_card_expiry()
                 print(user.get_card_expiry())
                 update_card.card_CVV.data = user.get_card_cvv()
                 print(user.get_card_cvv())
-                return render_template('user/loggedin/user_cardinfo.html', form=update_card, user = UserName, valid_card_num = valid_card_num, valid_card_expiry=valid_card_expiry)
+                return render_template('user/loggedin/user_cardinfo.html', form=update_card, user = UserName)
+        
         else:
-            users_dict = {}
-            db = shelve.open('user', 'r')
-            try:
-                if 'Users' in db:
-                    users_dict = db['Users']
-                else:
-                    db["Users"] = users_dict
-            except:
-                print("Error in retrieving Users from user.db")
-            db.close()
-
-            user = users_dict.get(idNumber)
-            update_card.card_name.data = user.get_card_name()
-            print(user.get_card_name())
-            update_card.card_no.data = user.get_card_no()
-            print(user.get_card_no())
-            update_card.card_expiry.data = user.get_card_expiry()
-            print(user.get_card_expiry())
-            update_card.card_CVV.data = user.get_card_cvv()
-            print(user.get_card_cvv())
-            return render_template('user/loggedin/user_cardinfo.html', form=update_card, user = UserName)
+            return redirect(url_for("home"))
     
     else:
         return redirect(url_for('login'))
@@ -791,18 +815,25 @@ def deleteCard():
         for key in users_dict:
             if idNumber == key:
                 UserName = users_dict[key].get_username()
-        
-        emptyString = ""
-        user = users_dict.get(idNumber)
-        user.set_card_no(emptyString)
-        user.set_card_name(emptyString)
-        user.set_card_expiry(emptyString)
-        user.set_card_cvv(emptyString)
 
-        db['Users'] = users_dict
-        db.close()
+        valid_session = validate_session(idNumber, users_dict)
 
-        return redirect(url_for("user" , user = UserName))
+        if valid_session:
+            emptyString = ""
+            user = users_dict.get(idNumber)
+            user.set_card_no(emptyString)
+            user.set_card_name(emptyString)
+            user.set_card_expiry(emptyString)
+            user.set_card_cvv(emptyString)
+
+            db['Users'] = users_dict
+            db.close()
+
+            return redirect(url_for("user" , user = UserName))
+        else:
+            db.close()
+            session.clear()
+            return redirect(url_for("home"))
     
     else:
         return redirect(url_for('login'))
@@ -826,18 +857,26 @@ def deleteAddress():
         for key in users_dict:
             if idNumber == key:
                 UserName = users_dict[key].get_username()
-        
-        emptyString = ""
-        user = users_dict.get(idNumber)
-        user.set_shipping_address(emptyString)
-        user.set_postal_code(emptyString)
-        user.set_unit_number(emptyString)
-        user.set_phone_number(emptyString)
 
-        db['Users'] = users_dict
-        db.close()
+        valid_session = validate_session(idNumber, users_dict)
 
-        return redirect(url_for("user" , user = UserName))
+        if valid_session:
+            emptyString = ""
+            user = users_dict.get(idNumber)
+            user.set_shipping_address(emptyString)
+            user.set_postal_code(emptyString)
+            user.set_unit_number(emptyString)
+            user.set_phone_number(emptyString)
+
+            db['Users'] = users_dict
+            db.close()
+
+            return redirect(url_for("user" , user = UserName))
+
+        else:
+            db.close()
+            session.clear()
+            return redirect(url_for("home"))
     
     else:
         return redirect(url_for("login"))
@@ -846,7 +885,12 @@ def deleteAddress():
 def staffapp():
     if "staff" in session:
         StaffName = session["staff"]
-        return render_template('user/staff/staffappoint.html' , staff = StaffName)
+        valid_session, name = validate_session_open_file_admin(StaffName)
+        if valid_session:
+            return render_template('user/staff/staffappoint.html' , staff = name)
+        else:
+            session.clear()
+            return redirect(url_for("home"))
     else:
         return redirect(url_for('login'))
 
@@ -854,7 +898,12 @@ def staffapp():
 def stafffeed():
     if "staff" in session:
         StaffName = session["staff"]
-        return render_template('user/staff/stafffeedback.html' , staff = StaffName)
+        valid_session, name = validate_session_open_file_admin(StaffName)
+        if valid_session:
+            return render_template('user/staff/stafffeedback.html' , staff = name)
+        else:
+            session.clear()
+            return redirect(url_for('home'))
     else:
         return redirect(url_for('login'))
 
@@ -862,7 +911,12 @@ def stafffeed():
 def staffinvent():
     if "staff" in session:
         StaffName = session["staff"]
-        return render_template('user/staff/staffinventory.html' , staff = StaffName)
+        valid_session, name = validate_session_open_file_admin(StaffName)
+        if valid_session:
+            return render_template('user/staff/staffinventory.html' , staff = name)
+        else:
+            session.clear()
+            return redirect(url_for('home'))
     else:
         return redirect(url_for('login'))
 
@@ -879,17 +933,23 @@ def stafflist():
                 db["Users"] = staff_dict
         except:
             print("Error in retrieving User from staff.db")
+        
+        valid_session, name = validate_session_admin(StaffName, staff_dict)
 
         db.close()
 
         #Displaying the appending data into the stafflist so that it can be used to display data on the site
-        staff_list = []
-        for key in staff_dict:
-            staff = staff_dict.get(key)
-            staff_list.append(staff)
+        if valid_session:
+            staff_list = []
+            for key in staff_dict:
+                staff = staff_dict.get(key)
+                staff_list.append(staff)
 
 
-        return render_template('user/staff/stafflist.html', count=len(staff_list), staff_list=staff_list , staff = StaffName)
+            return render_template('user/staff/stafflist.html', count=len(staff_list), staff_list=staff_list , staff = name)
+        else:
+            session.clear()
+            return redirect(url_for('home'))
     else:
         return redirect(url_for('login'))
 
@@ -897,7 +957,12 @@ def stafflist():
 def staffprod():
     if "staff" in session:
         StaffName = session["staff"]
-        return render_template('user/staff/staffproduct.html' , staff = StaffName)
+        valid_session, name = validate_session_open_file_admin(StaffName)
+        if valid_session:
+            return render_template('user/staff/staffproduct.html' , staff = name)
+        else:
+            session.clear()
+            return redirect(url_for('home'))
     else:
         return redirect(url_for('login'))
 
@@ -905,46 +970,52 @@ def staffprod():
 def staffupdate(id):
     if "staff" in session:
         StaffName = session["staff"]
-        update_staff = Forms.CreateStaffMemberForm(request.form)
-        if request.method == 'POST' and update_staff.validate():
-            users_dict = {}
-            db = shelve.open('staff', 'c')
-            try:
-                if 'Users' in db:
-                    users_dict = db['Users']
-                else:
-                    db["Users"] = users_dict
-            except:
-                print("Error in retrieving Users from staff.db")
+        valid_session, name = validate_session_open_file_admin(StaffName)
+        
+        if valid_session:
+            update_staff = Forms.CreateStaffMemberForm(request.form)
+            if request.method == 'POST' and update_staff.validate():
+                users_dict = {}
+                db = shelve.open('staff', 'c')
+                try:
+                    if 'Users' in db:
+                        users_dict = db['Users']
+                    else:
+                        db["Users"] = users_dict
+                except:
+                    print("Error in retrieving Users from staff.db")
 
-            #key is the id, so it will edit the data of the staff member and its corresponding key
-            user = users_dict.get(id)
-            #using accessor methods to update data
-            user.set_username(Sanitise(update_staff.staff_name.data))
-            user.set_email(Sanitise(update_staff.staff_email.data))
+                #key is the id, so it will edit the data of the staff member and its corresponding key
+                user = users_dict.get(id)
+                #using accessor methods to update data
+                user.set_username(Sanitise(update_staff.staff_name.data))
+                user.set_email(Sanitise(update_staff.staff_email.data))
 
-            db['Users'] = users_dict
-            db.close()
+                db['Users'] = users_dict
+                db.close()
 
-            return redirect(url_for('stafflist'))
+                return redirect(url_for('stafflist'))
 
+            else:
+                users_dict = {}
+                db = shelve.open('staff', 'r')
+                try:
+                    if 'Users' in db:
+                        users_dict = db['Users']
+                    else:
+                        db["Users"] = users_dict
+                except:
+                    print("Error in retrieving Users from staff.db")
+                db.close()
+
+                user = users_dict.get(id)
+                update_staff.staff_name.data = user.get_username()
+                update_staff.staff_email.data = user.get_email()
+
+                return render_template('user/staff/staffupdate.html', form=update_staff, staff = name)
         else:
-            users_dict = {}
-            db = shelve.open('staff', 'r')
-            try:
-                if 'Users' in db:
-                    users_dict = db['Users']
-                else:
-                    db["Users"] = users_dict
-            except:
-                print("Error in retrieving Users from staff.db")
-            db.close()
-
-            user = users_dict.get(id)
-            update_staff.staff_name.data = user.get_username()
-            update_staff.staff_email.data = user.get_email()
-
-            return render_template('user/staff/staffupdate.html', form=update_staff, staff = StaffName)
+            session.clear()
+            return redirect(url_for('home'))
     else:
         return redirect(url_for('login'))
 
@@ -952,76 +1023,82 @@ def staffupdate(id):
 def staffadd():
     if "staff" in session:
         StaffName = session["staff"]
-        staff_form = Forms.CreateStaffMemberForm(request.form)
-        if request.method == 'POST' and staff_form.validate():
-            print("Successful Running")
-            duplicated_email = False
-            duplicated_username = False
-            emailInput = Sanitise(staff_form.staff_email.data.lower())
-            nameInput = Sanitise(staff_form.staff_name.data)
-            userDict = {}
-            db = shelve.open("staff", "c")
-            
-            try:
-                if 'Users' in db:
-                    userDict = db['Users']
-                else:
-                    db["Users"] = userDict
-            except:
-                print("Error in retrieving Users from staff.db")
+        valid_session , name = validate_session_open_file_admin(StaffName)
 
-            for key in userDict:
-                emailinshelve = userDict[key].get_email()
-                if emailInput == emailinshelve.lower():
-                    print("Registered email & inputted email:", emailinshelve, emailInput)
-                    duplicated_email = True
-                    print("Duplicate Email")
-                    break
-                else:
-                    print("Registered email & inputted email:", emailinshelve, emailInput)
-                    email_duplicates = False
-                    print("New Email")
-            
-            for key in userDict:
-                usernameinshelve = userDict[key].get_username()
-                if nameInput == usernameinshelve:
-                    print("Registered Username & inputted username:", usernameinshelve, nameInput)
-                    duplicated_username = True
-                    print("Duplicated Username")
-                    break
-                else:
-                    print("Registered Username & inputted username:", usernameinshelve, nameInput)
-                    username_duplicates = False
-                    print("New Username")
-
-            if(duplicated_email == False) and (duplicated_username == False):
-                print("Hello")
-                user = Staff.Staff(nameInput, emailInput, 'Staff1234')
-                for key in userDict:
-                    #To assign Staff ID, ensure that it is persistent and is accurate to the list
-                    staffidshelve = userDict[key].get_staff_id()
-                    print(staffidshelve , user.get_staff_id())
-
-                    if user.get_staff_id() != staffidshelve and user.get_staff_id() < staffidshelve:
-                        user.set_staff_id(user.get_staff_id())
+        if valid_session:
+            staff_form = Forms.CreateStaffMemberForm(request.form)
+            if request.method == 'POST' and staff_form.validate():
+                print("Successful Running")
+                duplicated_email = False
+                duplicated_username = False
+                emailInput = Sanitise(staff_form.staff_email.data.lower())
+                nameInput = Sanitise(staff_form.staff_name.data)
+                userDict = {}
+                db = shelve.open("staff", "c")
+                
+                try:
+                    if 'Users' in db:
+                        userDict = db['Users']
                     else:
-                        if user.get_staff_id() == staffidshelve or user.get_staff_id() < staffidshelve:
-                            print(str(user.get_staff_id()), str(userDict[key].get_staff_id()))
-                            user.set_staff_id(user.get_staff_id() + 1)
-                            print(str(user.get_staff_id()) + "Hello1")
+                        db["Users"] = userDict
+                except:
+                    print("Error in retrieving Users from staff.db")
 
-                        
-                userDict[user.get_staff_id()] = user
-                db["Users"] = userDict
-                db.close()
-                return redirect(url_for("stafflist"))
+                for key in userDict:
+                    emailinshelve = userDict[key].get_email()
+                    if emailInput == emailinshelve.lower():
+                        print("Registered email & inputted email:", emailinshelve, emailInput)
+                        duplicated_email = True
+                        print("Duplicate Email")
+                        break
+                    else:
+                        print("Registered email & inputted email:", emailinshelve, emailInput)
+                        email_duplicates = False
+                        print("New Email")
+                
+                for key in userDict:
+                    usernameinshelve = userDict[key].get_username()
+                    if nameInput == usernameinshelve:
+                        print("Registered Username & inputted username:", usernameinshelve, nameInput)
+                        duplicated_username = True
+                        print("Duplicated Username")
+                        break
+                    else:
+                        print("Registered Username & inputted username:", usernameinshelve, nameInput)
+                        duplicated_username = False
+                        print("New Username")
+
+                if(duplicated_email == False) and (duplicated_username == False):
+                    print("Hello")
+                    user = Staff.Staff(nameInput, emailInput, 'Staff1234')
+                    for key in userDict:
+                        #To assign Staff ID, ensure that it is persistent and is accurate to the list
+                        staffidshelve = userDict[key].get_staff_id()
+                        print(staffidshelve , user.get_staff_id())
+
+                        if user.get_staff_id() != staffidshelve and user.get_staff_id() < staffidshelve:
+                            user.set_staff_id(user.get_staff_id())
+                        else:
+                            if user.get_staff_id() == staffidshelve or user.get_staff_id() < staffidshelve:
+                                print(str(user.get_staff_id()), str(userDict[key].get_staff_id()))
+                                user.set_staff_id(user.get_staff_id() + 1)
+                                print(str(user.get_staff_id()) + "Hello1")
+
+                            
+                    userDict[user.get_staff_id()] = user
+                    db["Users"] = userDict
+                    db.close()
+                    return redirect(url_for("stafflist"))
+                else:
+                    print("Hello2")
+                    db.close()
+                    return render_template('user/staff/staffadd.html', form=staff_form, duplicated_email=duplicated_email, duplicated_username=duplicated_username, staff = name) 
             else:
-                print("Hello2")
-                db.close()
-                return render_template('user/staff/staffadd.html', form=staff_form, duplicated_email=duplicated_email, duplicated_username=duplicated_username, staff = StaffName) 
+                print("Hello3")
+                return render_template('user/staff/staffadd.html',  form=staff_form, staff = name)
         else:
-            print("Hello3")
-            return render_template('user/staff/staffadd.html',  form=staff_form, staff = StaffName)
+            session.clear()
+            return redirect(url_for('home'))
     else:
         return redirect(url_for('login'))
 
@@ -1039,13 +1116,21 @@ def deleteStaff(id):
                 db["Users"] = users_dict
         except:
             print("Error in retrieving Users from staff.db")
+        
+        valid_session, name = validate_session_admin(StaffName, users_dict)
 
-        users_dict.pop(id)
+        if valid_session:
 
-        db['Users'] = users_dict
-        db.close()
+            users_dict.pop(id)
 
-        return redirect(url_for('stafflist', staff = StaffName))
+            db['Users'] = users_dict
+            db.close()
+
+            return redirect(url_for('stafflist', staff = name))
+        else:
+            db.close()
+            session.clear()
+            return redirect(url_for('home'))
     else:
         return redirect(url_for('login'))
 
@@ -1064,15 +1149,21 @@ def staffaccountlist():
         except:
             print("Error in retrieving User from user.db")
 
+        valid_session , name = validate_session_open_file_admin(StaffName)
+
         db.close()
 
+        if valid_session:
         #Displaying the appending data into the stafflist so that it can be used to display data on the site
-        user_list = []
-        for key in user_dict:
-            user = user_dict.get(key)
-            user_list.append(user)
+            user_list = []
+            for key in user_dict:
+                user = user_dict.get(key)
+                user_list.append(user)
 
-        return render_template('user/staff/staffaccountlist.html', count=len(user_list), user_list=user_list , staff = StaffName)
+            return render_template('user/staff/staffaccountlist.html', count=len(user_list), user_list=user_list , staff = name)
+        else:
+            session.clear()
+            return redirect(url_for('home'))
     else:
         return redirect(url_for('login'))
 
@@ -1089,13 +1180,20 @@ def banUser(id):
                 db["Users"] = users_dict
         except:
             print("Error in retrieving Users from user.db")
+        
+        valid_session , name = validate_session_open_file_admin(StaffName)
 
-        users_dict.pop(id)
+        if valid_session:
+            users_dict.pop(id)
 
-        db['Users'] = users_dict
-        db.close()
+            db['Users'] = users_dict
+            db.close()
 
-        return redirect(url_for('staffaccountlist', staff = StaffName))
+            return redirect(url_for('staffaccountlist', staff = name))
+        else:
+            db.close()
+            session.clear()
+            return redirect(url_for('home'))
     else:
         return redirect(url_for('login'))
 
@@ -1142,6 +1240,7 @@ def error503(error):
 
 
 """
+#Part Done By XuZhi
 
 @app.route("/News")
 def News():

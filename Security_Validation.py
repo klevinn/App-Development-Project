@@ -1,4 +1,4 @@
-
+import shelve
 from datetime import date
 
 # using Luhn's Algorithms 
@@ -78,3 +78,51 @@ print(validate_card_number(12395))
 def Sanitise(stringInput):
     stringInput = stringInput.strip()
     return stringInput
+
+#Validate Session
+
+def validate_session(session , dictionary):
+    for key in dictionary:
+        userid_in_shelve = dictionary[key].get_user_id()
+        if session == userid_in_shelve:
+            return True
+        else:
+            user_found = False
+    
+    return user_found
+
+def validate_session_open_file_admin(session):
+    users_dict = {}
+    db = shelve.open("staff", "r")
+    try:
+        users_dict = db['Users']
+        print("File found.")
+    except:
+        print("File could not be found.")
+        return False
+    
+    db.close()
+
+    for key in users_dict:
+        staffname = users_dict[key].get_staff_id()
+        emptyStr = ""
+        print(staffname)
+        print(session)
+        if session == staffname:
+            name = users_dict[key].get_username()
+            return True , name
+        else:
+            staff_found = False
+        
+    return staff_found , emptyStr
+
+def validate_session_admin(session,dictionary):
+    for key in dictionary:
+        staffname = dictionary[key].get_staff_id()
+        emptyStr = ""
+        if session == staffname:
+            name = dictionary[key].get_username()
+            return True , name
+        else:
+            staff_found = False
+    return staff_found , emptyStr
