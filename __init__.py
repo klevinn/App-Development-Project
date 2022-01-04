@@ -150,7 +150,7 @@ def login():
             
             
             if validstaffemail == True:
-                print("Hello-New")
+                print("Running: Checking Staff Password")
                 passwordinshelve = staff_email_key.get_password()
                 if passwordInput == passwordinshelve:
 
@@ -229,7 +229,7 @@ def signup():
 
             
             if (matched_pw == False) and (duplicated_email == False) and (duplicated_username == False) and (check_ban != True):
-                print("Hello")
+                print("Account Made!, Creating USER ID")
                 user = User.User(usernameInput, emailInput, pw_hash)
                 print(user.get_user_id())
                 for key in userDict:
@@ -238,9 +238,10 @@ def signup():
                     if user.get_user_id() != useridshelve and user.get_user_id() < useridshelve:
                         user.set_user_id(user.get_user_id())
                     if user.get_user_id() == useridshelve or user.get_user_id() < useridshelve:
-                        print(str(user.get_user_id()), str(userDict[key].get_user_id()))
                         user.set_user_id(user.get_user_id() + 1)
-                        print(str(user.get_user_id()) + "Hello1")
+                        #For Testing
+                        #print(str(user.get_user_id()), str(userDict[key].get_user_id()))
+                        #print(str(user.get_user_id()) + "Hello1")
 
                 print(user.get_user_id())
                 userDict[user.get_user_id()] = user
@@ -252,11 +253,10 @@ def signup():
 
                 return redirect(url_for("signup2"))
             else:
-                print("Hello2")
+                print("SignIn Failed: Error Encountered")
                 db.close()
                 return render_template('user/guest/signup.html', form=signup_form, duplicated_email=duplicated_email, duplicated_username=duplicated_username, matched_pw=matched_pw, check_ban = check_ban) 
         else:
-            print("Hello3")
             return render_template('user/guest/signup.html',  form=signup_form)
     else:
         return redirect(url_for("home"))
@@ -306,7 +306,7 @@ def signup2():
                             print("Error in retrieving Users from user.db")
                         
                         for key in users_dict:
-                            print("retrieving")
+                            print("Retrieving Emails")
                             emailinshelve = users_dict[key].get_email()
                             if CustEmail == emailinshelve:
                                 customerkey = users_dict[key]
@@ -378,7 +378,7 @@ def signup3():
                     print("Error in retrieving Users from user.db")
                 
                 for key in users_dict:
-                    print("retrieving")
+                    print("Retrieving Emails")
                     emailinshelve = users_dict[key].get_email()
                     if CustEmail == emailinshelve:
                         customerkey = users_dict[key]
@@ -565,7 +565,7 @@ def userinfo():
                     return redirect(url_for("user"))
 
                 else:
-                    print("Hello2")
+                    print("Edit Failed = Error Occured")
                     db.close()
                     return render_template('user/loggedin/user_info_edit.html', form=update_user, duplicated_email=existing_email, duplicated_username=existing_username, user = UserName, check_ban = check_ban) 
             else:

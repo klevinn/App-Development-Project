@@ -87,10 +87,6 @@ class User(Person):
         card = z + s
         return card
 
-    def display_card_expiry_date(self):
-        expiry_date = str(self.__card_expiry)
-        e = expiry_date[:7]
-        return e
     
     def display_unit_number(self):
         unit_number = ("# %s - %s" %(self.__unit_number1 , self.__unit_number2))

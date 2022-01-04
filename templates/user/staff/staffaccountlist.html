@@ -85,7 +85,7 @@
                                         <tbody>
                                             <td>{{ user.get_card_name() }}</td>
                                             <td>{{ user.get_card_no() }}</td>
-                                            <td>{{ user.display_card_expiry_date() }}</td>
+                                            <td>{{ user.display_expiry_date() }}</td>
                                         </tbody>
                                       </table>
                                     </td>
@@ -102,7 +102,7 @@
                                           <tbody>
                                               <td>{{ user.get_shipping_address() }}</td>
                                               <td>{{ user.get_postal_code() }}</td>
-                                              <td>{{ user.get_unit_number() }}</td>
+                                              <td>{{ user.display_unit_number() }}</td>
                                               <td>{{ user.get_phone_number() }}</td>
                                           </tbody>
                                         </table>
