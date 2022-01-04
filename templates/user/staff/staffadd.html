@@ -12,11 +12,15 @@
                     <h4 class="text-black">Add Staff Member</h4>
                     <div class="col-12">
                         {{ render_field(form.staff_name, class="form-control") }}
+                        {% if duplicated_username %}<div class="text-danger"><span id="error">Taken Username</span></div>{% endif %}
                         <!--label>Name:</label>
                         <input type="text" name="name" class="form-control" placeholder="Full Name"-->
                     </div>
                     <div class="col-12">
                         {{ render_field(form.staff_email, class="form-control") }}
+                        {% if duplicated_email%}
+                            <div class="text-danger"><span id="error">Taken Email</span></div>
+                        {% endif %}
                         <!--label>Email:</label>
                         <input type="text" name="email" class="form-control" placeholder="Email"-->
                     </div>
@@ -24,6 +28,10 @@
                         <button type="submit" class="btn btn-dark float-end">Add</button>
                     </div>
                 </form>
+                <hr class="mt-4">
+                <div class="col-12">
+                    <p class="text-center mb-0">Change Your Mind? <a href="/stafflist/1">Back To Staff List Page</a></p>
+                </div>
             </div>
         </div>
     </div>
