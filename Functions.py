@@ -41,3 +41,30 @@ def get_user_name(idnumber, dictionary):
         if idnumber == key:
             UserName = dictionary[key].get_username()
             return UserName
+
+def fix_unit_number(number):
+    if number:
+        if number < 10:
+            number = str(number)
+            number = ("0%s" %(number)) 
+            return number
+        else:
+            number = str(number)
+            return number
+    else:
+        return ''
+
+'''
+def break_unit_number(number):
+    unit_number1 = number[2:4]
+    unit_number2 = number[7:9]
+    unit_number1 = int(unit_number1)
+    unit_number2 = int(unit_number2)
+    return unit_number1, unit_number2
+''' 
+
+"""
+unit_number1, unit_number2 = break_unit_number("# 04 - 05")
+print(unit_number1)
+print(unit_number2)
+"""

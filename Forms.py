@@ -10,7 +10,7 @@ class CreateLoginForm(Form):
     password = PasswordField("Password:", [validators.DataRequired()])
 
 class CreateSignUpForm(Form):
-    username = StringField("Username:", [validators.DataRequired()])
+    username = StringField("", [validators.DataRequired()])
     email = EmailField("Email:", [validators.Email(), validators.DataRequired()])
     password = PasswordField("Password:", [validators.Length(min=6, max=20), validators.DataRequired()])
     password_confirm = PasswordField("Confirm Password:", [validators.Length(min=6, max=20), validators.DataRequired()])
@@ -22,10 +22,11 @@ class CreateAddPaymentForm(Form):
     card_CVV = IntegerField("CVV:", [validators.NumberRange(min=0, max=999)])
 
 class CreateAddShippingAddressForm(Form):
-    shipping_address = StringField("Shipping Address: ")
-    postal_code = IntegerField("Postal Code: ",[validators.NumberRange(min=0, max=999999)])
-    unit_number = StringField("Unit Number: ",[validators.NumberRange(min=5, max=6)])
-    phone_no = IntegerField("Phone Number: ",[validators.NumberRange(min=0, max=99999999)])
+    shipping_address = StringField("")
+    postal_code = IntegerField("",[validators.NumberRange(min=0, max=999999)])
+    unit_number1 = IntegerField("",[validators.NumberRange(min=0, max=99)])
+    unit_number2 = IntegerField("",[validators.NumberRange(min=0, max=99)])
+    phone_no = IntegerField("",[validators.NumberRange(min=0, max=99999999)])
 
 class CreateStaffMemberForm(Form):
     staff_name = StringField("Staff Name:", [validators.DataRequired()])

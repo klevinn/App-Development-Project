@@ -15,13 +15,17 @@
                             <div class="progress-bar bg-success" style="width:25%"></div>
                           </div>
                         <div class="col-12">
-                            {{ render_field(form.username, class="form-control") }}
-                            {% if duplicated_username %}<div class="text-danger"><span id="error">Taken Username</span></div>{% endif %}
+                            <label for="">Username:</label>
+                            <div class="input-group">
+                                <span class="input-group-text" id="basic-addon1">@</span>
+                                {{ render_field(form.username, class="form-control", placeholder="Username") }}
+                              </div>
+                              {% if duplicated_username %}<div class="text-danger"><span id="error">Taken Username</span></div>{% endif %}
                             <!--label>Username:</label>
                             <input type="text" name="name" class="form-control" placeholder="Username"-->
                         </div>
                         <div class="col-12">
-                            {{ render_field(form.email, class="form-control") }}
+                            {{ render_field(form.email, class="form-control" , placeholder="example@email.com") }}
                             {% if check_ban %}
                             <div class="text-danger"><span id="error">Email has been banned</span></div>
                             {% elif duplicated_email and check_ban == False %}
@@ -31,12 +35,12 @@
                             <input type="text" name="email" class="form-control" placeholder="Email"-->
                         </div>
                         <div class="col-12">
-                            {{ render_field(form.password, class="form-control") }}
+                            {{ render_field(form.password, class="form-control", placeholder="Password") }}
                             <!--label>Password:</label>
                             <input type="password" name="password" class="form-control" placeholder="Password"-->
                         </div>
                         <div class="col-12">
-                            {{ render_field(form.password_confirm, class="form-control") }}
+                            {{ render_field(form.password_confirm, class="form-control", placeholder="Password") }}
                             {% if matched_pw %}<div class="text-danger"><span id="error">Passwords do not match</span></div>{% endif %}
                             <!--label>Confirm Password:</label>
                             <input type="password" name="password" class="form-control" placeholder=" Confirm Password"-->

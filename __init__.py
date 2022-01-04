@@ -10,7 +10,7 @@ from flask_bcrypt import Bcrypt
 import Forms
 import User, Staff
 from Security_Validation import validate_card_number, Sanitise, validate_expiry_date, validate_session, validate_session_open_file_admin, validate_session_admin
-from Functions import duplicate_email, duplicate_username, get_user_name, check_banned
+from Functions import duplicate_email, duplicate_username, get_user_name, check_banned, fix_unit_number
 
 #Functions that are repeated
 
@@ -228,7 +228,7 @@ def signup():
             check_ban = check_banned(emailInput, userDict)
 
             
-            if (matched_pw == False) and (duplicated_email == False) and (duplicated_username == False) and (check_ban == False):
+            if (matched_pw == False) and (duplicated_email == False) and (duplicated_username == False) and (check_ban != True):
                 print("Hello")
                 user = User.User(usernameInput, emailInput, pw_hash)
                 print(user.get_user_id())
@@ -344,12 +344,12 @@ def signup3():
                 print("Running")
                 CustFound = False
 
-                shipping_address = Sanitise(shipping_form.shipping_address.data.upper())
+                shipping_address = ("BLK " + Sanitise(shipping_form.shipping_address.data.upper()))
                 print(shipping_address)
-                postal_code = shipping_form.postal_code.data
+                postal_code = ("(S)" + str(shipping_form.postal_code.data))
                 print(postal_code)
-                unit_number = Sanitise(shipping_form.unit_number.data)
-                print(unit_number)
+                unit_number1 = fix_unit_number(shipping_form.unit_number1.data)
+                unit_number2 = fix_unit_number(shipping_form.unit_number2.data)
                 phone_no = shipping_form.phone_no.data
                 print(phone_no)
 
@@ -378,7 +378,8 @@ def signup3():
                     return redirect(url_for("home"))
 
                 customerkey.set_shipping_address(shipping_address)
-                customerkey.set_unit_number(unit_number)
+                customerkey.set_unit_number1(unit_number1)
+                customerkey.set_unit_number2(unit_number2)
                 customerkey.set_postal_code(postal_code)
                 customerkey.set_phone_number(phone_no)
 
@@ -482,6 +483,7 @@ def userinfo():
         UserName =  get_user_name(idNumber, users_dict)
         
         valid_session = validate_session(idNumber, users_dict)
+        
 
         db.close()
 
@@ -532,7 +534,9 @@ def userinfo():
                             existing_username = False
                             print("New Username")
 
-                if(existing_email == False) and (existing_username == False):
+                check_ban = check_banned(emailInput, users_dict)
+
+                if(existing_email == False) and (existing_username == False) and (check_ban != True):
                     for key in users_dict:
                         if key == idNumber:
                             user = users_dict[key]
@@ -551,7 +555,7 @@ def userinfo():
                 else:
                     print("Hello2")
                     db.close()
-                    return render_template('user/loggedin/user_info_edit.html', form=update_user, duplicated_email=existing_email, duplicated_username=existing_username, user = UserName) 
+                    return render_template('user/loggedin/user_info_edit.html', form=update_user, duplicated_email=existing_email, duplicated_username=existing_username, user = UserName, check_ban = check_ban) 
             else:
                 users_dict = {}
                 db = shelve.open('user', 'r')
@@ -674,9 +678,11 @@ def useraddress():
             update_address = Forms.CreateAddShippingAddressForm(request.form)
             if request.method == "POST":
                 print("Successful Running")
-                address = Sanitise(update_address.shipping_address.data.upper())
-                postal_code = update_address.postal_code.data
-                unit_number = Sanitise(update_address.unit_number.data)
+                
+                address = ("BLK " + Sanitise(update_address.shipping_address.data.upper()))
+                postal_code = ("(S)" + str(update_address.postal_code.data))
+                unit_number1 = fix_unit_number(update_address.unit_number1.data)
+                unit_number2 = fix_unit_number(update_address.unit_number2.data)
                 phone_no = update_address.phone_no.data
 
                 users_dict ={}
@@ -694,7 +700,8 @@ def useraddress():
                 #using accessor methods to update data
                 user.set_shipping_address(address)
                 user.set_postal_code(postal_code)
-                user.set_unit_number(unit_number)
+                user.set_unit_number1(unit_number1)
+                user.set_unit_number2(unit_number2)
                 user.set_phone_number(phone_no)
 
                 db['Users'] = users_dict
@@ -715,12 +722,22 @@ def useraddress():
                 db.close()
 
                 user = users_dict.get(idNumber)
-                update_address.shipping_address.data = user.get_shipping_address()
+                update_address.shipping_address.data = (user.get_shipping_address()[4:])
                 print(user.get_shipping_address())
-                update_address.unit_number.data = user.get_unit_number()
+                unitnum1 = user.get_unit_number1()
+                unitnum2 = user.get_unit_number2()
+                print('hi',unitnum1, unitnum2)
+                print(len(unitnum1), len(unitnum2))
+                if len(unitnum1) == 0 or len(unitnum2) == 0:
+                    update_address.unit_number1.data = unitnum1
+                    update_address.unit_number2.data = unitnum2
+                else:
+                    update_address.unit_number1.data = int(unitnum1)
+                    update_address.unit_number2.data = int(unitnum2)
                 print(user.get_postal_code())
-                update_address.postal_code.data = user.get_postal_code()
-                print(user.get_unit_number())
+                shortened_postal = user.get_postal_code()[3:]
+                update_address.postal_code.data = int(shortened_postal)
+
                 update_address.phone_no.data = user.get_phone_number()
                 print(user.get_phone_number())
                 return render_template('user/loggedin/user_address.html', form=update_address, user = UserName)

@@ -12,22 +12,40 @@
                 <form action="" method="POST" class="row g-3">
                     <h4 class="text-black">Update Your Account!</h4>
                     <div class="col-12">
-                        {{ render_field(form.shipping_address, class="form-control") }}
+                        <label for="">Shipping Address:</label>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon1">Blk</span>
+                                {{ render_field(form.shipping_address, class="form-control", placeholder="123A Singapore Street") }}
+                              </div>
                         <!--label>Shipping Address:</label>
                         <input type="text" name="address" class="form-control" placeholder="Enter Block Number and Street Name"-->
                     </div>
                     <div class="form-group col-md-6">
-                        {{ render_field(form.unit_number, class="form-control") }}
+                        <label for="">Unit Number:</label>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">#</span>
+                            {{ render_field(form.unit_number1, class="form-control", placeholder="01") }}
+                            <span class="input-group-text">-</span>
+                            {{ render_field(form.unit_number2, class="form-control", placeholder="02") }}
+                          </div>
                         <!--label for="inputEmail4">Unit Number</label>
                         <input type="number" class="form-control" id="unit_number" placeholder="#00-00"-->
                     </div>
                     <div class="form-group col-md-6">
-                        {{ render_field(form.postal_code, class="form-control") }}
+                        <label for="">Postal Code</label>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon1">(S)</span>
+                                {{ render_field(form.postal_code, class="form-control", placeholder="123321") }}
+                            </div>
                         <!--label for="inputPassword4">Postal Code</label>
                         <input type="text" class="form-control" id="shipping_address" placeholder="(S)######"-->
                     </div>
                     <div class="col-12">
-                        {{ render_field(form.phone_no, class="form-control") }}
+                        <label for="">Phone Number</label>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">+65</span>
+                            {{ render_field(form.phone_no, class="form-control", placeholder="12344321") }}
+                        </div>
                         <!--label>Contact Number:</label>
                         <input type="number" name="phone_num" class="form-control" placeholder="Phone Number"-->
                     </div> 

@@ -84,6 +84,7 @@ def Sanitise(stringInput):
 #Validate Session
 
 def validate_session(session , dictionary):
+    user_found = False
     for key in dictionary:
         userid_in_shelve = dictionary[key].get_user_id()
         if session == userid_in_shelve:
