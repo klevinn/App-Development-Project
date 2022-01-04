@@ -18,9 +18,13 @@ class CreateSignUpForm(Form):
 class CreateAddPaymentForm(Form):
     card_name = StringField("Card Name:", [validators.Length(min=1, max=150)])
     card_no = IntegerField("Card Number:", [validators.NumberRange(min=0, max=9999999999999999)])
-    card_expiry = MonthField("Expiry Date:")
+    #some browsers dont support monthfields
+    #card_expiry = MonthField("Expiry Date:")
+    card_expiry_month = IntegerField("", [validators.NumberRange(min=0, max=12)])
+    card_expiry_year = IntegerField("", [validators.NumberRange(min=0, max=9999)])
     card_CVV = IntegerField("CVV:", [validators.NumberRange(min=0, max=999)])
 
+#Labels are empty, because of form related css, they intefere with design
 class CreateAddShippingAddressForm(Form):
     shipping_address = StringField("")
     postal_code = IntegerField("",[validators.NumberRange(min=0, max=999999)])

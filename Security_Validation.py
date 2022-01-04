@@ -1,7 +1,7 @@
 #Done By Calvin
 
 import shelve
-from datetime import date
+from datetime import datetime
 
 # using Luhn's Algorithms 
 """
@@ -60,11 +60,19 @@ def validate_card_number(credit_card_number):
             return False
 
 
-def validate_expiry_date(expiry_date):
+def validate_expiry_date(expiry_year, expiry_month):
     try:
-        currentDate = date.today().replace(day=1) #changing day to 1 becuase monthfield sets days as 1
-        if expiry_date >= currentDate:
-            return True
+        currentMonth = datetime.now().month
+        print(currentMonth)
+        print(expiry_month)
+        currentYear = datetime.now().year   
+        print(currentYear)
+        print(expiry_year)
+        if expiry_year >= currentYear:
+            if expiry_month >= currentMonth:
+                return True
+            else:
+                return False
         else:
             return False
     except:
@@ -130,3 +138,5 @@ def validate_session_admin(session,dictionary):
         else:
             staff_found = False
     return staff_found , emptyStr
+
+

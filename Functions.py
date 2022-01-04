@@ -54,6 +54,24 @@ def fix_unit_number(number):
     else:
         return ''
 
+def fix_expiry_year(number):
+    if number:
+        if number < 10:
+            number = str(number)
+            number = ("200%s" %(number)) 
+            return number
+        elif number < 99:
+            number = str(number)
+            number = ("20%s" %(number)) 
+            return number
+        elif number > 99 and number < 1000:
+            return False
+        else:
+            number = str(number)
+            return number
+    else:
+        return ''
+
 '''
 def break_unit_number(number):
     unit_number1 = number[2:4]

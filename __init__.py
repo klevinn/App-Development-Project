@@ -10,7 +10,7 @@ from flask_bcrypt import Bcrypt
 import Forms
 import User, Staff
 from Security_Validation import validate_card_number, Sanitise, validate_expiry_date, validate_session, validate_session_open_file_admin, validate_session_admin
-from Functions import duplicate_email, duplicate_username, get_user_name, check_banned, fix_unit_number
+from Functions import duplicate_email, duplicate_username, get_user_name, check_banned, fix_unit_number, fix_expiry_year
 
 #Functions that are repeated
 
@@ -279,50 +279,62 @@ def signup2():
                 card_num = payment_form.card_no.data
                 print(card_num)
                 valid_card_num = validate_card_number(card_num)
-                card_expiry = payment_form.card_expiry.data
-                print(card_expiry)
-                valid_card_expiry = validate_expiry_date(card_expiry)
-                card_cvv = payment_form.card_CVV.data
-                print(card_cvv)
-            
-                if valid_card_num == True & valid_card_expiry == True:
-                    users_dict = {}
-                    db = shelve.open("user", "c")
+                card_expiry_month = fix_unit_number(payment_form.card_expiry_month.data) 
+                card_expiry_year = fix_expiry_year(payment_form.card_expiry_year.data)
+                print(card_expiry_year)
+                if card_expiry_year != False:
+                    expiry_date = ('%s-%s-01' %(card_expiry_year, card_expiry_month))
+                    print(expiry_date)
                     try:
-                        if 'Users' in db:
-                            users_dict = db['Users']
-                        else:
+                        card_expiry_year = int(card_expiry_year)
+                    except:
+                        card_expiry_year = card_expiry_year
+                    valid_card_expiry = validate_expiry_date(card_expiry_year, payment_form.card_expiry_month.data)
+                    card_cvv = payment_form.card_CVV.data
+                    print(card_cvv)
+                
+                    if valid_card_num == True & valid_card_expiry == True:
+                        users_dict = {}
+                        db = shelve.open("user", "c")
+                        try:
+                            if 'Users' in db:
+                                users_dict = db['Users']
+                            else:
+                                session.clear()
+                                return redirect(url_for("home"))
+                        except:
+                            print("Error in retrieving Users from user.db")
+                        
+                        for key in users_dict:
+                            print("retrieving")
+                            emailinshelve = users_dict[key].get_email()
+                            if CustEmail == emailinshelve:
+                                customerkey = users_dict[key]
+                                CustFound = True
+                                break
+
+                        if CustFound == False:
                             session.clear()
                             return redirect(url_for("home"))
-                    except:
-                        print("Error in retrieving Users from user.db")
-                    
-                    for key in users_dict:
-                        print("retrieving")
-                        emailinshelve = users_dict[key].get_email()
-                        if CustEmail == emailinshelve:
-                            customerkey = users_dict[key]
-                            CustFound = True
-                            break
 
-                    if CustFound == False:
-                        session.clear()
-                        return redirect(url_for("home"))
+                        customerkey.set_card_name(card_name)
+                        customerkey.set_card_no(card_num)
+                        customerkey.set_card_expiry_month(card_expiry_month)
+                        customerkey.set_card_expiry_year(card_expiry_year)
+                        customerkey.set_card_cvv(card_cvv)
 
-                    customerkey.set_card_name(card_name)
-                    customerkey.set_card_no(card_num)
-                    customerkey.set_card_expiry(card_expiry)
-                    customerkey.set_card_cvv(card_cvv)
-
-                    db['Users'] = users_dict
-                    print("Payment added")
+                        db['Users'] = users_dict
+                        print("Payment added")
 
 
-                    db.close()
-                    return redirect(url_for("signup3"))
+                        db.close()
+                        return redirect(url_for("signup3"))
+                    else:
+                        print("Invalid Card Number")
+                        return render_template('user/guest/signup2.html' , form=payment_form, valid_card_num = valid_card_num, valid_card_expiry = valid_card_expiry)
                 else:
-                    print("Invalid Card Number")
-                    return render_template('user/guest/signup2.html' , form=payment_form, valid_card_num = valid_card_num, valid_card_expiry = valid_card_expiry)
+                    print("Invalid Expiry Date")
+                    return render_template('user/guest/signup2.html' , form=payment_form, valid_card_num = valid_card_num, card_expiry_year = card_expiry_year)
             else:
                 print("Error")
                 return render_template('user/guest/signup2.html', form=payment_form)
@@ -772,60 +784,89 @@ def usercard():
         if valid_session:
             update_card = Forms.CreateAddPaymentForm(request.form)
             if request.method == 'POST':
-                print("Successful Running")
-                card_name =  Sanitise(update_card.card_name.data.upper())
-                card_no = update_card.card_no.data
-                valid_card_num = validate_card_number(card_no)
-                card_expiry = update_card.card_expiry.data
-                valid_card_expiry = validate_expiry_date(card_expiry)
-                card_cvv = update_card.card_CVV.data
+                print("Running")
+                CustFound = False
 
-                if valid_card_num == True and valid_card_expiry == True:
-                    users_dict ={}
-                    db = shelve.open('user', 'c')
-
+                card_name = Sanitise(update_card.card_name.data.upper())
+                print(card_name)
+                card_num = update_card.card_no.data
+                print(card_num)
+                valid_card_num = validate_card_number(card_num)
+                card_expiry_month = fix_unit_number(update_card.card_expiry_month.data) 
+                card_expiry_year = fix_expiry_year(update_card.card_expiry_year.data)
+                print(card_expiry_year)
+                if card_expiry_year != False:
+                    expiry_date = ('%s-%s-01' %(card_expiry_year, card_expiry_month))
+                    print(expiry_date)
                     try:
-                        if 'Users' in db:
-                            users_dict = db['Users']
-                        else:
-                            db["Users"] = users_dict
+                        card_expiry_year = int(card_expiry_year)
                     except:
-                        print("Error in retrieving User from user.db")
-                    
-                    user = users_dict.get(idNumber)
-                    #using accessor methods to update data
-                    user.set_card_no(card_no)
-                    user.set_card_name(card_name)
-                    user.set_card_expiry(card_expiry)
-                    user.set_card_cvv(card_cvv)
+                        card_expiry_year = card_expiry_year
+                    valid_card_expiry = validate_expiry_date(card_expiry_year, update_card.card_expiry_month.data)
+                    card_cvv = update_card.card_CVV.data
 
 
-                    db['Users'] = users_dict
-                    db.close()
+                    if valid_card_num == True and valid_card_expiry == True:
+                        users_dict ={}
+                        db = shelve.open('user', 'c')
 
-                    return redirect(url_for("user"))
+                        try:
+                            if 'Users' in db:
+                                users_dict = db['Users']
+                            else:
+                                db["Users"] = users_dict
+                        except:
+                            print("Error in retrieving User from user.db")
+                        
+                        user = users_dict.get(idNumber)
+                        #using accessor methods to update data
+                        user.set_card_no(card_num)
+                        user.set_card_name(card_name)
+                        user.set_card_expiry_month(card_expiry_month)
+                        user.set_card_expiry_year(card_expiry_year)
+                        user.set_card_cvv(card_cvv)
+
+
+                        db['Users'] = users_dict
+                        db.close()
+
+                        return redirect(url_for("user"))
+
+                    else:
+                        users_dict = {}
+                        db = shelve.open('user', 'r')
+                        try:
+                            if 'Users' in db:
+                                users_dict = db['Users']
+                            else:
+                                db["Users"] = users_dict
+                        except:
+                            print("Error in retrieving Users from user.db")
+                        db.close()
+
+                        user = users_dict.get(idNumber)
+                        update_card.card_name.data = user.get_card_name()
+                        print(user.get_card_name())
+
+                        #update_card.card_no.data = user.get_card_no()
+                        #print(user.get_card_no())
+                        card_month = user.get_card_expiry_month()
+                        card_year = user.get_card_expiry_year()
+
+                        if len(card_month) == 0 or len(card_year) == 0:
+                            update_card.card_expiry_year.data = card_year
+                            update_card.card_expiry_month.data = card_month
+                        else:
+                            update_card.card_expiry_year.data = int(card_year)
+                            update_card.card_expiry_month.data = int(card_month)
+
+                        update_card.card_CVV.data = user.get_card_cvv()
+                        print(user.get_card_cvv())
+                        return render_template('user/loggedin/user_cardinfo.html', form=update_card, user = UserName, valid_card_num = valid_card_num, valid_card_expiry=valid_card_expiry)
+                
                 else:
-                    users_dict = {}
-                    db = shelve.open('user', 'r')
-                    try:
-                        if 'Users' in db:
-                            users_dict = db['Users']
-                        else:
-                            db["Users"] = users_dict
-                    except:
-                        print("Error in retrieving Users from user.db")
-                    db.close()
-
-                    user = users_dict.get(idNumber)
-                    update_card.card_name.data = user.get_card_name()
-                    print(user.get_card_name())
-                    #update_card.card_no.data = user.get_card_no()
-                    #print(user.get_card_no())
-                    update_card.card_expiry.data = user.get_card_expiry()
-                    print(user.get_card_expiry())
-                    update_card.card_CVV.data = user.get_card_cvv()
-                    print(user.get_card_cvv())
-                    return render_template('user/loggedin/user_cardinfo.html', form=update_card, user = UserName, valid_card_num = valid_card_num, valid_card_expiry=valid_card_expiry)
+                    print("Invalid Expiry Date")
+                    return render_template('user/guest/signup2.html' , form=update_card, valid_card_num = valid_card_num, card_expiry_year = card_expiry_year)
             else:
                 users_dict = {}
                 db = shelve.open('user', 'r')
@@ -843,8 +884,15 @@ def usercard():
                 print(user.get_card_name())
                 update_card.card_no.data = user.get_card_no()
                 print(user.get_card_no())
-                update_card.card_expiry.data = user.get_card_expiry()
-                print(user.get_card_expiry())
+                card_month = user.get_card_expiry_month()
+                card_year = user.get_card_expiry_year()
+
+                if len(card_month) == 0 or len(card_year) == 0:
+                    update_card.card_expiry_year.data = card_year
+                    update_card.card_expiry_month.data = card_month
+                else:
+                    update_card.card_expiry_year.data = int(card_year)
+                    update_card.card_expiry_month.data = int(card_month)
                 update_card.card_CVV.data = user.get_card_cvv()
                 print(user.get_card_cvv())
                 return render_template('user/loggedin/user_cardinfo.html', form=update_card, user = UserName)
@@ -882,7 +930,8 @@ def deleteCard():
             user = users_dict.get(idNumber)
             user.set_card_no(emptyString)
             user.set_card_name(emptyString)
-            user.set_card_expiry(emptyString)
+            user.set_card_expiry_month(emptyString)
+            user.set_card_expiry_year(emptyString)
             user.set_card_cvv(emptyString)
 
             db['Users'] = users_dict
@@ -921,7 +970,8 @@ def deleteAddress():
             user = users_dict.get(idNumber)
             user.set_shipping_address(emptyString)
             user.set_postal_code(emptyString)
-            user.set_unit_number(emptyString)
+            user.set_unit_number1(emptyString)
+            user.set_unit_number2(emptyString)
             user.set_phone_number(emptyString)
 
             db['Users'] = users_dict

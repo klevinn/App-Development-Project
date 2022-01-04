@@ -18,6 +18,8 @@ class User(Person):
         self.__unit_number1 = ''
         self.__unit_number2 = ''
         self.__postal_code = ''
+        self.__card_expiry_month = ''
+        self.__card_expiry_year = ''
         self.__phone_number = 0
         self.__ban_status = False
 
@@ -26,8 +28,10 @@ class User(Person):
         self.__card_name = card_name
     def set_card_no(self, card_no):
         self.__card_no = card_no
-    def set_card_expiry(self, card_expiry):
-        self.__card_expiry = card_expiry
+    def set_card_expiry_month(self, card_expiry_month):
+        self.__card_expiry_month = card_expiry_month
+    def set_card_expiry_year(self, card_expiry_year):
+        self.__card_expiry_year = card_expiry_year
     def set_card_cvv(self, card_cvv):
         self.__card_cvv = card_cvv
     def set_shipping_address(self, shipping_address):
@@ -51,8 +55,10 @@ class User(Person):
         return self.__card_name
     def get_card_no(self):
         return self.__card_no
-    def get_card_expiry(self):
-        return self.__card_expiry
+    def get_card_expiry_year(self):
+        return self.__card_expiry_year
+    def get_card_expiry_month(self):
+        return self.__card_expiry_month
     def get_card_cvv(self):
         return self.__card_cvv
     def get_shipping_address(self):
@@ -89,3 +95,7 @@ class User(Person):
     def display_unit_number(self):
         unit_number = ("# %s - %s" %(self.__unit_number1 , self.__unit_number2))
         return unit_number
+    
+    def display_expiry_date(self):
+        expiry_date = ('%s-%s' %(self.__card_expiry_year, self.__card_expiry_month))
+        return expiry_date
