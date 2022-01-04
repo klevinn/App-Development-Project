@@ -8,10 +8,10 @@ Group Members:
  5. Joshua
 
 Modules Used:
- 1. WT Forms
- 2. Flask
- 3. Jinja2
- 4. email-validator
- 5. Bcrypt
+ 1. WT Forms (pip install -U WTForms)
+ 2. Flask (pip install Flask)
+ 3. Jinja2 (pip install -U Jinja2)
+ 4. email-validator (pip install email-validator)
+ 5. Bcrypt (pip install flask-bcrypt)
  6. Bootstrap
 
