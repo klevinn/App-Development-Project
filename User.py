@@ -12,7 +12,6 @@ class User(Person):
         self.__user_id = user_id
         self.__card_name = ""
         self.__card_no = ""
-        self.__card_expiry = ""
         self.__card_cvv = ""
         self.__shipping_address = ''
         self.__unit_number1 = ''

@@ -37,7 +37,7 @@ class CreateStaffMemberForm(Form):
     staff_email = EmailField("Email:", [validators.Email(), validators.DataRequired()])
 
 class CreateUserInfoForm(Form):
-    new_username = StringField("Username:", [validators.DataRequired()])
+    new_username = StringField("", [validators.DataRequired()])
     new_email = EmailField("Email:", [validators.Email(), validators.DataRequired()])
 
 """

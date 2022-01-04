@@ -12,8 +12,7 @@ import User, Staff
 from Security_Validation import validate_card_number, Sanitise, validate_expiry_date, validate_session, validate_session_open_file_admin, validate_session_admin
 from Functions import duplicate_email, duplicate_username, get_user_name, check_banned, fix_unit_number, fix_expiry_year
 
-#Functions that are repeated
-
+#Start Of Web Dev
 app = Flask(__name__)
 #Hashing of passwords
 bcrypt = Bcrypt(app)
@@ -748,7 +747,11 @@ def useraddress():
                     update_address.unit_number2.data = int(unitnum2)
                 print(user.get_postal_code())
                 shortened_postal = user.get_postal_code()[3:]
-                update_address.postal_code.data = int(shortened_postal)
+                print(shortened_postal)
+                if len(shortened_postal) == 0 or shortened_postal == 'None':
+                    update_address.postal_code.data =shortened_postal
+                else:
+                    update_address.postal_code.data = int(shortened_postal)
 
                 update_address.phone_no.data = user.get_phone_number()
                 print(user.get_phone_number())
