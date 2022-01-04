@@ -119,9 +119,10 @@ def validate_session_open_file_admin(session):
     return staff_found , emptyStr
 
 def validate_session_admin(session,dictionary):
+    staff_found = False
+    emptyStr = ""
     for key in dictionary:
         staffname = dictionary[key].get_staff_id()
-        emptyStr = ""
         if session == staffname:
             name = dictionary[key].get_username()
             return True , name
