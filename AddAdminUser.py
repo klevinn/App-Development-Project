@@ -2,6 +2,7 @@
 import shelve
 
 import Staff
+from Functions import duplicate_email, duplicate_username
 
 print("Welcome to Master Console For Admin Accounts")
 emailInput = input("What is the Staff's Email: ")
@@ -19,29 +20,9 @@ try:
 except:
     print("Error in retrieving Users from staff.db")
 
-for key in userDict:
-    emailinshelve = userDict[key].get_email()
-    if emailInput == emailinshelve.lower():
-        print("Registered email & inputted email:", emailinshelve, emailInput)
-        duplicated_email = True
-        print("Duplicate Email")
-        break
-    else:
-        print("Registered email & inputted email:", emailinshelve, emailInput)
-        email_duplicates = False
-        print("New Email")
+duplicated_email = duplicate_email(emailInput, userDict)
+duplicated_username = duplicate_username(nameInput, userDict)
 
-for key in userDict:
-    usernameinshelve = userDict[key].get_username()
-    if nameInput == usernameinshelve:
-        print("Registered Username & inputted username:", usernameinshelve, nameInput)
-        duplicated_username = True
-        print("Duplicated Username")
-        break
-    else:
-        print("Registered Username & inputted username:", usernameinshelve, nameInput)
-        username_duplicates = False
-        print("New Username")
 
 if(duplicated_email == False) and (duplicated_username == False):
     print("Hello")

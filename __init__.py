@@ -1242,7 +1242,7 @@ def banUser(id):
             db['Users'] = users_dict
             db.close()
 
-            return redirect(url_for('staffaccountlist', staff = name))
+            return redirect(url_for('staffaccountlist', page=1, staff = name))
         else:
             db.close()
             session.clear()
