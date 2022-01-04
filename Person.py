@@ -15,7 +15,6 @@ class Person:
         self.__email = email
     def set_password(self, password):
         self.__password = password
-    
 
     def get_username(self):
         return self.__username

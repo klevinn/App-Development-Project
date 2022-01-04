@@ -615,17 +615,11 @@ def userpw():
             if request.method == "POST":
                 print("Successful Running")
                 matched_pw = True
+                old_pw = False
                 old_password = update_password.old_password.data 
                 password = update_password.password.data
                 password_cfm = update_password.password_confirm.data
-
-                if password == password_cfm:
-                    matched_pw = False
-                    hashed_pw = bcrypt.generate_password_hash(password)
-                else:
-                    matched_pw = True
-
-
+                
                 users_dict ={}
                 db = shelve.open('user', 'c')
 
@@ -636,8 +630,21 @@ def userpw():
                         db["Users"] = users_dict
                 except:
                     print("Error in retrieving User from user.db")
-
+                
                 user = users_dict.get(idNumber)
+
+                if old_password == password:
+                    old_pw = True
+                    matched_pw = False
+
+                else:
+                    if password == password_cfm:
+                        matched_pw = False
+                        hashed_pw = bcrypt.generate_password_hash(password)
+                    else:
+                        matched_pw = True
+
+
                 #using accessor methods to update data
                 registered_password = user.get_password()
                 same_password_hash = bcrypt.check_password_hash(registered_password, old_password)
@@ -647,7 +654,7 @@ def userpw():
                 else:
                     same_pw = True
 
-                if (matched_pw == False) and (same_pw == False):
+                if (matched_pw == False) and (same_pw == False) and (old_pw == False):
                     user.set_password(hashed_pw)
                     db['Users'] = users_dict
                     db.close()
@@ -655,7 +662,7 @@ def userpw():
                 
                 else:
                     db.close()
-                    return render_template('user/loggedin/user_password_edit.html', form=update_password, matched_pw=matched_pw, same_pw = same_pw) 
+                    return render_template('user/loggedin/user_password_edit.html', form=update_password, matched_pw=matched_pw, same_pw = same_pw, old_password = old_pw, user = UserName) 
             else:
 
                 return render_template('user/loggedin/user_password_edit.html', form=update_password, user = UserName)

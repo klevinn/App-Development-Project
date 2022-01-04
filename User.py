@@ -20,6 +20,7 @@ class User(Person):
         self.__card_expiry_month = ''
         self.__card_expiry_year = ''
         self.__phone_number = 0
+        self.__previous_password = ''
         self.__ban_status = False
 
 
@@ -45,6 +46,9 @@ class User(Person):
         self.__phone_number = phone_number
     def set_user_id(self, user_id):
         self.__user_id = user_id
+    #Prevent use of previous password
+    def set_previous_password(self, prev_password):
+        self.__previous_password = prev_password
     
     def get_account_status(self):
         return self.__account_status
@@ -70,6 +74,9 @@ class User(Person):
         return self.__postal_code
     def get_phone_number(self):
         return self.__phone_number
+    def get_previous_password(self):
+        return self.__previous_password
+
 
     def set_banned(self):
         self.__ban_status = True
