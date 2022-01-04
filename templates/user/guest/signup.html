@@ -22,7 +22,11 @@
                         </div>
                         <div class="col-12">
                             {{ render_field(form.email, class="form-control") }}
-                            {% if duplicated_email %}<div class="text-danger"><span id="error">Taken Email</span></div>{% endif %}
+                            {% if check_ban %}
+                            <div class="text-danger"><span id="error">Email has been banned</span></div>
+                            {% elif duplicated_email and check_ban == False %}
+                            <div class="text-danger"><span id="error">Taken Email</span></div>
+                            {% endif %}
                             <!--label>Email:</label>
                             <input type="text" name="email" class="form-control" placeholder="Email"-->
                         </div>

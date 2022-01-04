@@ -10,7 +10,7 @@ from flask_bcrypt import Bcrypt
 import Forms
 import User, Staff
 from Security_Validation import validate_card_number, Sanitise, validate_expiry_date, validate_session, validate_session_open_file_admin, validate_session_admin
-from Functions import duplicate_email, duplicate_username, get_user_name
+from Functions import duplicate_email, duplicate_username, get_user_name, check_banned
 
 #Functions that are repeated
 
@@ -225,9 +225,10 @@ def signup():
             
             duplicated_email = duplicate_email(emailInput, userDict)
             duplicated_username = duplicate_username(usernameInput, userDict)
+            check_ban = check_banned(emailInput, userDict)
 
             
-            if (matched_pw == False) and (duplicated_email == False) and (duplicated_username == False):
+            if (matched_pw == False) and (duplicated_email == False) and (duplicated_username == False) and (check_ban == False):
                 print("Hello")
                 user = User.User(usernameInput, emailInput, pw_hash)
                 print(user.get_user_id())
@@ -253,7 +254,7 @@ def signup():
             else:
                 print("Hello2")
                 db.close()
-                return render_template('user/guest/signup.html', form=signup_form, duplicated_email=duplicated_email, duplicated_username=duplicated_username, matched_pw=matched_pw) 
+                return render_template('user/guest/signup.html', form=signup_form, duplicated_email=duplicated_email, duplicated_username=duplicated_username, matched_pw=matched_pw, check_ban = check_ban) 
         else:
             print("Hello3")
             return render_template('user/guest/signup.html',  form=signup_form)

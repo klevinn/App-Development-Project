@@ -25,6 +25,17 @@ def duplicate_email(email,dictionary):
     
     return False
 
+def check_banned(email,dictionary):
+    for key in dictionary:
+        emailinshelve = dictionary[key].get_email()
+        if email == emailinshelve.lower():
+            banned_status = dictionary[key].get_ban_status()
+            if banned_status == True:
+                return True
+            else:
+                return False
+
+
 def get_user_name(idnumber, dictionary):
     for key in dictionary:
         if idnumber == key:
