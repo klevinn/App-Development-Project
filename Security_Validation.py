@@ -24,41 +24,43 @@ def IntegerList(credit_card_number):
 
 
 def validate_card_number(credit_card_number):
-    card_num_digits = IntegerList(credit_card_number)
-    if card_num_digits=="":
-        print("Blank Card")
-        return True
-    else:
-        #Start from the most right and move in 2s
-        odd_digits = card_num_digits[-1::-2]
-        print(odd_digits)
-
-        #Start from second most right digit and move in 2s
-        even_digits = card_num_digits[-2::-2]
-        print(even_digits)
-
-        odd_digits_sum = 0
-        odd_digits_sum = sum(odd_digits)
-        print(odd_digits_sum)
-        even_digits_sum = 0
-
-        for digit in even_digits:
-            digit = digit * 2
-            if digit >= 10:
-                digitList = IntegerList(digit)
-                digitSum = sum(digitList)
-                even_digits_sum += digitSum
-            else:
-                even_digits_sum += digit
-        
-        print(even_digits_sum)
-        total_sum = even_digits_sum + odd_digits_sum
-        valid_card = total_sum % 10
-        if valid_card == 0:
+    if len(str(credit_card_number)) == 16:
+        card_num_digits = IntegerList(credit_card_number)
+        if card_num_digits=="":
+            print("Blank Card")
             return True
         else:
-            return False
+            #Start from the most right and move in 2s
+            odd_digits = card_num_digits[-1::-2]
+            print(odd_digits)
 
+            #Start from second most right digit and move in 2s
+            even_digits = card_num_digits[-2::-2]
+            print(even_digits)
+
+            odd_digits_sum = 0
+            odd_digits_sum = sum(odd_digits)
+            print(odd_digits_sum)
+            even_digits_sum = 0
+
+            for digit in even_digits:
+                digit = digit * 2
+                if digit >= 10:
+                    digitList = IntegerList(digit)
+                    digitSum = sum(digitList)
+                    even_digits_sum += digitSum
+                else:
+                    even_digits_sum += digit
+            
+            print(even_digits_sum)
+            total_sum = even_digits_sum + odd_digits_sum
+            valid_card = total_sum % 10
+            if valid_card == 0:
+                return True
+            else:
+                return False
+    else:
+        return False
 
 def validate_expiry_date(expiry_year, expiry_month):
     try:

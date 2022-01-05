@@ -860,9 +860,13 @@ def usercard():
 
                         #update_card.card_no.data = user.get_card_no()
                         #print(user.get_card_no())
-                        card_month = user.get_card_expiry_month()
-                        card_year = user.get_card_expiry_year()
-
+                        try:
+                            card_month = fix_unit_number(int(user.get_card_expiry_month()))
+                            card_year = fix_expiry_year(int(user.get_card_expiry_year()))
+                        except:
+                            card_month = fix_unit_number(user.get_card_expiry_month())
+                            card_year = fix_expiry_year(user.get_card_expiry_year())
+                            
                         if len(card_month) == 0 or len(card_year) == 0:
                             update_card.card_expiry_year.data = card_year
                             update_card.card_expiry_month.data = card_month
@@ -894,8 +898,12 @@ def usercard():
                 print(user.get_card_name())
                 update_card.card_no.data = user.get_card_no()
                 print(user.get_card_no())
-                card_month = user.get_card_expiry_month()
-                card_year = user.get_card_expiry_year()
+                try:
+                    card_month = fix_unit_number(int(user.get_card_expiry_month()))
+                    card_year = fix_expiry_year(int(user.get_card_expiry_year()))
+                except:
+                    card_month = fix_unit_number(user.get_card_expiry_month())
+                    card_year = fix_expiry_year(user.get_card_expiry_year())
 
                 if len(card_month) == 0 or len(card_year) == 0:
                     update_card.card_expiry_year.data = card_year
