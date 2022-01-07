@@ -63,6 +63,96 @@
                     <h3>Member Account List</h3>
                     <div id="Appointments">
                         {% for user in user_list %}
+                        {% if user.get_ban_status() == True %}
+                        <div class="row table-responsive">
+                          <table class="table table-striped">
+                              <thead class = "table-danger">
+                                <td style="font-weight: bold;">Account ID</td>
+                                <td style="font-weight: bold;">Account Name</td>
+                                <td style="font-weight: bold;">Account Email</td>
+                              </thead>
+                              <tbody>
+                                <td style="font-weight: bold;">{{ user.get_user_id() }}</td>
+                                <td style="font-weight: bold;"> {{ user.get_username() }}</td>
+                                <td style="font-weight: bold;">{{ user.get_email() }}</td>
+                                <tr>
+                                  <td colspan="4">
+                                    <table class="table mb-0">
+                                      <thead>
+                                          <td>Credit Card Name</td>
+                                          <td>Credit Number</td>
+                                          <td>Expiry Date</td>
+                                      </thead>
+                                      <tbody>
+                                          <td>{{ user.get_card_name() }}</td>
+                                          <td>{{ user.get_card_no() }}</td>
+                                          <td>{{ user.display_expiry_date() }}</td>
+                                      </tbody>
+                                    </table>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td colspan="4">
+                                      <table class="table mb-0">
+                                        <thead>
+                                            <td>Shipping Address</td>
+                                            <td>Postal Code</td>
+                                            <td>Unit Number</td>
+                                            <td>Phone Number</td>
+                                        </thead>
+                                        <tbody>
+                                            <td>{{ user.get_shipping_address() }}</td>
+                                            <td>{{ user.get_postal_code() }}</td>
+                                            <td>{{ user.display_unit_number() }}</td>
+                                            <td>{{ user.get_phone_number() }}</td>
+                                        </tbody>
+                                      </table>
+                                    </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                      </div>
+                       <div class="row">
+                          <div class="col">
+                              <form action="{{ url_for('unbanUser', id=user.get_user_id()) }}" method="POST">
+                                  <!--input type="submit" value="Delete" class="btn btn-danger"-->
+                                  
+                                  <!-- w3 schools modal button-->
+                                  <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#myModal_{{ user.get_user_id() }}">
+                                    Unban
+                                  </button>
+                              
+                                  <!-- The Modal -->
+                                  <div class="modal" id="myModal_{{ user.get_user_id() }}">
+                                    <div class="modal-dialog">
+                                      <div class="modal-content">
+                              
+                                        <!-- Modal Header -->
+                                        <div class="modal-header">
+                                          <h4 class="modal-title">Unban Confirmation</h4>
+                                          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                              
+                                        <!-- Modal body -->
+                                        <div class="modal-body">
+                                          Are you sure you want to unban {{ user.get_username() }} ?
+                                        </div>
+                              
+                                        <!-- Modal footer -->
+                                        <div class="modal-footer">
+                                          <input type="submit" value="Unban" class="btn btn-danger">
+                                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                        </div>
+                              
+                                      </div>
+                                    </div>
+                                  </div>
+                              
+                                </form>
+                          </div>
+                       </div>
+                       <hr>
+                        {% else %}
                         <div class="row table-responsive">
                             <table class="table table-striped">
                                 <thead class = "table-dark">
@@ -151,6 +241,7 @@
                             </div>
                          </div>
                          <hr>
+                         {% endif %}
                          {% endfor %}
                     </div>
                     <nav aria-label="Page navigation example" style="margin-top:10px;">

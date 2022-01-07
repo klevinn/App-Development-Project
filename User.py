@@ -80,6 +80,9 @@ class User(Person):
 
     def set_banned(self):
         self.__ban_status = True
+    
+    def set_unbanned(self):
+        self.__ban_status = False
 
     def get_ban_status(self):
         return self.__ban_status

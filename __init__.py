@@ -1286,14 +1286,12 @@ def staffaccountlist(page=1):
 
                     user_list = []
                     user = user_dict.get(key)
-                    if user.get_ban_status() != True:
-                        user_list.append(user)
-                        display_dict[page_num] = user_list
+                    user_list.append(user)
+                    display_dict[page_num] = user_list
                 else:
                     user = user_dict.get(key)
-                    if user.get_ban_status() != True:
-                        user_list.append(user)
-                        display_dict[page_num] = user_list
+                    user_list.append(user)
+                    display_dict[page_num] = user_list
             
             user_list = display_dict[page]
             all_keys = display_dict.keys()
@@ -1324,6 +1322,36 @@ def banUser(id):
 
         if valid_session:
             users_dict[id].set_banned()
+
+            db['Users'] = users_dict
+            db.close()
+
+            return redirect(url_for('staffaccountlist', page=1, staff = name))
+        else:
+            db.close()
+            session.clear()
+            return redirect(url_for('home'))
+    else:
+        return redirect(url_for('login'))
+
+@app.route('/unbanUser/<int:id>' , methods=["GET","POST"])
+def unbanUser(id):
+    if "staff" in session:
+        StaffName = session["staff"]
+        users_dict = {}
+        db = shelve.open('user', 'c')
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving Users from user.db")
+        
+        valid_session , name = validate_session_open_file_admin(StaffName)
+
+        if valid_session:
+            users_dict[id].set_unbanned()
 
             db['Users'] = users_dict
             db.close()
