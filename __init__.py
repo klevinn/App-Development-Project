@@ -5,6 +5,7 @@ import os
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_bcrypt import Bcrypt
+from flask_mail import Mail , Message
 
 #imported files
 import Forms
@@ -17,6 +18,14 @@ app = Flask(__name__)
 #Hashing of passwords
 bcrypt = Bcrypt(app)
 
+app.config['MAIL_SERVER']='smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = 'doctoronthego2022@gmail.com'
+app.config['MAIL_PASSWORD'] = 'r@dS4LVv#9mt^]A~'
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+
+mail = Mail(app)
 #Secret Key Required for sessions
 app.secret_key = "session_key"
 #Limiter for login security
@@ -1322,6 +1331,13 @@ def banUser(id):
 
         if valid_session:
             users_dict[id].set_banned()
+            user_email = users_dict[id].get_email()
+            user_name = users_dict[id].get_username()
+
+            ban_msg = "Dear %s! You have been banned from DoctorOnTheGo. Do contact one of our staff if you feel this was an unfair ban. Have a nice day!" %(user_name)
+            msg = Message('Ban Alert', sender = 'doctoronthego2022@gmail.com', recipients = [user_email])
+            msg.body = ban_msg
+            mail.send(msg)
 
             db['Users'] = users_dict
             db.close()
@@ -1352,6 +1368,13 @@ def unbanUser(id):
 
         if valid_session:
             users_dict[id].set_unbanned()
+            user_email = users_dict[id].get_email()
+            user_name = users_dict[id].get_username()
+
+            unban_msg = "Dear %s! You have been unbanned from DoctorOnTheGo. We apologise for the inconvenience. Have a nice day!" %(user_name)
+            msg = Message('Unban Alert', sender = 'doctoronthego2022@gmail.com', recipients = [user_email])
+            msg.body = unban_msg
+            mail.send(msg)
 
             db['Users'] = users_dict
             db.close()
