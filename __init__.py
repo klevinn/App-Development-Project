@@ -21,7 +21,7 @@ bcrypt = Bcrypt(app)
 app.config['MAIL_SERVER']='smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_USERNAME'] = 'doctoronthego2022@gmail.com'
-app.config['MAIL_PASSWORD'] = 'r@dS4LVv#9mt^]A~'
+#app.config['MAIL_PASSWORD'] = '' #Havent implemented a way to hide the password, for now just remove
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 
