@@ -14,6 +14,6 @@ Modules Used:
  4. email-validator (pip install email-validator)
  5. Bcrypt (pip install flask-bcrypt)
  6. Bootstrap
- 7. Flask-Mail pip install Flask-Mail
+ 7. Flask-Mail (pip install Flask-Mail)
 
 
