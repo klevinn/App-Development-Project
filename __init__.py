@@ -18,6 +18,7 @@ app = Flask(__name__)
 #Hashing of passwords
 bcrypt = Bcrypt(app)
 
+#For sending of emails
 app.config['MAIL_SERVER']='smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_USERNAME'] = 'doctoronthego2022@gmail.com'
