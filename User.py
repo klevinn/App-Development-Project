@@ -22,6 +22,7 @@ class User(Person):
         self.__phone_number = 0
         self.__previous_password = ''
         self.__ban_status = False
+        self.__profile_picture = ''
 
 
     def set_card_name(self, card_name):
@@ -77,6 +78,11 @@ class User(Person):
     def get_previous_password(self):
         return self.__previous_password
 
+    def set_profile_pic(self, profilepicture):
+        self.__profile_picture = profilepicture
+    
+    def get_profile_pic(self):
+        return self.__profile_picture
 
     def set_banned(self):
         self.__ban_status = True

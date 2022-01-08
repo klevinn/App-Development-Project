@@ -501,6 +501,8 @@ def user():
         return redirect(url_for("login"))
 
 """
+#https://tutorial101.blogspot.com/2021/04/python-flask-upload-and-display-image.html
+#https://flask.palletsprojects.com/en/2.0.x/patterns/fileuploads/
 @app.route('/uploadProfilePic' , methods=["GET","POST"])
 def uploadPic():
     if "user" in session:
@@ -521,7 +523,7 @@ def uploadPic():
         valid_session = validate_session(idNumber, users_dict)
         
 
-        db.close()
+        #db.close()
         if valid_session:
             if request.method == "POST":
                 if "profilePic" not in request.files:
@@ -531,20 +533,35 @@ def uploadPic():
                 file = request.files['profilePic']
                 filename = file.filename
 
+                #Find way to manage filesize
+
                 if filename != '':
                     if file and allowed_file(filename):
                         filename = secure_filename(filename)
                         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-
+                        #Need to make a unique identifier for each profile pic, UserId?
+                        #need to get extension and rename file
+                        #Create a new file path with the new name
+                    else:
+                        db.close()
+                        print("Image not correct format")
+                        return redirect(url_for('user'))
+                else:
+                    db.close()
+                    print("No file inputted")
+                    return redirect(url_for('user'))
+                        
             else:
-                print('hello')
+                db.close()
+                return render_template('user/loggedin/useraccount.html', user = UserName)
         else:
+            db.close()
             session.clear()
             return redirect(url_for("home"))
     else:
         return redirect(url_for('login'))
-
 """
+
 @app.route('/infoedit' , methods=["GET","POST"])
 def userinfo():
     if "user" in session:
