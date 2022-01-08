@@ -1,17 +1,20 @@
 #imported modules
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 import shelve
 import os
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_bcrypt import Bcrypt
 from flask_mail import Mail , Message
+from werkzeug.utils import secure_filename
+import urllib.request
+
 
 #imported files
 import Forms
 import User, Staff
 from Security_Validation import validate_card_number, Sanitise, validate_expiry_date, validate_session, validate_session_open_file_admin, validate_session_admin
-from Functions import duplicate_email, duplicate_username, get_user_name, check_banned, fix_unit_number, fix_expiry_year
+from Functions import duplicate_email, duplicate_username, get_user_name, check_banned, fix_unit_number, fix_expiry_year, allowed_file
 
 #Start Of Web Dev
 app = Flask(__name__)
@@ -27,8 +30,15 @@ app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 
 mail = Mail(app)
+
 #Secret Key Required for sessions
 app.secret_key = "session_key"
+#For Profile Picture Upload
+PROFILEPIC_UPLOAD_PATH = 'static/images/profilepic'
+app.config['UPLOAD_FOLDER'] = PROFILEPIC_UPLOAD_PATH
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
+
+
 #Limiter for login security
 limiter = Limiter(app, key_func=get_remote_address)
 
@@ -73,6 +83,7 @@ def home():
 
 """Account Management -- (login, signup, etc) By Calvin"""
 
+""" LOGIN AND SIGNUP DONE BY CALVIN"""
 @app.route('/login' , methods=["GET","POST"])
 @limiter.limit("2/second")
 def login():
@@ -449,6 +460,9 @@ def signupC():
     else:
         return redirect(url_for("login"))
 
+
+""" USER PROFILE SETTINGS DONE BY CALVIN"""
+
 @app.route('/user' , methods=["GET","POST"])
 def user():
     if "user" in session:
@@ -486,6 +500,51 @@ def user():
     else:
         return redirect(url_for("login"))
 
+"""
+@app.route('/uploadProfilePic' , methods=["GET","POST"])
+def uploadPic():
+    if "user" in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
+
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+
+        UserName =  get_user_name(idNumber, users_dict)
+        
+        valid_session = validate_session(idNumber, users_dict)
+        
+
+        db.close()
+        if valid_session:
+            if request.method == "POST":
+                if "profilePic" not in request.files:
+                    print("No File Sent")
+                    return redirect(url_for("user"))
+                
+                file = request.files['profilePic']
+                filename = file.filename
+
+                if filename != '':
+                    if file and allowed_file(filename):
+                        filename = secure_filename(filename)
+                        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
+            else:
+                print('hello')
+        else:
+            session.clear()
+            return redirect(url_for("home"))
+    else:
+        return redirect(url_for('login'))
+
+"""
 @app.route('/infoedit' , methods=["GET","POST"])
 def userinfo():
     if "user" in session:
@@ -1014,6 +1073,8 @@ def deleteAddress():
     
     else:
         return redirect(url_for("login"))
+
+"""ADMIN ACCOUNT SETTINGS DONE MY CALVIN"""
 
 @app.route('/staffapp' , methods=["GET","POST"])
 def staffapp():
