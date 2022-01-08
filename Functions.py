@@ -97,6 +97,5 @@ print(unit_number2)
 def generate_random_password():
     source = string.ascii_letters + string.digits
     result_str = ''.join((random.choice(source) for i in range(10)))
-    print(result_str)
     return result_str
 

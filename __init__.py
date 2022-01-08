@@ -25,6 +25,7 @@ bcrypt = Bcrypt(app)
 app.config['MAIL_SERVER']='smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_USERNAME'] = 'doctoronthego2022@gmail.com'
+#Environment Variable set on my computer, because of pushing to Github this is for safety
 app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASS')
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
@@ -33,6 +34,7 @@ mail = Mail(app)
 
 #Secret Key Required for sessions
 app.secret_key = "session_key"
+
 #For Profile Picture Upload
 PROFILEPIC_UPLOAD_PATH = 'static/images/profilepic'
 app.config['UPLOAD_FOLDER'] = PROFILEPIC_UPLOAD_PATH
@@ -465,6 +467,8 @@ def passwordforget():
     email_form = Forms.CreateEmailForm(request.form)
     if request.method == "POST" and email_form.validate():
         email = Sanitise(email_form.email.data)
+        #Temp reset password solution, send a temp password and let the users use and reset in their own free time
+        #Safety issue if someone access their mail, uses the temp password , if they havent change, and login
         userDict = {}
         db = shelve.open("user", "c")
 
@@ -508,7 +512,7 @@ def passwordforget():
         return render_template("user/guest/passwordforget.html", form = email_form)
 
 """
-POTENTIAL PASSWORD RESET
+POTENTIAL PASSWORD RESET (Email sent and given link)
 
 @app.route('/passwordreset', methods = ["GET","POST"])
 def passwordreset():
@@ -663,9 +667,16 @@ def uploadPic():
                     if file and allowed_file(filename):
                         filename = secure_filename(filename)
                         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
                         #Need to make a unique identifier for each profile pic, UserId?
-                        #need to get extension and rename file
+                        #need rename file -- either just rename /  split extension and add it to the new name
                         #Create a new file path with the new name
+
+                        #how to display profile image?, use a getter method to get the path and display?
+                        #meaning need to store in dict(getter n setter methods already created)
+
+                        #overwrite == just by setting and getting?
+                        #Too tired rn try tmr
                     else:
                         db.close()
                         print("Image not correct format")
