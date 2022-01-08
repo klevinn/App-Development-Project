@@ -1223,6 +1223,8 @@ def staffapp():
         StaffName = session["staff"]
         valid_session, name = validate_session_open_file_admin(StaffName)
         if valid_session:
+            # Take in form submissions and dislay the data to the list.
+            # Upon submission the data will be stored into a list?, Recommend creating a .get() and .set() method for form inputs
             return render_template('user/staff/staffappoint.html' , staff = name)
         else:
             session.clear()
@@ -1236,6 +1238,8 @@ def stafffeed():
         StaffName = session["staff"]
         valid_session, name = validate_session_open_file_admin(StaffName)
         if valid_session:
+            # Take in form submissions and dislay the data to the list.
+            # Upon submission the data will be stored into a list?, Recommend creating a .get() and .set() method for form inputs
             return render_template('user/staff/stafffeedback.html' , staff = name)
         else:
             session.clear()
@@ -1249,6 +1253,8 @@ def staffinvent():
         StaffName = session["staff"]
         valid_session, name = validate_session_open_file_admin(StaffName)
         if valid_session:
+            #Depends on how Joshua displays the store inventory.
+            # Can easily set up some variable system in jinja, and we modify the jinja through here.
             return render_template('user/staff/staffinventory.html' , staff = name)
         else:
             session.clear()
@@ -1312,6 +1318,7 @@ def staffprod():
         StaffName = session["staff"]
         valid_session, name = validate_session_open_file_admin(StaffName)
         if valid_session:
+            #in cart, must set it so that the inventory minuses  and just take that code and append
             return render_template('user/staff/staffproduct.html' , staff = name)
         else:
             session.clear()
