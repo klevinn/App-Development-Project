@@ -40,6 +40,13 @@ class CreateUserInfoForm(Form):
     new_username = StringField("", [validators.DataRequired()])
     new_email = EmailField("Email:", [validators.Email(), validators.DataRequired()])
 
+class CreateEmailForm(Form):
+    email = EmailField("Email:", [validators.Email(), validators.DataRequired()])
+
+class CreateResetPWForm(Form):
+    email = EmailField("Email:", [validators.Email(), validators.DataRequired()])
+    new_password = PasswordField("Password:", [validators.Length(min=6, max=20), validators.DataRequired()])
+    confirm_password = PasswordField("Confirm Password:", [validators.Length(min=6, max=20), validators.DataRequired()])
 """
 class CreateUserCardInfoForm(Form):
     new_card_name = StringField("Card Name:", [validators.Length(min=1, max=150)],  [validators.DataRequired()])

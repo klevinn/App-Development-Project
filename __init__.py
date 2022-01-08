@@ -460,6 +460,81 @@ def signupC():
     else:
         return redirect(url_for("login"))
 
+@app.route('/passwordforget', methods=["GET","POST"])
+def passwordforget():
+    email_form = Forms.CreateEmailForm(request.form)
+    if request.method == "POST" and email_form.validate():
+        email = email_form.email.data
+        pw_msg = "Dear user you have requested for a password request: "
+        msg = Message('Password Reset', sender = 'doctoronthego2022@gmail.com', recipients = [email])
+        msg.body = pw_msg
+        mail.send(msg)
+        return render_template("user/guest/passwordforget.html", form = email_form, sent = True)
+    else:
+        return render_template("user/guest/passwordforget.html", form = email_form)
+
+@app.route('/passwordreset', methods = ["GET","POST"])
+def passwordreset():
+    reset_password = Forms.CreateResetPWForm(request.form)
+    if request.method =="POST" and reset_password.validate():
+        banned = False
+        validemail = False
+        password_confirm = reset_password.confirm_password.data
+        passwordInput = reset_password.new_password.data
+        emailInput = Sanitise(reset_password.email.data.lower())
+
+            #To determine if passwords are matched or not
+        if password_confirm == passwordInput:
+            matched_pw = False
+            pw_hash = bcrypt.generate_password_hash(passwordInput)
+            #Console
+            print("Matched Passwords")
+        else:
+            matched_pw = True
+            #Console
+            print("Password not matched")
+
+        userDict = {}
+        db = shelve.open("user", "c")
+
+        try:
+            if 'Users' in db:
+                userDict = db['Users']
+            else:
+                db["Users"] = userDict
+        except:
+            print("Error in retrieving Users from user.db")
+        
+        for key in userDict:
+            #getting email stored in the shelve
+            emailinshelve = userDict[key].get_email()
+            ban_status = userDict[key].get_ban_status()
+            #comparing the data and seeing if matched
+            if emailInput == emailinshelve.lower():
+                email_key = userDict[key]
+                validemail = True #As previously mentioned, set to true if found in shelve
+                #Console Checking
+                print("Registered Email & Inputted Email: ", emailinshelve, emailInput)
+                if ban_status == True:
+                    banned = True
+                break
+
+        if (matched_pw == False) and (validemail == True):
+            if banned != True:
+                    print("Reset Password")
+                    email_key.set_password(pw_hash)
+                    db['Users'] = userDict
+                    db.close()
+                    return render_template("user/guest/passwordreset.html", form = reset_password , sent = True)
+            else:
+                db.close()
+                return render_template('user/guest/passwordreset.html', form=reset_password, banned = banned, sent = False) 
+        else:
+            db.close()
+            return render_template('user/guest/passwordreset.html', form=reset_password, matched_pw=matched_pw, banned = banned, validemail= False, sent = False) 
+
+    else:
+        return render_template("user/guest/passwordreset.html", form=reset_password, sent = False)
 
 """ USER PROFILE SETTINGS DONE BY CALVIN"""
 
