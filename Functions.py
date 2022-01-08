@@ -1,3 +1,6 @@
+import random
+import string
+
 def duplicate_username(username, dictionary):
     for key in dictionary:
         usernameinshelve = dictionary[key].get_username()
@@ -90,3 +93,10 @@ unit_number1, unit_number2 = break_unit_number("# 04 - 05")
 print(unit_number1)
 print(unit_number2)
 """
+
+def generate_random_password():
+    source = string.ascii_letters + string.digits
+    result_str = ''.join((random.choice(source) for i in range(10)))
+    print(result_str)
+    return result_str
+

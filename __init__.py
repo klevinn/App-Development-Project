@@ -14,7 +14,7 @@ import urllib.request
 import Forms
 import User, Staff
 from Security_Validation import validate_card_number, Sanitise, validate_expiry_date, validate_session, validate_session_open_file_admin, validate_session_admin
-from Functions import duplicate_email, duplicate_username, get_user_name, check_banned, fix_unit_number, fix_expiry_year, allowed_file
+from Functions import duplicate_email, duplicate_username, get_user_name, check_banned, fix_unit_number, fix_expiry_year, allowed_file, generate_random_password
 
 #Start Of Web Dev
 app = Flask(__name__)
@@ -465,14 +465,50 @@ def passwordforget():
     email_form = Forms.CreateEmailForm(request.form)
     if request.method == "POST" and email_form.validate():
         email = Sanitise(email_form.email.data)
-        pw_msg = "Dear user you have requested for a password request: "
-        msg = Message('Password Reset', sender = 'doctoronthego2022@gmail.com', recipients = [email])
-        msg.body = pw_msg
-        mail.send(msg)
-        session["reset"] = email
-        return render_template("user/guest/passwordforget.html", form = email_form, sent = True)
+        userDict = {}
+        db = shelve.open("user", "c")
+
+        try:
+            if 'Users' in db:
+                userDict = db['Users']
+            else:
+                db["Users"] = userDict
+        except:
+            print("Error in retrieving Users from user.db")
+        
+        for key in userDict:
+            #getting email stored in the shelve
+            emailinshelve = userDict[key].get_email()
+            ban_status = userDict[key].get_ban_status()
+            #comparing the data and seeing if matched
+            if email == emailinshelve.lower():
+                email_key = userDict[key]
+                validemail = True #As previously mentioned, set to true if found in shelve
+                #Console Checking
+                print("Registered Email & Inputted Email: ", emailinshelve, email)
+        
+        temp_pw = generate_random_password()
+        pw_hash =  bcrypt.generate_password_hash(temp_pw)
+        
+        if validemail == True:
+            email_key.set_password(pw_hash)
+            db['Users'] = userDict
+            db.close()
+
+            pw_msg = "Dear user you have requested for a password request. Use this temporary password to log in and reset afterwards: %s " %(temp_pw)
+            msg = Message('Password Reset', sender = 'doctoronthego2022@gmail.com', recipients = [email])
+            msg.body = pw_msg
+            mail.send(msg)
+
+            return render_template("user/guest/passwordforget.html", form = email_form, sent = True)
+        else:
+            #session["reset"] = email
+            return render_template("user/guest/passwordforget.html", form = email_form, sent = True)
     else:
         return render_template("user/guest/passwordforget.html", form = email_form)
+
+"""
+POTENTIAL PASSWORD RESET
 
 @app.route('/passwordreset', methods = ["GET","POST"])
 def passwordreset():
@@ -547,6 +583,7 @@ def passwordreset():
             return render_template("user/guest/passwordreset.html", form=reset_password, sent = False)
     else:
         return redirect(url_for('home'))
+"""
 
 """ USER PROFILE SETTINGS DONE BY CALVIN"""
 
