@@ -1,0 +1,63 @@
+
+{% extends "bootstrap/base.html" %}
+
+{% import "bootstrap/wtf.html" as wtf %}
+{% from "includes/_formHelper.html" import render_field %}
+{% block title %}Library Loan System - Create Customers{% endblock %}
+
+
+
+
+
+{% block content %}
+
+
+<style>
+
+  .text-primary{
+
+  	display:inline;
+	position:relative;
+
+  }
+</style>
+
+
+<h1 class="display-4">Your appointment</h1>
+<div class="container">
+<form method="POST" action="">
+<div class="text-primary">
+
+  <div class="form-group">
+    <P>Choice of doctor</P>
+    {{ wtf.form_field(form.doc, class="form-control") }}
+  </div>
+</div>
+  <div class="form-group">
+    {{ wtf.form_field(form.first_name, class="form-control") }}
+  </div>
+  <div class="form-group">
+    {{ wtf.form_field(form.last_name, class="form-control") }}
+  </div>
+  <div class="form-group">
+    {{ wtf.form_field(form.gender, class="form-control") }}
+  </div>
+  <div class="form-group">
+    {{ wtf.form_field(form.email, class="form-control") }}
+  </div>
+
+  <div class="form-group">
+    {{ wtf.form_field(form.date_joined, class="form-control datepicker") }}
+  </div>
+
+  <div id="prof">
+    <div class="form-group">
+      {{ wtf.form_field(form.remarks, class="form-control") }}
+    </div>
+  </div>
+  <form action="retrieveCustomer">
+  <input type="submit" value="Submit" class="btn btn-primary"/>
+</form>
+</form>
+</div>
+{% endblock %}

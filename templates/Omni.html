@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Library Loan System - Home{% endblock %}
+
+{% block content %}
+<style>
+    .Container{
+
+
+    margin-left: auto;
+    margin-right: auto;
+    width: 50em;
+
+    }
+   .title{
+
+
+    margin-left: auto;
+    margin-right: auto;
+    width: 80em;
+
+    }
+
+p{
+padding:10px;
+
+}
+</style>
+<div class="title">
+<h1>Omicron Variant: What You Need to Know .</h1>
+ </div>
+<div class="Container">
+
+
+<p class="text1">
+
+
+
+SINGAPORE: A wave of COVID-19 infections from the Delta variant subsided late last year, but the emergence of Omicron has led to a surge in cases worldwide.
+
+Here in Singapore, Health Minister Ong Ye Kung said on Wednesday (Jan 5) that the Omicron variant accounts for close to 20 per cent of local cases. Globally, it is becoming the dominant strain due to how transmissible it is.
+
+</p>
+
+ <img src="{{url_for('static', filename='omnimg.jpg')}}" width="750" height="500">
+
+<p class="text2">
+Said Mr Ong: "It is a matter of time before it starts to multiply quickly. We must be prepared for that."
+
+At its peak, the number of Omicron cases could be “a few times” more than the roughly 3,000 daily cases that the Delta variant was registering in October and November last year, Mr Ong said.
+
+The Ministry of Health's director of medical services Kenneth Mak said COVID-19 infections in Singapore could reach 15,000 a day in a "worst-case scenario".
+
+The daily number of new cases has spiked since Jan 3, and was at 813 on Thursday. Of these, 365 were Omicron cases. The weekly infection growth rate, the ratio of community cases in the past week over the week before, was 1.5.
+</p>
+</div>
+
+{% endblock %}

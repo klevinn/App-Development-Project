@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Library Loan System - Home{% endblock %}
+
+{% block content %}
+<style>
+    .Container{
+
+
+    margin-left: auto;
+    margin-right: auto;
+    width: 50em;
+
+    }
+
+p{
+padding:10px;
+}
+</style>
+<div class="Container">
+
+
+<p class="text1">
+    SINGAPORE: From Feb 14, those aged 18 and above will have to take a booster shot within 270 days of completing their primary vaccination series in order to maintain a fully vaccinated status against COVID-19, the Ministry of Health said on Wednesday (Jan 5).
+
+The new rule will apply to those whose final vaccine dose was taken on May 20 last year or before, said Health Minister Ong Ye Kung at a multi-ministry task force press conference.
+</p>
+
+ <img src="{{url_for('static', filename='000_9vj7cz.jpg')}}" width="750" height="500">
+
+<p class="text2">
+“From now to Feb 13, 2022, as long as you have taken two doses of mRNA or three doses of the Sinovac, Sinopharm vaccine, regardless of how long ago you have received those jabs, you will still be deemed as fully vaccinated," he said.
+
+“Then on Feb 14, 2022, if your last vaccine dose was taken before May 20, 2021 - that is 270 days or nine months ago - your full vaccination status will lapse.
+
+"So to maintain your full vaccination status, you will need to take a booster vaccine dose before the deadline of Feb 14," Mr Ong added.
+
+Those who have not reached the nine-month expiry by then, or who are medically ineligible for boosters, will not be affected.
+
+Authorities are announcing this updated policy more than one month in advance so that those vaccination status may lapse next month will have a chance to get their booster jabs early and before the deadline, the minister said.
+</p>
+</div>
+
+{% endblock %}

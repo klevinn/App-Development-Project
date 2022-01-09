@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% block title %}Library Loan System - Retrieve Customers{% endblock %}
+
+{% block content %}
+
+
+<style>
+
+* {
+
+  box-sizing: border-box;
+}
+
+.all{
+width:100%
+
+}
+
+.move{
+width:50%;
+float:left;
+
+}
+
+.moveb{
+
+margin-left: 60%;
+margin-top:40px;
+}
+
+
+</style>
+<div class="all">
+<h1 class="display-4"> Shown appointments </h1>
+
+
+<div>
+  {% if count == 0 %}
+  <p>There are no appointments.</p>
+  {% elif count == 1 %}
+  <p>There is 1 appointment.</p>
+  {% else %}
+  <p>There are {{ count }} appointments.</p>
+  {% endif %}
+</div>
+
+
+<div class="move">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Gender</th>
+        <th>Email</th>
+        <th>Date of appointment</th>
+        <th>Doctor of choice</th>
+        <th>Remarks</th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for customer in customers_list %}
+        <tr>
+          <td>{{ customer.get_first_name() }}</td>
+          <td>{{ customer.get_last_name() }}</td>
+          <td>{{ customer.get_gender() }}</td>
+          <td>{{ customer.get_email() }}</td>
+          <td>{{customer.get_date()}}</td>
+
+          {% if customer.get_doc() == "T" %}
+            <td>Dr Tan</td>
+          {% elif customer.get_doc() == "M" %}
+            <td>Dr Mok </td>
+          {% elif customer.get_doc() == "L" %}
+            <td>Dr Lim</td>
+          {% endif %}
+          <td>{{ customer.get_remarks() }}</td>
+           <td><a href="/updateCustomer/{{customer.get_user_id()}}" class="btn btn-warning">Update</a></td>
+          <td>
+
+      <form action="{{url_for('delete_customer', id=customer.get_customer_id())}}" method="POST">
+    <!--<input type="submit" value="Delete" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete {{customer.get_first_name()}} {{customer.get_last_name()}}?');">-->
+    <!-- Button to Open the Modal -->
+    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#myModal_{{customer.get_customer_id()}}">
+      Delete
+    </button>
+    <div class="modal" id="myModal_{{customer.get_customer_id()}}">
+      <div class="modal-dialog">
+        <div class="modal-content">
+
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h4 class="modal-title">Delete Confirmation</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+
+          <!-- Modal body -->
+          <div class="modal-body">
+            Are you sure you want to delete {{customer.get_first_name()}} {{customer.get_last_name()}}?
+          </div>
+
+          <!-- Modal footer -->
+          <div class="modal-footer">
+            <input type="submit" value="Delete" class="btn btn-danger">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          </div>
+
+        </div>
+      </div>
+          </td>
+        </tr>
+  
+  </form>
+
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="moveb">
+    <a class="nav-link" href="/createConsultation">(Temporary) Consultation</a>
+</div>
+</div>
+
+{% endblock %}
+
