@@ -875,6 +875,7 @@ def userpw():
                 #using accessor methods to update data
                 registered_password = user.get_password()
                 same_password_hash = bcrypt.check_password_hash(registered_password, old_password)
+                email = user.get_email()
 
                 if same_password_hash == True:
                     same_pw = False
@@ -885,6 +886,11 @@ def userpw():
                     user.set_password(hashed_pw)
                     db['Users'] = users_dict
                     db.close()
+                    pw_msg = "Dear user, you have changed your password! If this was not you, contact our staff at 6251 2112 to help fix your issue! "
+                    msg = Message('Change In Password', sender = 'doctoronthego2022@gmail.com', recipients = [email])
+                    msg.body = pw_msg
+                    mail.send(msg)
+                    
                     return redirect(url_for("user"))
                 
                 else:
