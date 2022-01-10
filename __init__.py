@@ -8,6 +8,7 @@ from flask_bcrypt import Bcrypt
 from flask_mail import Mail , Message
 from werkzeug.utils import secure_filename
 import urllib.request
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 
 #imported files
