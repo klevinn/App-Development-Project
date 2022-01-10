@@ -19,6 +19,7 @@ from Functions import duplicate_email, duplicate_username, get_user_name, check_
 
 #Start Of Web Dev
 app = Flask(__name__)
+#Done by calvin
 #Hashing of passwords
 bcrypt = Bcrypt(app)
 
