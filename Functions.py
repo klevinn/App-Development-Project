@@ -1,4 +1,5 @@
 import random
+from random import randint
 import string
 
 def duplicate_username(username, dictionary):
@@ -99,3 +100,18 @@ def generate_random_password():
     result_str = ''.join((random.choice(source) for i in range(10)))
     return result_str
 
+def generate_staff_id():
+    staff_id = ''
+    source = string.ascii_letters + string.digits
+    for i in range(4):
+        value = randint(4,12)
+        result_str = ''.join((random.choice(source) for i in range(value)))
+        if i == 0:
+            staff_id = result_str
+        else:
+            staff_id = staff_id + '-' + result_str
+    
+    return staff_id
+
+
+#print(generate_staff_id())

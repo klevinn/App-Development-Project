@@ -14,7 +14,7 @@ import urllib.request
 import Forms
 import User, Staff
 from Security_Validation import validate_card_number, Sanitise, validate_expiry_date, validate_session, validate_session_open_file_admin, validate_session_admin
-from Functions import duplicate_email, duplicate_username, get_user_name, check_banned, fix_unit_number, fix_expiry_year, allowed_file, generate_random_password
+from Functions import duplicate_email, duplicate_username, get_user_name, check_banned, fix_unit_number, fix_expiry_year, allowed_file, generate_random_password, generate_staff_id
 
 #Start Of Web Dev
 app = Flask(__name__)
@@ -174,6 +174,8 @@ def login():
             if validstaffemail == True:
                 print("Running: Checking Staff Password")
                 passwordinshelve = staff_email_key.get_password()
+                #matching = bcrypt.check_password_hash(passwordinshelve, passwordInput)
+                #if matching:
                 if passwordInput == passwordinshelve:
 
                     staffname = staff_email_key.get_staff_id()
@@ -886,11 +888,12 @@ def userpw():
                     user.set_password(hashed_pw)
                     db['Users'] = users_dict
                     db.close()
+
                     pw_msg = "Dear user, you have changed your password! If this was not you, contact our staff at 6251 2112 to help fix your issue! "
                     msg = Message('Change In Password', sender = 'doctoronthego2022@gmail.com', recipients = [email])
                     msg.body = pw_msg
                     mail.send(msg)
-                    
+
                     return redirect(url_for("user"))
                 
                 else:
@@ -1349,6 +1352,7 @@ def staffprod():
     else:
         return redirect(url_for('login'))
 
+#@app.route('/staffupdate/<string:id>/', methods=['GET', 'POST'])
 @app.route('/staffupdate/<int:id>/', methods=['GET', 'POST'])
 def staffupdate(id):
     if "staff" in session:
@@ -1433,6 +1437,11 @@ def staffadd():
 
                 if(duplicated_email == False) and (duplicated_username == False):
                     print("Hello")
+                    #staff_id = generate_staff_id()
+                    #pw_hash = bcrypt.generate_password_hash(staff_id)
+                    #user = Staff.Staff(nameInput, emailInput, pw_hash)
+                    #user.set_staff_id(staff_id)
+
                     user = Staff.Staff(nameInput, emailInput, 'Staff1234')
                     for key in userDict:
                         #To assign Staff ID, ensure that it is persistent and is accurate to the list
@@ -1451,6 +1460,12 @@ def staffadd():
                     userDict[user.get_staff_id()] = user
                     db["Users"] = userDict
                     db.close()
+
+                    admin_msg = "You have been added to the staff team! Welcome to the team! "
+                    msg = Message('Welcome New Staff Member', sender = 'doctoronthego2022@gmail.com', recipients = [emailInput])
+                    msg.body = admin_msg
+                    mail.send(msg)
+
                     return redirect(url_for("stafflist", page = 1))
                 else:
                     print("Hello2")
@@ -1465,7 +1480,7 @@ def staffadd():
     else:
         return redirect(url_for('login'))
 
-
+#@app.route('/deleteUser/<string:id>', methods=["GET", 'POST'])
 @app.route('/deleteUser/<int:id>', methods=["GET", 'POST'])
 def deleteStaff(id):
     if "staff" in session:
