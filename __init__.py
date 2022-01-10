@@ -772,9 +772,15 @@ def userinfo():
                     for key in users_dict:
                         if key == idNumber:
                             user = users_dict[key]
+                            oldEmail = user.get_email()
                             user.set_username(nameInput)
                             user.set_email(emailInput)
                             db["Users"] = users_dict
+
+                            email_msg = "Dear user, you have changed your email from %s to %s! If this was not you, contact our staff at 6251 2112 to help fix your issue! " %(oldEmail, emailInput)
+                            msg = Message('Change In Email', sender = 'doctoronthego2022@gmail.com', recipients = [oldEmail])
+                            msg.body = email_msg
+                            mail.send(msg)
 
                             """
                             session["user"] = idNumber
