@@ -119,5 +119,3 @@ def generate_staff_id():
 def generate_feedback_id():
     source = randint(1000, 999999)
     return source
-
-print(generate_feedback_id())
