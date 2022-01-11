@@ -1260,15 +1260,85 @@ def staffapp():
     else:
         return redirect(url_for('login'))
 
-@app.route('/stafffeed' , methods=["GET","POST"])
-def stafffeed():
+@app.route('/stafffeed/<int:page>' , methods=["GET","POST"])
+def stafffeed(page=1):
     if "staff" in session:
         StaffName = session["staff"]
         valid_session, name = validate_session_open_file_admin(StaffName)
         if valid_session:
-            # Take in form submissions and dislay the data to the list.
-            # Upon submission the data will be stored into a list?, Recommend creating a .get() and .set() method for form inputs
-            return render_template('user/staff/stafffeedback.html' , staff = name)
+            """
+            feedbackform = open("forsimulation.txt", 'a')
+            feedbackform.write('Name, Type, Description, \n')
+            feedbackform.close()
+            """
+            display_dict = {}
+            page_num = 1
+            feedback_list = []
+            feed = open("forsimulation.txt", 'r')
+            line = feed.read()
+            test = line.split(', \n')
+            print(test)
+            for i in test:
+                if len(feedback_list) == 5:
+                    display = i.split(", ")
+                    feedback_list.append(display)
+                    print(feedback_list)
+
+                    display_dict[page_num] = feedback_list
+                    page_num += 1
+
+                    feedback_list = []
+                    display = i.split(", ")
+                    print(display, "HELLo")
+                    #feedback_list.append(display)
+                    display_dict[page_num] = feedback_list
+                else:
+                    display = i.split(", ")
+                    feedback_list.append(display)
+                    display_dict[page_num] = feedback_list
+            
+            feedback_list = display_dict[page]
+            all_keys = display_dict.keys()
+            max_value = max(all_keys)
+
+            feed.close()
+            return render_template('user/staff/stafffeedback.html' , count=len(feedback_list), feedback_list=feedback_list , staff = name, display_dict = display_dict, page=page, max_value=max_value)
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+    else:
+        return redirect(url_for('login'))
+
+@app.route('/deleteFeedback/<str:id>', methods=['GET', "POST"])
+def deleteFeedback(id):
+    if "staff" in session:
+        StaffName = session["staff"]
+        users_dict = {}
+        db = shelve.open('staff', 'w')
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving Users from staff.db")
+        
+        valid_session, name = validate_session_admin(StaffName, users_dict)
+        db.close()
+
+        if valid_session:
+            feed = open("forsimulation.txt", 'r')
+            line = feed.read()
+            test = line.split(', \n')
+            feed.close()
+
+            """
+
+            for i in test:
+                display = i.split(", ")
+            """
+            feed.close()
+            return redirect(url_for('stafffeed', page=1, staff = name))
         else:
             session.clear()
             return redirect(url_for('home'))

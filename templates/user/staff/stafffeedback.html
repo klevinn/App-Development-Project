@@ -1,5 +1,5 @@
 {% extends "admin_base.html" %}
-{% block head %} <link rel="stylesheet" href="static/CSS/staff.css"> {% endblock %}
+{% block head %} <link rel="stylesheet" href="{{ url_for('static',filename='CSS/staff.css') }}"> {% endblock %}
 {% block title %}Staff - Feedbacks | DoctorOnTheGo{% endblock %}
 
 {% block content %}
@@ -62,35 +62,94 @@
                 <div class="row">
                     <h3>Feedback Forms</h3>
                     <div id="Appointments">
+                      {% for feed in feedback_list %}
                         <div class="row">
                             <div class="col mb-0">
-                               [Email]
+                               {{ feed[0] }}
                             </div>
                             <div class="col">
-                               [Type Of Issue]
+                              {{ feed[1] }}
                             </div>
                             <div class="col">
-                                [Description Of Issue]
+                              {{ feed[2] }}
                              </div>
                              <div class="col">
-                                <a class="btn btn-info " target="__blank" href="">Delete</a>
+                              <form action="{{ url_for('deleteFeedback', id=feed }}" method="POST">
+                                <!--input type="submit" value="Delete" class="btn btn-danger"-->
+                                
+                                <!-- w3 schools modal button-->
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#myModal">
+                                  Delete
+                                </button>
+                            
+                                <!-- The Modal -->
+                                <div class="modal" id="myModal">
+                                  <div class="modal-dialog">
+                                    <div class="modal-content">
+                            
+                                      <!-- Modal Header -->
+                                      <div class="modal-header">
+                                        <h4 class="modal-title">Delete Confirmation</h4>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                      </div>
+                            
+                                      <!-- Modal body -->
+                                      <div class="modal-body">
+                                        Are you sure you want to Delete this feedback form?
+                                      </div>
+                            
+                                      <!-- Modal footer -->
+                                      <div class="modal-footer">
+                                        <input type="submit" value="Delete" class="btn btn-danger">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                      </div>
+                            
+                                    </div>
+                                  </div>
+                                </div>
+                            
+                              </form>
                              </div>
                          </div>
                          <hr>
-                         <div class="row">
-                            <div class="col mb-0">
-                               [Email]
-                            </div>
-                            <div class="col">
-                               [Type Of Issue]
-                            </div>
-                            <div class="col">
-                                [Description Of Issue]
-                             </div>
-                             <div class="col">
-                                <a class="btn btn-info " target="__blank" href="">Delete</a>
-                             </div>
-                         </div>
+                         {% endfor %}
+                         <nav aria-label="Page navigation example" style="margin-top:10px;">
+                          <ul class="pagination justify-content-center">
+                            {% if page == 1 %}
+                            <li class="page-item disabled">
+                              <a class="page-link" href="#" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                              </a>
+                            </li>
+                            {% else %}
+                            <li class="page-item">
+                              <a class="page-link" href="{{ url_for('stafffeed', page=page-1) }}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                              </a>
+                            </li>
+                            {% endif %}
+                            {% for key in display_dict %}
+                              {% if page == key %}
+                              <li class="page-item active"><a class="page-link" href="{{ url_for('stafffeed', page=key) }}">{{ key }}</a></li>
+                              {% else %}
+                              <li class="page-item"><a class="page-link" href="{{ url_for('stafffeed', page=key) }}">{{ key }}</a></li>
+                              {% endif %}
+                            {% endfor %}
+                            {% if page == max_value %}
+                            <li class="page-item disabled">
+                              <a class="page-link" href="#" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                              </a>
+                            </li>
+                            {% else %}
+                            <li class="page-item">
+                              <a class="page-link" href="{{ url_for('stafffeed', page=page+1) }}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                              </a>
+                            </li>
+                            {% endif %}
+                          </ul>
+                        </nav>
                     </div>
                 </div>
             </div>
