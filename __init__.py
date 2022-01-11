@@ -1270,6 +1270,10 @@ def stafffeed(page=1):
             feedbackform = open("forsimulation.txt", 'a')
             feedbackform.write('Name, Type, Description, \n')
             feedbackform.close()
+
+            Because of problems with delete feedback page, might need to change it to shelf and deal with dictionaries.
+
+            Created feedback id function already
             """
             display_dict = {}
             page_num = 1
@@ -1309,6 +1313,7 @@ def stafffeed(page=1):
     else:
         return redirect(url_for('login'))
 
+@app.route('/deleteFeedback/<int:id>', methods=['GET', "POST"])
 @app.route('/deleteFeedback/<str:id>', methods=['GET', "POST"])
 def deleteFeedback(id):
     if "staff" in session:
