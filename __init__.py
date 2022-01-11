@@ -1651,6 +1651,42 @@ def unbanUser(id):
     else:
         return redirect(url_for('login'))
 
+@app.route('/resetPasswordUser/<int:id>', methods=["GET", "POST"])
+def resetPassUser(id):
+    if "staff" in session:
+        StaffName = session["staff"]
+        users_dict = {}
+        db = shelve.open('user', 'c')
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving Users from user.db")
+        
+        valid_session , name = validate_session_open_file_admin(StaffName)
+        temp_pw = generate_random_password()
+        pw_hash =  bcrypt.generate_password_hash(temp_pw)
+        email = users_dict[id].get_email()
+
+        if valid_session:
+            users_dict[id].set_password(pw_hash)
+            db['Users'] = users_dict
+            db.close()
+
+            pw_msg = "Dear user you have requested for a password request. Use this temporary password to log in and reset afterwards: %s " %(temp_pw)
+            msg = Message('Password Reset', sender = 'doctoronthego2022@gmail.com', recipients = [email])
+            msg.body = pw_msg
+            mail.send(msg)
+
+            return redirect(url_for('staffaccountlist', page=1, staff = name))
+        else:
+            db.close()
+            session.clear()
+            return redirect(url_for('home'))
+    else:
+        return redirect(url_for('login'))
 
 """Custom Error Pages Made By Calvin"""
 

@@ -242,6 +242,36 @@
                                     </div>
                                 
                                   </form>
+                                  <hr>
+                                  <form action="{{ url_for('resetPassUser', id=user.get_user_id()) }}" method="POST">
+                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#myModal_password_{{ user.get_user_id() }}">
+                                      Reset Password
+                                    </button>
+                                    <div class="modal" id="myModal_password_{{ user.get_user_id() }}">
+                                      <div class="modal-dialog">
+                                        <div class="modal-content">
+                                
+                                          <!-- Modal Header -->
+                                          <div class="modal-header">
+                                            <h4 class="modal-title">Reset Password Confirmation</h4>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                          </div>
+                                
+                                          <!-- Modal body -->
+                                          <div class="modal-body">
+                                            Do you want to reset and send a Temporary password to {{ user.get_username() }}
+                                          </div>
+                                
+                                          <!-- Modal footer -->
+                                          <div class="modal-footer">
+                                            <input type="submit" value="Reset" class="btn btn-danger">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                          </div>
+                                
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </form>
                             </div>
                          </div>
                          <hr>
