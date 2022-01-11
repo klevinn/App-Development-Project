@@ -1332,8 +1332,12 @@ def stafflist(page=1):
             all_keys = display_dict.keys()
             max_value = max(all_keys)
 
-
-            return render_template('user/staff/stafflist.html', count=len(staff_list), staff_list=staff_list , staff = name, display_dict = display_dict, page=page, max_value=max_value)
+            staffpassword = ''
+            if 'staffpw' in session:
+                staffpassword = session['staffpw']
+                session.pop('staffpw', None)
+            
+            return render_template('user/staff/stafflist.html', count=len(staff_list), staff_list=staff_list , staff = name, display_dict = display_dict, page=page, max_value=max_value, staffpassword = staffpassword)
         else:
             session.clear()
             return redirect(url_for('home'))
@@ -1498,15 +1502,25 @@ def deleteStaff(id):
             print("Error in retrieving Users from staff.db")
         
         valid_session, name = validate_session_admin(StaffName, users_dict)
-
+        staff_pass = ''
+        staff_pass = request.form['password']
+        print(staff_pass)
         if valid_session:
+            if staff_pass == users_dict[id].get_password():
+                users_dict.pop(id)
 
-            users_dict.pop(id)
+                db['Users'] = users_dict
+                db.close()
 
-            db['Users'] = users_dict
-            db.close()
+                session['staffpw'] = True
+                
+                return redirect(url_for('stafflist', page=1, staff = name))
+            else:
+                db.close()
 
-            return redirect(url_for('stafflist', page=1, staff = name))
+                session['staffpw'] = False
+
+                return redirect(url_for('stafflist', page=1, staff = name))
         else:
             db.close()
             session.clear()

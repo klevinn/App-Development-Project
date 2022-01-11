@@ -61,6 +61,11 @@
             <div class="container">
                 <div class="row">
                     <h3>Staff Member List</h3>
+                    {% if staffpassword == False %}
+                    <div class="text-danger"><span id="error">Staff Member Not Deleted : Incorrect Password</span></div>
+                    {% elif staffpassword == True %}
+                    <div class="text-danger"><span id="error">Staff Member Deleted</span></div>
+                    {% endif %}
                     <div id="Appointments">
                       <div class=row>
                         <div style="font-weight: bold;" class="col mb-0">
@@ -71,9 +76,6 @@
                        </div>
                        <div style="font-weight: bold;" class="col">
                           Staff Email
-                       </div>
-                       <div class="col-sm-3">
-
                        </div>
                       </div>
                       <hr>
@@ -90,6 +92,8 @@
                             </div>
                             <div class="col-sm-3">
                               <a class="btn btn-warning " target="__blank" href="/staffupdate/{{ staff.get_staff_id() }}">Edit</a>
+
+                              <!--form action="#" method="POST" onsubmit='return mySubmitFunction(event)'-->
                               <form action="{{ url_for('deleteStaff', id=staff.get_staff_id()) }}" method="POST">
                                 <!--input type="submit" value="Delete" class="btn btn-danger"-->
                                 
@@ -97,7 +101,7 @@
                                 <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#myModal_{{ staff.get_staff_id() }}">
                                   Delete
                                 </button>
-                            
+                                
                                 <!-- The Modal -->
                                 <div class="modal" id="myModal_{{ staff.get_staff_id() }}">
                                   <div class="modal-dialog">
@@ -111,10 +115,37 @@
                             
                                       <!-- Modal body -->
                                       <div class="modal-body">
-                                        Are you sure you want to delete {{ staff.get_username() }} ?
+                                        <label for="">Enter Staff Password:</label>
+                                        <input type="password" class="form-control" name="password">
                                       </div>
                             
                                       <!-- Modal footer -->
+                                      <div class="modal-footer">
+                                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#myModal_confirmation_{{ staff.get_staff_id() }}" >
+                                        Delete </button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                      </div>
+                            
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div class="modal" id="myModal_confirmation_{{ staff.get_staff_id() }}">
+                                  <div class="modal-dialog">
+                                    <div class="modal-content">
+                            
+      
+                                      <div class="modal-header">
+                                        <h4 class="modal-title">Delete Confirmation</h4>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                      </div>
+                            
+                   
+                                      <div class="modal-body">
+                                        Are you sure you want to delete {{ staff.get_username() }} ?
+                                      </div>
+
+
                                       <div class="modal-footer">
                                         <input type="submit" value="Delete" class="btn btn-danger">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -123,8 +154,62 @@
                                     </div>
                                   </div>
                                 </div>
+                                </form>
+                                
+
+                                
+                                {# if staff_password == staff.get_password() #}
+                                <!--div class="modal" id="myModal_confirmation_{{ staff.get_staff_id() }}">
+                                  <div class="modal-dialog">
+                                    <div class="modal-content">
                             
-                              </form>
+      
+                                      <div class="modal-header">
+                                        <h4 class="modal-title">Delete Confirmation</h4>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                      </div>
+                            
+                   
+                                      <div class="modal-body">
+                                        Are you sure you want to delete {{ staff.get_username() }} ?
+                                      </div>
+
+
+                                      <div class="modal-footer">
+                                        <input type="submit" value="Delete" class="btn btn-danger">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                      </div>
+                            
+                                    </div>
+                                  </div>
+                                </div>
+                                {# else #}
+                                <div class="modal" id="myModal_confirmation_{{ staff.get_staff_id() }}">
+                                  <div class="modal-dialog">
+                                    <div class="modal-content">
+                            
+       
+                                      <div class="modal-header">
+                                        <h4 class="modal-title">Wrong Password</h4>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                      </div>
+                            
+   
+                                      <div class="modal-body">
+                                        {{ staff.get_password() }}
+                                        You have inputted the wrong password!
+                                      </div>
+                            
+           
+                                      <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                      </div>
+                            
+                                    </div>
+                                  </div>
+                                </div>
+                                {# endif #}
+                              </form-->
                             </div>
                           </div>
                           <hr>

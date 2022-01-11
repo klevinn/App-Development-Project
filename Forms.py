@@ -67,5 +67,7 @@ class CreateNewPasswordForm(Form):
     password = PasswordField("Password:", [validators.Length(min=6, max=20)])
     password_confirm = PasswordField("Confirm Password:", [validators.Length(min=6, max=20)])
 
+class EnterStaffPassword(Form):
+    password = PasswordField("", [validators.Length(min=6, max = 20)],  [validators.DataRequired()])
 
 #Done By
