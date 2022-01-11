@@ -1,6 +1,6 @@
 
 
-{% extends "base.html" %}
+{% extends "default_base.html" %}
   <link rel="stylesheet" type="text/css" href="Newshelper.css"/>
 {% block title %}Library Loan System - Home{% endblock %}
 
@@ -51,7 +51,7 @@ img {
   margin-top: -50px;
   color: white;
   font-weight: bold;
-  font-size: 20px;
+  font-size: 40px;
   border-radius: 0 3px 3px 0;
   user-select: none;
   -webkit-user-select: none;
@@ -175,6 +175,23 @@ padding-bottom:24px;
             font-size:2em;
 }
 
+.centered3 {
+            position: absolute;
+            top: 75px;
+            left: 300px;
+            color:white;
+            font-size:2em;
+}
+
+.centered4 {
+            position: absolute;
+            top: 75px;
+            left: 450px;
+            color:white;
+            font-size:2em;
+}
+
+
 .display-4 {
 text-align:center;
 
@@ -214,15 +231,21 @@ text-align:center;
 
   <div class="mySlides">
     <div class="numbertext">3 / 4</div>
-      <a href="">
+      <a target="nav-link" href="/Measure">
+                              <div class="centered3">
+              Up to date COVID-19 Measures in Singapore
+          </div>
      <img src="{{url_for('static', filename='coronavirus-712.jpg')}}" class="imga" width="100%" >
       </a>
   </div>
 
   <div class="mySlides">
     <div class="numbertext">4 / 4</div>
-      <a href="">
-    <img src="{{url_for('static', filename='Delhi-Covid-Live.jpg')}}" class="imga" width="100%">
+      <a target="nav-link" href="/Background">
+                    <div class="centered4">
+              What is COVID-19?
+          </div>
+    <img src="{{url_for('static', filename='by Creativeneko.jpg')}}" class="imga" width="100%">
           </a>
   </div>
 

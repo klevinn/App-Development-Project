@@ -1,5 +1,5 @@
 {% extends "default_base.html" %}
-{% block title %}Library Loan System - Main consultation{% endblock %}
+{% block title %} Main consultation{% endblock %}
 {% from "includes/_formHelper.html" import render_field %}
 
 
@@ -11,7 +11,7 @@
 .upperboxmain{
 
 width:100%;
-height:620px;
+heigh:620px;
 background-color:grey;
 }
 .Upperbox{
@@ -39,16 +39,19 @@ border: 2px solid black;
   color: #444;
   cursor: pointer;
   padding: 18px;
-  width: 100%;
+  width: 70%;
   border: none;
-  text-align: left;
+  text-align: center;
   outline: none;
   font-size: 15px;
+
+
+
 }
 
 h2 {
 
-
+margin-top:120px;
 text-align:center;
 
 }
@@ -60,10 +63,14 @@ text-align:center;
 
 /* Style the collapsible content. Note: hidden by default */
 .content {
-  padding: 0;
+  padding: 10px;
   display: none;
   overflow: hidden;
   background-color: #f1f1f1;
+  /* This is is bad stop gap */
+  margin-left:15%;
+  width:70%
+
 }
 .column {
   float: left;
@@ -87,6 +94,30 @@ padding:50px;
 padding:10px;
 
 }
+
+.but{
+
+
+
+}
+
+.dropdown{
+   text-align:center;
+}
+.con {
+  height: 200px;
+  position: relative;
+
+}
+
+.mid {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
 </style>
 
 
@@ -106,13 +137,14 @@ padding:10px;
 </div>
 <div class="Title2">
 
-    <h2> What issues are you having</h2>
+    <h2> What issues are you having?</h2>
 
 </div>
 <div class="smallerise">
+    <div class="dropdown">
 <button type="button" class="collapsible">Fever</button>
 <div class="content">
-  <p>Lorem ipsum...</p>
+  <p>Here's some infographic about Fever</p>
 
     <div class="row">
 
@@ -125,22 +157,33 @@ padding:10px;
 
     </div>
 </div>
-
+<div class="dropdown">
 <button type="button" class="collapsible">Sore throat</button>
 <div class="content">
     <img src="{{url_for('static', filename='eob-strep-updated.png')}}"  style="width:50%">
   <p>Lorem ipsum...</p>
 </div>
 </div>
-</div>
+<div class="dropdown">
 <button type="button" class="collapsible">Headache</button>
 <div class="content">
   <p>Lorem ipsum...</p>
         <img src="{{url_for('static', filename='3281f3bd09fe6fd9c779f6a6004a6671.png')}}"  style="width:50%">
 </div>
+</div>
+</div>
+</div>
 
- <a class="nav-link" href="/viewandchose">(Temporary) Consultation</a>
+<h2> Unable to find what you need? Make an appointment with one of our doctors. </h2>
+<div class="con">
+<div class="mid">
+ <a class="nav-link" href="/viewandchose">
+<! ideally u want a login verification here but idk how. TBD !>
+ <button type="button" class="but"> Find an appointment </button>
 
+ </a>
+    </div>
+</div>
 
 
 

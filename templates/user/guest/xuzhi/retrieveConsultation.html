@@ -1,42 +1,21 @@
 {% extends "default_base.html" %}
-{% block title %}View and chose{% endblock %}
+{% block title %}Library Loan System - Retrieve Customers{% endblock %}
 
 {% block content %}
-
-
 <style>
+  .centralisation{
+  width:80%
+  float:center
 
-* {
 
-  box-sizing: border-box;
-}
+  }
 
-.all{
-width:100%
 
-}
 
-.move{
-width:50%;
-float:left;
-
-}
-
-.moveb{
-
-margin-left: 60%;
-margin-top:40px;
-}
-.btn btn-danger{
-
-color:green;
-}
 
 </style>
-<div class="all">
 <h1 class="display-4"> Shown appointments </h1>
-
-
+<div class="centralisation">
 <div>
   {% if count == 0 %}
   <p>There are no appointments.</p>
@@ -46,9 +25,7 @@ color:green;
   <p>There are {{ count }} appointments.</p>
   {% endif %}
 </div>
-
-
-<div class="move">
+<div>
   <table class="table table-striped">
     <thead>
       <tr>
@@ -73,7 +50,7 @@ color:green;
           <td>{{ customer.get_email() }}</td>
           <td>{{customer.get_date()}}</td>
 
-          {% if customer.get_doc() == "T" %}
+          {% if customer.get_doc() == "T"%}
             <td>Dr Tan</td>
           {% elif customer.get_doc() == "M" %}
             <td>Dr Mok </td>
@@ -81,8 +58,13 @@ color:green;
             <td>Dr Lim</td>
           {% endif %}
           <td>{{ customer.get_remarks() }}</td>
-           <td><a href="/updateConsultation/{{customer.get_user_id()}}" class="btn btn-warning">Update</a></td>
+           <td><a href="/updateCustomer/{{customer.get_user_id()}}" class="btn btn-warning">Update</a></td>
           <td>
+
+
+    <!-- The Modal -->
+
+
 
       <form action="{{url_for('delete_customer', id=customer.get_customer_id())}}" method="POST">
     <!--<input type="submit" value="Delete" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete {{customer.get_first_name()}} {{customer.get_last_name()}}?');">-->
@@ -102,7 +84,7 @@ color:green;
 
           <!-- Modal body -->
           <div class="modal-body">
-            Are you sure you want to delete {{customer.get_first_name()}} {{customer.get_last_name()}}?
+            Are you sure you want to delete {{customer.get_first_name()}} {{customer.get_last_name()}}
           </div>
 
           <!-- Modal footer -->
@@ -113,20 +95,15 @@ color:green;
 
         </div>
       </div>
+
           </td>
         </tr>
-  
-  </form>
 
+  </form>
       {% endfor %}
     </tbody>
   </table>
 </div>
-
-<div class="moveb">
-    <a class="nav-link" href="/createConsultation">(Temporary) Consultation</a>
-</div>
-</div>
-
+  </div>
 {% endblock %}
 
