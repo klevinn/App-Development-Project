@@ -3,6 +3,8 @@
 import random
 from random import randint
 import string
+import shelve
+import Feedback
 
 def duplicate_username(username, dictionary):
     for key in dictionary:
@@ -119,3 +121,23 @@ def generate_staff_id():
 def generate_feedback_id():
     source = randint(1000, 999999)
     return source
+
+
+"""
+feedback_dict = {}
+db = shelve.open('feedback', 'c')
+try:
+    if 'Users' in db:
+        feedback_dict = db['Users']
+    else:
+        db['Users'] = feedback_dict
+except:
+    print("Error in retrieving Users from feedback db")
+
+id_num = generate_feedback_id()
+feed = Feedback.Feedback('calvin', 'test@gmail.com', 'nah', 'qwertyqwertyqwertyqwertyqwertyqwertyqwertyqwerty', id_num)
+
+feedback_dict[id_num] = feed
+db['Users'] = feedback_dict
+db.close()
+"""

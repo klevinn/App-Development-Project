@@ -1265,6 +1265,19 @@ def stafffeed(page=1):
     if "staff" in session:
         StaffName = session["staff"]
         valid_session, name = validate_session_open_file_admin(StaffName)
+
+        feedback_dict = {}
+        db = shelve.open('feedback', 'c')
+        try:
+            if 'Users' in db:
+                feedback_dict = db['Users']
+            else:
+                db['Users'] = feedback_dict
+        except:
+            print("Error in retrieving Users from feedback db")
+        
+        db.close()
+
         if valid_session:
             """
             feedbackform = open("forsimulation.txt", 'a')
@@ -1278,6 +1291,20 @@ def stafffeed(page=1):
             display_dict = {}
             page_num = 1
             feedback_list = []
+            for key in feedback_dict:
+                if len(feedback_list) == 5:
+                    display_dict[page_num] = feedback_list
+                    page_num += 1
+
+                    feedback_list = []
+                    feedback = feedback_dict.get(key)
+                    feedback_list.append(feedback)
+                    display_dict[page_num] = feedback_list
+                else:
+                    feedback = feedback_dict.get(key)
+                    feedback_list.append(feedback)
+                    display_dict[page_num] = feedback_list
+            """
             feed = open("forsimulation.txt", 'r')
             line = feed.read()
             test = line.split(', \n')
@@ -1300,12 +1327,14 @@ def stafffeed(page=1):
                     display = i.split(", ")
                     feedback_list.append(display)
                     display_dict[page_num] = feedback_list
-            
+                    feed.close()
+            """
+
             feedback_list = display_dict[page]
             all_keys = display_dict.keys()
             max_value = max(all_keys)
 
-            feed.close()
+            
             return render_template('user/staff/stafffeedback.html' , count=len(feedback_list), feedback_list=feedback_list , staff = name, display_dict = display_dict, page=page, max_value=max_value)
         else:
             session.clear()
@@ -1314,37 +1343,31 @@ def stafffeed(page=1):
         return redirect(url_for('login'))
 
 @app.route('/deleteFeedback/<int:id>', methods=['GET', "POST"])
-@app.route('/deleteFeedback/<str:id>', methods=['GET', "POST"])
+#@app.route('/deleteFeedback/<str:id>', methods=['GET', "POST"])
 def deleteFeedback(id):
     if "staff" in session:
         StaffName = session["staff"]
-        users_dict = {}
-        db = shelve.open('staff', 'w')
+        valid_session, name = validate_session_open_file_admin(StaffName)
+        
+        feedback_dict = {}
+        db = shelve.open('feedback', 'w')
         try:
             if 'Users' in db:
-                users_dict = db['Users']
+                feedback_dict = db['Users']
             else:
-                db["Users"] = users_dict
+                db['Users'] = feedback_dict
         except:
-            print("Error in retrieving Users from staff.db")
-        
-        valid_session, name = validate_session_admin(StaffName, users_dict)
-        db.close()
+            print("Error in retrieving Users from feedback db")
 
         if valid_session:
-            feed = open("forsimulation.txt", 'r')
-            line = feed.read()
-            test = line.split(', \n')
-            feed.close()
+            feedback_dict.pop(id)
 
-            """
+            db['Users'] = feedback_dict
+            db.close()
 
-            for i in test:
-                display = i.split(", ")
-            """
-            feed.close()
             return redirect(url_for('stafffeed', page=1, staff = name))
         else:
+            db.close()
             session.clear()
             return redirect(url_for('home'))
     else:

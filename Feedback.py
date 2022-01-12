@@ -1,9 +1,10 @@
 class Feedback:
-    def __init__(self):
-        self.__fb_name = ''
-        self.__fb_email = ''
-        self.__fb_subject = ''
-        self.__fb_desc = ''
+    def __init__(self, fb_name, fb_email, fb_subject, fb_desc, fb_id):
+        self.__fb_name = fb_name
+        self.__fb_email = fb_email
+        self.__fb_subject = fb_subject
+        self.__fb_desc = fb_desc
+        self.__fb_id = fb_id
     
     def set_fb_name(self, name):
         self.__fb_name = name
@@ -16,6 +17,9 @@ class Feedback:
     
     def set_fb_desc(self, desc):
         self.__fb_desc = desc
+    
+    def set_fb_id(self, id):
+        self.__fb_id = id
 
     def get_fb_name(self):
         return self.__fb_name
@@ -28,3 +32,6 @@ class Feedback:
     
     def get_fb_desc(self):
         return self.__fb_desc
+    
+    def get_fb_id(self):
+        return self.__fb_id
