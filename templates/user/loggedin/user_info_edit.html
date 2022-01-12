@@ -1,5 +1,6 @@
 {% extends "user_base.html" %}
-{% block head %} <link rel="stylesheet" href="static/CSS/login_signup.css"> {% endblock %}
+{% block head %}
+<link rel="stylesheet" href="static/CSS/login_signup.css"> {% endblock %}
 {% block title %}Updating... | DoctorOnTheGo{% endblock %}
 
 {% block content %}
@@ -12,21 +13,22 @@
                     <h4 class="text-black">Update Your Account!</h4>
                     <div class="col-12">
                         <label for="">Username:</label>
-                            <div class="input-group">
-                                <span class="input-group-text" id="basic-addon1">@</span>
-                                {{ render_field(form.new_username, class="form-control", placeholder="Username") }}
-                              </div>
-                        {% if duplicated_username %}<div class="text-danger"><span id="error">Taken Username</span></div>{% endif %}
+                        <div class="input-group">
+                            <span class="input-group-text" id="basic-addon1">@</span>
+                            {{ render_field(form.new_username, class="form-control", placeholder="Username") }}
+                        </div>
+                        {% if duplicated_username %}<div class="text-danger"><span id="error">Taken Username</span>
+                        </div>{% endif %}
                         <!--label>Username:</label>
                         <input type="text" name="name" class="form-control" placeholder="Username"-->
                     </div>
                     <div class="col-12">
                         {{ render_field(form.new_email, class="form-control" , placeholder="example@email.com") }}
-                            {% if check_ban %}
-                            <div class="text-danger"><span id="error">Email has been banned</span></div>
-                            {% elif duplicated_email and check_ban == False %}
-                            <div class="text-danger"><span id="error">Taken Email</span></div>
-                            {% endif %}
+                        {% if check_ban %}
+                        <div class="text-danger"><span id="error">Email has been banned</span></div>
+                        {% elif duplicated_email and check_ban == False %}
+                        <div class="text-danger"><span id="error">Taken Email</span></div>
+                        {% endif %}
                         <!--label>Email:</label>
                         <input type="text" name="email" class="form-control" placeholder="Email"-->
                     </div>

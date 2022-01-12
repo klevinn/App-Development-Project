@@ -1,5 +1,6 @@
 {% extends "default_base.html" %}
-{% block head %}<link rel="stylesheet" href="static/CSS/cookiealert.css">{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="static/CSS/cookiealert.css">{% endblock %}
 {% block title %}Home | DoctorOnTheGo{% endblock %}
 
 {% block content %}
@@ -8,14 +9,15 @@
 
 <div class="datalink">
     <a class="nav-link" href="/graph">
-    <button type="button">Click Me!</button>
+        <button type="button">Click Me!</button>
     </a>
 </div>
 
 <!-- COOKIES -->
 <!--https://lioshi.github.io/Bootstrap-Cookie-Alert/-->
 <div class="alert text-center cookiealert" role="alert">
-    <b>Do you like cookies?</b> &#x1F36A; We use cookies to ensure you get the best experience on our website. <a href="http://cookiesandyou.com/" target="_blank">Learn more</a>
+    <b>Do you like cookies?</b> &#x1F36A; We use cookies to ensure you get the best experience on our website. <a
+        href="http://cookiesandyou.com/" target="_blank">Learn more</a>
 
     <button type="button" class="btn btn-primary btn-sm acceptcookies" aria-label="Close">
         I agree

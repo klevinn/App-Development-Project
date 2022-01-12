@@ -1,36 +1,37 @@
 {% extends "default_base.html" %}
-{% block head %} <link rel="stylesheet" href="static/CSS/login_signup.css"> {% endblock %}
+{% block head %}
+<link rel="stylesheet" href="static/CSS/login_signup.css"> {% endblock %}
 {% block title %}Log In Failed! | DoctorOnTheGo{% endblock %}
 
 {% block content %}
-    <!-- Login Form https://www.markuptag.com/simple-login-form-design-in-bootstrap-5/ -->
-    <div class="background-image">
-        <div class="row">
-            <div class="col-md-4 offset-md-7">
-                <div class="login-form bg-colour mt-6 p-4" id="loginForm">
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <strong>Holy guacamole!</strong> Check for any incorrect credentials!
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                      </div>
-                    <form action="" method="" class="row g-3">
-                        <h4 class="text-black">Log In</h4>
-                        <div class="col-12">
-                            <label>Email:</label>
-                            <input type="text" name="email" class="form-control" placeholder="Email">
-                        </div>
-                        <div class="col-12">
-                            <label>Password:</label>
-                            <input type="password" name="password" class="form-control" placeholder="Password">
-                        </div>
-                        <div class="col-12">
-                            <button type="submit" class="btn btn-dark float-end">Login</button>
-                        </div>
-                    </form>
-                    <hr class="mt-4">
+<!-- Login Form https://www.markuptag.com/simple-login-form-design-in-bootstrap-5/ -->
+<div class="background-image">
+    <div class="row">
+        <div class="col-md-4 offset-md-7">
+            <div class="login-form bg-colour mt-6 p-4" id="loginForm">
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Holy guacamole!</strong> Check for any incorrect credentials!
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <form action="" method="" class="row g-3">
+                    <h4 class="text-black">Log In</h4>
                     <div class="col-12">
-                        <p class="text-center mb-0">Wanna be a Member? <a href="/signup">Sign up today!</a></p>
+                        <label>Email:</label>
+                        <input type="text" name="email" class="form-control" placeholder="Email">
                     </div>
+                    <div class="col-12">
+                        <label>Password:</label>
+                        <input type="password" name="password" class="form-control" placeholder="Password">
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-dark float-end">Login</button>
+                    </div>
+                </form>
+                <hr class="mt-4">
+                <div class="col-12">
+                    <p class="text-center mb-0">Wanna be a Member? <a href="/signup">Sign up today!</a></p>
                 </div>
             </div>
         </div>
-{% endblock %}
+    </div>
+    {% endblock %}
