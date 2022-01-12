@@ -503,7 +503,12 @@ def passwordforget():
             db['Users'] = userDict
             db.close()
 
-            pw_msg = "Dear user you have requested for a password request. Use this temporary password to log in and reset afterwards: %s " %(temp_pw)
+            s = Serializer(app.secret_key, expires_in=60*10)
+            token = s.dumps({'user_id': email_key.get_user_id()})
+            url = url_for('passwordreset', token=token)
+            print(temp_pw)
+            print(url)
+            pw_msg = "Dear user you have requested for a password request. Use this temporary password to log in and reset afterwards: %s \n OR \n Use this link with temporary password instead: %s " %(temp_pw, url)
             msg = Message('Password Reset', sender = 'doctoronthego2022@gmail.com', recipients = [email])
             msg.body = pw_msg
             mail.send(msg)
@@ -515,6 +520,10 @@ def passwordforget():
     else:
         return render_template("user/guest/passwordforget.html", form = email_form)
 
+@app.route('/passwordreset/<token>', methods=["GET", "POST"])
+def passwordreset(token):
+    print("Hello")
+    return render_template('home.html')
 """
 POTENTIAL PASSWORD RESET (Email sent and given link)
 
@@ -1772,7 +1781,7 @@ def resetPassUser(id):
             users_dict[id].set_password(pw_hash)
             db['Users'] = users_dict
             db.close()
-
+            print(temp_pw)
             pw_msg = "Dear user you have requested for a password request. Use this temporary password to log in and reset afterwards: %s " %(temp_pw)
             msg = Message('Password Reset', sender = 'doctoronthego2022@gmail.com', recipients = [email])
             msg.body = pw_msg
