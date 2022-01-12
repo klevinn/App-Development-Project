@@ -601,7 +601,13 @@ def passwordreset():
     else:
         return redirect(url_for('home'))
 """
+"""
+Email Verification
+@app.route('/emailVerify/<token>', methods =["GET","POST"])
+def emailVerify(token):
+    return render_template("user/loggedin/emailverification.html")
 
+"""
 """ USER PROFILE SETTINGS DONE BY CALVIN"""
 
 @app.route('/user' , methods=["GET","POST"])
