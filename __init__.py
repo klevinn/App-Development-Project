@@ -1265,6 +1265,19 @@ def staffapp():
     if "staff" in session:
         StaffName = session["staff"]
         valid_session, name = validate_session_open_file_admin(StaffName)
+
+        userDict = {}
+        db = shelve.open('user', 'c')
+        try:
+            if 'Users' in db:
+                userDict = db['Users']
+            else:
+                db['Users']= userDict
+        except:
+            print("Error in retrieving Users from feedback db")
+        
+        db.close()
+        
         if valid_session:
             # Take in form submissions and dislay the data to the list.
             # Upon submission the data will be stored into a list?, Recommend creating a .get() and .set() method for form inputs
