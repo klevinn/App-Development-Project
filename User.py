@@ -82,16 +82,13 @@ class User(Person):
 
     def set_profile_pic(self, profilepicture):
         self.__profile_picture = profilepicture
-    
     def get_profile_pic(self):
         return self.__profile_picture
 
     def set_banned(self):
         self.__ban_status = True
-    
     def set_unbanned(self):
         self.__ban_status = False
-
     def get_ban_status(self):
         return self.__ban_status
 
@@ -107,8 +104,7 @@ class User(Person):
     
     def display_unit_number(self):
         unit_number = ("# %s - %s" %(self.__unit_number1 , self.__unit_number2))
-        return unit_number
-    
+        return unit_number  
     def display_expiry_date(self):
         expiry_date = ('%s-%s' %(self.__card_expiry_year, self.__card_expiry_month))
         return expiry_date
