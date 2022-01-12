@@ -36,6 +36,7 @@ mail = Mail(app)
 
 #Secret Key Required for sessions
 app.secret_key = "session_key"
+s = Serializer(app.secret_key, expires_in=10)
 
 #For Profile Picture Upload
 PROFILEPIC_UPLOAD_PATH = 'static/images/profilepic'
@@ -503,12 +504,12 @@ def passwordforget():
             db['Users'] = userDict
             db.close()
 
-            s = Serializer(app.secret_key, expires_in=60*10)
+
             token = s.dumps({'user_id': email_key.get_user_id()})
             url = url_for('passwordreset', token=token)
             print(temp_pw)
             print(url)
-            pw_msg = "Dear user you have requested for a password request. Use this temporary password to log in and reset afterwards: %s \n OR \n Use this link with temporary password instead: %s " %(temp_pw, url)
+            pw_msg = "Dear user you have requested for a password request. Use this temporary password to log in and reset afterwards: %s \n OR \n Use this link with temporary password instead: http://127.0.0.1:5000%s " %(temp_pw, url)
             msg = Message('Password Reset', sender = 'doctoronthego2022@gmail.com', recipients = [email])
             msg.body = pw_msg
             mail.send(msg)
@@ -522,8 +523,23 @@ def passwordforget():
 
 @app.route('/passwordreset/<token>', methods=["GET", "POST"])
 def passwordreset(token):
-    print("Hello")
-    return render_template('home.html')
+    valid = False
+    try:
+        data = s.loads(token)
+        print(data)
+        valid = True
+    except:
+        valid = False
+    
+    if valid == True:
+        reset_password = Forms.CreateResetPWForm(request.form)
+        if request.method =="POST" and reset_password.validate():
+            return render_template('user/guest/passwordreset.html', form=reset_password)
+        else:
+            return render_template('user/guest/passwordreset.html', form=reset_password)
+    else:
+        return redirect(url_for('home'))
+
 """
 POTENTIAL PASSWORD RESET (Email sent and given link)
 
