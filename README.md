@@ -19,5 +19,17 @@ Modules Used:
     <li>Bcrypt (pip install flask-bcrypt)</li>
     <li>Bootstrap</li>
     <li>Flask-Mail (pip install Flask-Mail)</li>
+    <li>
+        OneMap (pip install onemapsg) Not Implemented
+        <ul>
+            <li>https://pypi.org/project/onemapsg/</li>
+        </ul>
+    </li>
+    <li>Use UUID module(WIP)</li>
+    <li>dicebear (pip install dicebear)
+        <ul>
+            from src import Avatar
+        </ul>
+    </li>
 </ol>
 
