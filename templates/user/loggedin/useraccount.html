@@ -1,14 +1,66 @@
 {% extends "user_base.html" %}
 {% block head %}
-<link rel="stylesheet" href="static/CSS/useraccount.css"> {% endblock %}
+<link rel="stylesheet" href="static/CSS/useraccount.css">
+{% endblock %}
 {% block title %}Welcome User! | DoctorOnTheGo{% endblock %}
 
 {% block content %}
 <div class="main-body">
+   <div class="modal" id="myModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h4 class="modal-title">Edit Notification</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+
+          <!-- Modal body -->
+          <div class="modal-body">
+            Your {{ change }} has been editted!
+          </div>
+
+          <!-- Modal footer -->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Noted</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
    <div class="row gutters-sm">
       <div class="col-md-4 mb-3">
          <div class="card">
             <div class="card-body">
+               {% if changed == True %}
+               <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                data-bs-target="#myModal" id="btn" style="display:none;">
+               </button>
+               {% endif %}
+               <div class="modal" id="myModal">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+
+                      <!-- Modal Header -->
+                      <div class="modal-header">
+                        <h4 class="modal-title">Edit Notification</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                      </div>
+
+                      <!-- Modal body -->
+                      <div class="modal-body">
+                        Your {{ change }} has been editted!
+                      </div>
+
+                      <!-- Modal footer -->
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Noted</button>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
                <div class="d-flex flex-column align-items-center text-center">
                   <img src="../static/images/default.png" alt="Admin" class="rounded-circle" width="150">
                   <div class="mt-3">
@@ -109,7 +161,42 @@
                      <div class="row">
                         <div class="col-sm-12">
                            <a class="btn btn-info " href="/useraddress">Edit</a>
-                           <a class="btn btn-info " href="/deleteaddress">Delete</a>
+                           <form action="/deleteaddress" method="POST">
+                              <!--input type="submit" value="Delete" class="btn btn-danger"-->
+            
+                              <!-- w3 schools modal button-->
+                              <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                data-bs-target="#myModal_address">
+                                Delete
+                              </button>
+            
+                              <!-- The Modal -->
+                              <div class="modal" id="myModal_address">
+                                <div class="modal-dialog">
+                                  <div class="modal-content">
+            
+                                    <!-- Modal Header -->
+                                    <div class="modal-header">
+                                      <h4 class="modal-title">Deletion Confirmation</h4>
+                                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+            
+                                    <!-- Modal body -->
+                                    <div class="modal-body">
+                                      Are you sure you want to delete your saved address ?
+                                    </div>
+            
+                                    <!-- Modal footer -->
+                                    <div class="modal-footer">
+                                      <input type="submit" value="Delete" class="btn btn-danger">
+                                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    </div>
+            
+                                  </div>
+                                </div>
+                              </div>
+            
+                            </form>
                         </div>
                      </div>
                   </div>
@@ -148,7 +235,42 @@
                      <div class="row">
                         <div class="col-sm-12">
                            <a class="btn btn-info " href="/usercard">Edit</a>
-                           <a class="btn btn-info " href="/deletecard">Delete</a>
+                           <form action="/deletecard" method="POST">
+                              <!--input type="submit" value="Delete" class="btn btn-danger"-->
+            
+                              <!-- w3 schools modal button-->
+                              <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                data-bs-target="#myModal_card">
+                                Delete
+                              </button>
+            
+                              <!-- The Modal -->
+                              <div class="modal" id="myModal_card">
+                                <div class="modal-dialog">
+                                  <div class="modal-content">
+            
+                                    <!-- Modal Header -->
+                                    <div class="modal-header">
+                                      <h4 class="modal-title">Deletion Confirmation</h4>
+                                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+            
+                                    <!-- Modal body -->
+                                    <div class="modal-body">
+                                      Are you sure you want to delete your saved credit card ?
+                                    </div>
+            
+                                    <!-- Modal footer -->
+                                    <div class="modal-footer">
+                                      <input type="submit" value="Delete" class="btn btn-danger">
+                                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    </div>
+            
+                                  </div>
+                                </div>
+                              </div>
+            
+                            </form>
                         </div>
                      </div>
                   </div>
@@ -159,4 +281,16 @@
       </div>
    </div>
 </div>
+{% endblock %}
+{% block scripts %}
+<script>
+   window.onload = function(){
+   document.getElementById('btn').click();
+   };
+</script>
+<!-- Popper 2.10.2, Bootstrap 5.1.2 JavaScript -->
+<script crossorigin="anonymous" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB"
+src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-PsUw7Xwds7x08Ew3exXhqzbhuEYmA2xnwc8BuD6SEr+UmEHlX8/MCltYEodzWA4u"
+src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.min.js"></script>
 {% endblock %}

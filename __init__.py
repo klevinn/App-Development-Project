@@ -646,6 +646,9 @@ def user():
 
         db.close()
 
+        changed = False
+        change = ''
+
         if valid_session:
             user_list = []
             for key in users_dict:
@@ -655,8 +658,13 @@ def user():
                     name = user.get_username()
                     break
             
+            if 'change' in session:
+                changed = True
+                change = session['change']
+                print(change)
+                session.pop('change')
 
-            return render_template('user/loggedin/useraccount.html' , user = name, count=len(user_list), user_list=user_list)
+            return render_template('user/loggedin/useraccount.html' , user = name, count=len(user_list), user_list=user_list, changed = changed, change = change)
         else:
             session.clear()
             return redirect(url_for("home"))
@@ -821,6 +829,8 @@ def userinfo():
                             session["user"] = idNumber
                             idNumber = session["user"]
                             """
+                    
+                    session['change'] = 'Info'
 
                     db.close()
                     return redirect(url_for("user"))
@@ -927,6 +937,8 @@ def userpw():
                     msg.body = pw_msg
                     mail.send(msg)
 
+                    session['change'] = 'Password'
+
                     return redirect(url_for("user"))
                 
                 else:
@@ -993,6 +1005,8 @@ def useraddress():
 
                 db['Users'] = users_dict
                 db.close()
+
+                session['change'] = 'Address'
 
                 return redirect(url_for("user"))
             
@@ -1108,6 +1122,8 @@ def usercard():
 
                         db['Users'] = users_dict
                         db.close()
+
+                        session['change'] = 'Card'
 
                         return redirect(url_for("user"))
 

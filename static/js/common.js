@@ -61,4 +61,3 @@ function mySubmitFunction(e) {
     someBug();
     return false;
   }
-
