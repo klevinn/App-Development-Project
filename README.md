@@ -20,7 +20,8 @@ Modules Used:
     <li>Bootstrap</li>
     <li>Flask-Mail (pip install Flask-Mail)</li>
     <li>
-        <ul>OneMap (pip install onemapsg) Not Implemented
+        OneMap (pip install onemapsg) Not Implemented
+        <ul>
             <li>https://pypi.org/project/onemapsg/</li>
         </ul>
     </li>
