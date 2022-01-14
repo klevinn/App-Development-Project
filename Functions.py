@@ -7,6 +7,7 @@ import string
 #Modules Used for Testing
 import shelve
 import Feedback
+from src import Avatar
 
 def duplicate_username(username, dictionary):
     for key in dictionary:
@@ -148,5 +149,9 @@ unit_number1, unit_number2 = break_unit_number("# 04 - 05")
 print(unit_number1)
 print(unit_number2)
 """
-
+"""
 #print(generate_staff_id())
+
+av = Avatar(type="pixel-art-neutral", seed="John Apple")
+print(av)
+"""

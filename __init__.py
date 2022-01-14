@@ -9,6 +9,7 @@ from flask_mail import Mail , Message
 from werkzeug.utils import secure_filename
 import urllib.request
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from src import Avatar
 
 
 #imported files
@@ -664,8 +665,10 @@ def user():
                 change = session['change']
                 print(change)
                 session.pop('change')
+            
+            av = Avatar(type="pixel-art-neutral", seed=name)
 
-            return render_template('user/loggedin/useraccount.html' , user = name, count=len(user_list), user_list=user_list, changed = changed, change = change)
+            return render_template('user/loggedin/useraccount.html' , user = name, count=len(user_list), user_list=user_list, changed = changed, change = change, av=av)
         else:
             session.clear()
             return redirect(url_for("home"))
