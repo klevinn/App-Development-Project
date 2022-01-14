@@ -459,7 +459,7 @@ def signupC():
         db.close()
 
         if valid_session:
-            session.pop('Customer', None)
+            session.pop('Customer',None)
             return render_template('user/guest/signupcomplete.html' , user = UserName)
         else:
             session.clear()

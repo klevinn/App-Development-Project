@@ -87,12 +87,17 @@
               <div style="font-weight: bold;" class="col">
                 Staff Email
               </div>
+              <div class="col">
+                
+              </div>
             </div>
             <hr>
             {% for staff in staff_list %}
             <div class="row">
               <div class="col mb-0">
-                <span>{{ staff.get_staff_id() }}</span>
+                <!--span id=sample_{{staff.get_staff_id()}}>{{ staff.get_staff_id() }}</span-->
+                <span style="margin-left:5%;" id=sample_{{staff.get_staff_id()}}>{{ staff.get_staff_id() }}</span> <br>
+                <button id="copybutton" type="button" class="btn btn-secondary" onclick="CopyToClipboard('sample_{{staff.get_staff_id()}}');return false;">Copy</button>
               </div>
               <div class="col mb-0">
                 <span>{{ staff.get_username() }}</span>
@@ -101,14 +106,14 @@
                 </span>{{ staff.get_email() }}</span>
               </div>
               <div class="col-sm-3">
-                <a class="btn btn-warning " target="__blank" href="/staffupdate/{{ staff.get_staff_id() }}">Edit</a>
-
+                <a class="btn btn-warning" href="/staffupdate/{{ staff.get_staff_id() }}">Edit</a>
+                
                 <!--form action="#" method="POST" onsubmit='return mySubmitFunction(event)'-->
                 <form action="{{ url_for('deleteStaff', id=staff.get_staff_id()) }}" method="POST">
                   <!--input type="submit" value="Delete" class="btn btn-danger"-->
 
                   <!-- w3 schools modal button-->
-                  <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                  <button type="button" class="btn btn-danger " data-bs-toggle="modal"
                     data-bs-target="#myModal_{{ staff.get_staff_id() }}">
                     Delete
                   </button>
@@ -289,4 +294,19 @@
     </div>
   </div>
 </div>
+{% endblock %}
+{% block scripts %}
+
+<script>
+function CopyToClipboard(id)
+{
+  var r = document.createRange();
+  r.selectNode(document.getElementById(id));
+  window.getSelection().removeAllRanges();
+  window.getSelection().addRange(r);
+  document.execCommand('copy');
+  window.getSelection().removeAllRanges();
+}
+</script>
+
 {% endblock %}

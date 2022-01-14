@@ -64,6 +64,11 @@ body{
 
 /* ============ End Of Dashboard ============ */
 
+#copybutton{
+    font-size:0.5em;
+    background-color: blue;
+    color:white;
+}
 
 @media(max-width:992px){
     .merge-boxes{
