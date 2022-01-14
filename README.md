@@ -26,5 +26,10 @@ Modules Used:
         </ul>
     </li>
     <li>Use UUID module(WIP)</li>
+    <li>dicebear (pip install dicebear)
+        <ul>
+            from src import Avatar
+        </ul>
+    </li>
 </ol>
 
