@@ -24,13 +24,13 @@ def IntegerList(credit_card_number):
 
 
 def validate_card_number(credit_card_number):
-    if len(str(credit_card_number)) == 16:
-        card_num_digits = IntegerList(credit_card_number)
-        if card_num_digits=="":
-            print("Blank Card")
-            return True
-        else:
-            #Start from the most right and move in 2s
+    card_num_digits = IntegerList(credit_card_number)
+    if card_num_digits=="":
+        print("Blank Card")
+        return True
+    else:
+        if len(str(credit_card_number)) == 16:
+        #Start from the most right and move in 2s
             odd_digits = card_num_digits[-1::-2]
             print(odd_digits)
 
@@ -59,8 +59,9 @@ def validate_card_number(credit_card_number):
                 return True
             else:
                 return False
-    else:
-        return False
+        
+        else:
+            return False
 
 def validate_expiry_date(expiry_year, expiry_month):
     try:
