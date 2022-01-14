@@ -52,6 +52,7 @@ limiter = Limiter(app, key_func=get_remote_address)
 def home():
     if 'user' in session:
         idNumber = session["user"]
+        print("%d entering page" %(idNumber))
         users_dict ={}
         db = shelve.open('user', 'c')
 
@@ -63,28 +64,31 @@ def home():
         except:
             print("Error in retrieving User from staff.db")
         
-        for key in users_dict:
-            if idNumber == key:
-                UserName = users_dict[key].get_username()
-        
+        UserName = get_user_name(idNumber, users_dict)
         valid_session = validate_session(idNumber, users_dict)
 
         db.close()
         if valid_session:
+            print("%s is entering and his session is Valid" %(UserName))
             return render_template('user_home.html' , user = UserName)
         else:
             session.clear()
+            print("Invalid Session")
             return render_template('home.html')
 
     elif 'staff' in session:
         StaffName = session["staff"]
+        print("%s is entering the page" %(StaffName))
         valid_session, name = validate_session_open_file_admin(StaffName)
         if valid_session:
+            print("%s is entering and his session is Valid" %(StaffName))
             return render_template('admin_home.html' , staff = name)
         else:
             session.clear()
+            print("Invalid Session")
             return redirect(url_for('home'))
     else:
+        print("Guest Entering Website")
         return render_template('home.html')
 
 """Account Management -- (login, signup, etc) By Calvin"""
@@ -99,6 +103,8 @@ def login():
             #.lower() for email because capitalisation is not important in emails.
             emailInput = login_form.email.data.lower()
             passwordInput = login_form.password.data
+            #print(emailInput, passwordInput)
+
             userDict = {}
             db = shelve.open("user", "c")
             #Using Flagname = "C" because if DB doesn't exist a file will be created instead of showing an error
@@ -133,7 +139,7 @@ def login():
                     email_key = userDict[key]
                     validemail = True #As previously mentioned, set to true if found in shelve
                     #Console Checking
-                    print("Registered Email & Inputted Email: ", emailinshelve, emailInput)
+                    print("Email Found: ", emailinshelve, emailInput)
                     if ban_status == True:
                         banned = True
                     break
@@ -141,9 +147,11 @@ def login():
                     #For Console
                     #Tries looking through the Staff Database to see if email inputted is inside
             if validemail == True:
+                print("Email Found, Now trying Password")
                 passwordinshelve = email_key.get_password()
                 matching_pw = bcrypt.check_password_hash(passwordinshelve , passwordInput)
                 if matching_pw == True:
+                    print("Correct Password")
                     validpassword = True
                     #Console Checking
 
@@ -166,7 +174,7 @@ def login():
                 if emailInput == emailinshelve.lower():
                     staff_email_key = userDict[key]
                     validstaffemail = True
-                    print("STAFF -- Registered Email & Inputted Email: ", emailinshelve, emailInput)
+                    print("STAFF EMAIL FOUND--: ", emailinshelve, emailInput)
                     staffdb.close()
                     break
                 else:
@@ -181,7 +189,7 @@ def login():
                 #matching = bcrypt.check_password_hash(passwordinshelve, passwordInput)
                 #if matching:
                 if passwordInput == passwordinshelve:
-
+                    print("Correct Password")
                     staffname = staff_email_key.get_staff_id()
                     session["staff"] = staffname
                     staffdb.close()
@@ -197,6 +205,7 @@ def login():
                     return redirect(url_for("user"))
 
                 else:
+                    print("Banned User tried to Log In")
                     return render_template('user/guest/login.html', form=login_form, bannedUser=True)
 
             else:
@@ -271,7 +280,7 @@ def signup():
                         #print(str(user.get_user_id()), str(userDict[key].get_user_id()))
                         #print(str(user.get_user_id()) + "Hello1")
 
-                print(user.get_user_id())
+                print(user.get_user_id(),  "was the next available user id.")
                 userDict[user.get_user_id()] = user
                 db["Users"] = userDict
                 db.close()
@@ -509,9 +518,9 @@ def passwordforget():
 
             token = s.dumps({'user_id': email_key.get_user_id()})
             url = url_for('passwordreset', token=token)
-            print(temp_pw)
-            print(url)
-            pw_msg = "Dear user you have requested for a password request. Use this temporary password to log in and reset afterwards: %s \n OR \n Use this link with temporary password instead: http://127.0.0.1:5000%s " %(temp_pw, url)
+            print(temp_pw, "is the temporary password sent")
+            print(url, "is the temporary URL sent")
+            pw_msg = "Dear user you have requested for a password request. Use this temporary password to log in and reset afterwards: %s \n OR \n Use this link with the temporary password instead: http://127.0.0.1:5000%s " %(temp_pw, url)
             msg = Message('Password Reset', sender = 'doctoronthego2022@gmail.com', recipients = [email])
             msg.body = pw_msg
             mail.send(msg)
@@ -540,6 +549,7 @@ def passwordreset(token):
         else:
             return render_template('user/guest/passwordreset.html', form=reset_password)
     else:
+        print("Token No Longer Valid")
         return redirect(url_for('home'))
 
 """
