@@ -1858,6 +1858,42 @@ def resetPassUser(id):
     else:
         return redirect(url_for('login'))
 
+"""Policy Pages Made By Calvin"""
+@app.route('/policyPage', methods = ["GET","POST"])
+def policyPage():
+    if "user" in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
+
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+        
+
+        UserName =  get_user_name(idNumber, users_dict)
+        valid_session = validate_session(idNumber, users_dict)
+        
+        db.close()
+        if valid_session:
+            return render_template('user/user_policies.html', user =UserName)
+        else:
+            session.clear()
+    elif "staff" in session:
+        StaffName = session["staff"]
+        valid_session , name = validate_session_open_file_admin(StaffName)
+        if valid_session:
+            return render_template('user/staff_policies.html', staff = name)
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+    else:
+        return render_template('user/policies.html')
+
 """Custom Error Pages Made By Calvin"""
 
 @app.errorhandler(401)
