@@ -19,6 +19,10 @@ Modules Used:
     <li>Bcrypt (pip install flask-bcrypt)</li>
     <li>Bootstrap</li>
     <li>Flask-Mail (pip install Flask-Mail)</li>
-    <li>OneMap (pip install onemapsg) Not Implemented </li>
+    <li>
+        <ul>OneMap (pip install onemapsg) Not Implemented
+            <li>https://pypi.org/project/onemapsg/</li>
+        </ul>
+    </li>
 </ol>
 
