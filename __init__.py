@@ -459,6 +459,7 @@ def signupC():
         db.close()
 
         if valid_session:
+            session.pop('Customer', None)
             return render_template('user/guest/signupcomplete.html' , user = UserName)
         else:
             session.clear()
@@ -1601,7 +1602,15 @@ def staffadd():
 
                 if(duplicated_email == False) and (duplicated_username == False):
                     print("Hello")
-                    #staff_id = generate_staff_id()
+                   #staff_id = generate_staff_id()
+
+                    """
+                    for key in userDict:
+                        staffidshelve = userDict[key].get_staff_id()
+                        if staff_id == staffidshelve:
+                            staff_id = generate_staff_id()
+                    """
+ 
                     #pw_hash = bcrypt.generate_password_hash(staff_id)
                     #user = Staff.Staff(nameInput, emailInput, pw_hash)
                     #user.set_staff_id(staff_id)

@@ -1,8 +1,10 @@
 #DOne by Calvin
-
+import uuid
 import random
 from random import randint
 import string
+
+#Modules Used for Testing
 import shelve
 import Feedback
 
@@ -84,26 +86,20 @@ ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-'''
-def break_unit_number(number):
-    unit_number1 = number[2:4]
-    unit_number2 = number[7:9]
-    unit_number1 = int(unit_number1)
-    unit_number2 = int(unit_number2)
-    return unit_number1, unit_number2
-''' 
-
-"""
-unit_number1, unit_number2 = break_unit_number("# 04 - 05")
-print(unit_number1)
-print(unit_number2)
-"""
-
 def generate_random_password():
     source = string.ascii_letters + string.digits
     result_str = ''.join((random.choice(source) for i in range(10)))
     return result_str
 
+def generate_feedback_id():
+    source = randint(1000, 999999)
+    return source
+
+def generate_staff_id():
+    uid = str(uuid.uuid4())
+    return uid
+
+"""
 def generate_staff_id():
     staff_id = ''
     source = string.ascii_letters + string.digits
@@ -116,12 +112,7 @@ def generate_staff_id():
             staff_id = staff_id + '-' + result_str
     
     return staff_id
-
-
-def generate_feedback_id():
-    source = randint(1000, 999999)
-    return source
-
+"""
 
 """
 feedback_dict = {}
@@ -141,3 +132,21 @@ feedback_dict[id_num] = feed
 db['Users'] = feedback_dict
 db.close()
 """
+
+
+'''
+def break_unit_number(number):
+    unit_number1 = number[2:4]
+    unit_number2 = number[7:9]
+    unit_number1 = int(unit_number1)
+    unit_number2 = int(unit_number2)
+    return unit_number1, unit_number2
+''' 
+
+"""
+unit_number1, unit_number2 = break_unit_number("# 04 - 05")
+print(unit_number1)
+print(unit_number2)
+"""
+
+#print(generate_staff_id())

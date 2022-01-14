@@ -1,4 +1,4 @@
-{% extends "default_base.html" %}
+{% extends "user_base.html" %}
 {% block head %}
 <link rel="stylesheet" href="static/CSS/login_signup.css"> {% endblock %}
 {% block title %}Sign Up | DoctorOnTheGo{% endblock %}
@@ -6,6 +6,34 @@
 {% block content %}
 {% from "includes/_formHelper.html" import render_field %}
 <!-- Login Form https://www.markuptag.com/simple-login-form-design-in-bootstrap-5/ -->
+<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#myModal" id="btn" style="display:none;"></button>
+    <form action="/signupC" method="POST">
+        <div class="modal" id="myModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Account Made</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        Your account already has been made. Rest of the form is optional. <br>
+                        Next few forms include Card Information & Shipping Address
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <input type="submit" value="Complete SignUp" class="btn btn-danger">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Noted</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </form>
 <div class="background-image">
     <div class="row">
         <div class="col-md-4 offset-md-7">
@@ -60,4 +88,16 @@
         </div>
     </div>
 </div>
+{% endblock %}
+{% block scripts %}
+<script>
+   window.onload = function(){
+   document.getElementById('btn').click();
+   };
+</script>
+<!-- Popper 2.10.2, Bootstrap 5.1.2 JavaScript -->
+<script crossorigin="anonymous" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB"
+src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-PsUw7Xwds7x08Ew3exXhqzbhuEYmA2xnwc8BuD6SEr+UmEHlX8/MCltYEodzWA4u"
+src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.min.js"></script>
 {% endblock %}
