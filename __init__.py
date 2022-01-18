@@ -11,13 +11,11 @@ import urllib.request
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from src import Avatar
 
-
 #imported files
 import Forms
 import User, Staff, Feedback
 from Security_Validation import validate_card_number, Sanitise, validate_expiry_date, validate_session, validate_session_open_file_admin, validate_session_admin
 from Functions import duplicate_email, duplicate_username, get_user_name, check_banned, fix_unit_number, fix_expiry_year, allowed_file, generate_random_password, generate_staff_id, generate_feedback_id
-
 #Start Of Web Dev
 app = Flask(__name__)
 #Done by calvin
