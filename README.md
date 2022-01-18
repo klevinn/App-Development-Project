@@ -25,7 +25,7 @@ Modules Used:
             <li>https://pypi.org/project/onemapsg/</li>
         </ul>
     </li>
-    <li>Use UUID module(WIP)</li>
+    <li>UUID module</li>
     <li>dicebear (pip install dicebear)
         <ul>
             from src import Avatar
