@@ -37,7 +37,7 @@ mail = Mail(app)
 
 #Secret Key Required for sessions
 app.secret_key = "session_key"
-s = Serializer(app.secret_key, expires_in=10)
+s = Serializer(app.secret_key, expires_in=600)
 
 #For Profile Picture Upload
 PROFILEPIC_UPLOAD_PATH = 'static/images/profilepic'
@@ -496,17 +496,21 @@ def passwordforget():
         except:
             print("Error in retrieving Users from user.db")
         
+        validemail = False
+
         for key in userDict:
             #getting email stored in the shelve
             emailinshelve = userDict[key].get_email()
             ban_status = userDict[key].get_ban_status()
             #comparing the data and seeing if matched
-            if email == emailinshelve.lower():
+            if email == emailinshelve.lower() and ban_status != True:
                 email_key = userDict[key]
                 validemail = True #As previously mentioned, set to true if found in shelve
                 #Console Checking
                 print("Registered Email & Inputted Email: ", emailinshelve, email)
-        
+
+        email_key.set_previous_password(email_key.get_password())
+
         temp_pw = generate_random_password()
         pw_hash =  bcrypt.generate_password_hash(temp_pw)
         
@@ -516,11 +520,11 @@ def passwordforget():
             db.close()
 
 
-            token = s.dumps({'user_id': email_key.get_user_id()})
+            token = s.dumps(email_key.get_user_id())
             url = url_for('passwordreset', token=token)
             print(temp_pw, "is the temporary password sent")
             print(url, "is the temporary URL sent")
-            pw_msg = "Dear user you have requested for a password request. Use this temporary password to log in and reset afterwards: %s \n OR \n Use this link with the temporary password instead: http://127.0.0.1:5000%s " %(temp_pw, url)
+            pw_msg = "Dear user you have requested for a password request. Use this temporary password to log in and reset afterwards: %s \n OR \n Use this link to reset password instead: http://127.0.0.1:5000%s " %(temp_pw, url)
             msg = Message('Password Reset', sender = 'doctoronthego2022@gmail.com', recipients = [email])
             msg.body = pw_msg
             mail.send(msg)
@@ -528,7 +532,7 @@ def passwordforget():
             return render_template("user/guest/passwordforget.html", form = email_form, sent = True)
         else:
             #session["reset"] = email
-            return render_template("user/guest/passwordforget.html", form = email_form, sent = True)
+            return render_template("user/guest/passwordforget.html", form = email_form, sent = True, validemail=validemail, ban_status = ban_status)
     else:
         return render_template("user/guest/passwordforget.html", form = email_form)
 
@@ -541,14 +545,47 @@ def passwordreset(token):
         valid = True
     except:
         valid = False
-    
+
+    userDict = {}
+    db = shelve.open("user", "c")
+
+    try:
+        if 'Users' in db:
+            userDict = db['Users']
+        else:
+            db["Users"] = userDict
+    except:
+        print("Error in retrieving Users from user.db")
+
+    email = userDict[data].get_email()
+
     if valid == True:
         reset_password = Forms.CreateResetPWForm(request.form)
         if request.method =="POST" and reset_password.validate():
-            return render_template('user/guest/passwordreset.html', form=reset_password)
+            reset_password.email.data = email
+            newpw = reset_password.new_password.data
+            newpwcfm = reset_password.confirm_password.data
+            oldpw = userDict[data].get_previous_password()
+            reused = False
+            reused = bcrypt.check_password_hash(oldpw, newpw)
+
+            if newpwcfm == newpw:
+                pwmatched = True
+                pw_hash = bcrypt.generate_password_hash(newpw)
+            else:
+                pwmatched = False
+
+            if reused == False and pwmatched == True:
+                userDict[data].set_password(pw_hash)
+                db.close()
+                return render_template('user/guest/passwordreset.html', form=reset_password, sent = True)
+            else:
+                return render_template('user/guest/passwordreset.html', form=reset_password, sent = False, reused = reused , pwmatched = pwmatched)
         else:
-            return render_template('user/guest/passwordreset.html', form=reset_password)
+            reset_password.email.data = email
+            return render_template('user/guest/passwordreset.html', form=reset_password, sent = False)
     else:
+        db.close()
         print("Token No Longer Valid")
         return redirect(url_for('home'))
 
