@@ -564,19 +564,23 @@ def passwordreset(token):
         if request.method =="POST" and reset_password.validate():
             reset_password.email.data = email
             newpw = reset_password.new_password.data
+            print(newpw)
             newpwcfm = reset_password.confirm_password.data
+            print(newpwcfm)
             oldpw = userDict[data].get_previous_password()
             reused = False
             reused = bcrypt.check_password_hash(oldpw, newpw)
 
             if newpwcfm == newpw:
                 pwmatched = True
-                pw_hash = bcrypt.generate_password_hash(newpw)
+                hashed = bcrypt.generate_password_hash(newpw)
             else:
                 pwmatched = False
 
+
             if reused == False and pwmatched == True:
-                userDict[data].set_password(pw_hash)
+                userDict[data].set_password(hashed)
+                db['Users'] = userDict
                 db.close()
                 return render_template('user/guest/passwordreset.html', form=reset_password, sent = True)
             else:

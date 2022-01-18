@@ -45,7 +45,7 @@ class CreateEmailForm(Form):
 
 class CreateResetPWForm(Form):
     email = EmailField("Email:", render_kw={'readonly': True})
-    new_password = PasswordField("Password:", [validators.Length(min=6, max=20), validators.DataRequired()])
+    new_password = PasswordField("New Password:", [validators.Length(min=6, max=20), validators.DataRequired()])
     confirm_password = PasswordField("Confirm Password:", [validators.Length(min=6, max=20), validators.DataRequired()])
 """
 class CreateUserCardInfoForm(Form):
