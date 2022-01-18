@@ -1561,6 +1561,7 @@ def staffprod():
         StaffName = session["staff"]
         valid_session, name = validate_session_open_file_admin(StaffName)
         if valid_session:
+            #https://www.youtube.com/watch?v=E2hytuQvLlE&ab_channel=teclado
             #in cart, must set it so that the inventory minuses  and just take that code and append
             return render_template('user/staff/staffproduct.html' , staff = name)
         else:
