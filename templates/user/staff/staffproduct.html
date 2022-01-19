@@ -1,6 +1,7 @@
 {% extends "admin_base.html" %}
 {% block head %}
-<link rel="stylesheet" href="static/CSS/staff.css"> {% endblock %}
+<link rel="stylesheet" href="static/CSS/staff.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js" integrity="sha512-TW5s0IT/IppJtu76UbysrBH9Hy/5X41OTAbQuffZFU6lQ1rdcLHzpU5BzVvr/YFykoiMYZVWlr/PX1mDcfM9Qg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> {% endblock %}
 {% block title %}Staff - Product Sales | DoctorOnTheGo{% endblock %}
 
 {% block content %}
@@ -72,7 +73,28 @@
         <div class="row">
           <h3>Inventory Management</h3>
           <div id="Appointments">
-            <img src="static/images/graph.png" class="img-fluid mx-auto rounded" alt="Product Sales" style="display:block;">
+            <canvas id="barChart"></canvas>
+            <h4 style="text-align:center">Last Updated : </h2>
+            <script>
+              var ctx = document.getElementById("barChart").getContext("2d");
+              var barChart = new Chart(ctx, {
+                type: 'bar',
+                data:{
+                  labels:["product", "product1", "product2", "product3", "product4", "product5"],
+                  datasets: [
+                    {
+                      label: "Product Sales",
+                      data : [0, 10, 5, 12, 2, 20],
+                    }
+                  ],
+                },
+                options:{
+                  responsive:true
+                }
+              });
+            </script>
+            <!--img src="static/images/graph.png" class="img-fluid mx-auto rounded" alt="Product Sales" style="display:block;">
+            <h2 style="text-align:center;">Last Updated : 19 Jan, 0838</h2-->
           </div>
         </div>
       </div>

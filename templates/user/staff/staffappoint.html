@@ -72,52 +72,89 @@
         <div class="row">
           <h3>Appointments Made</h3>
           <div id="Appointments">
+            {# for in  #}
+            <div class="row table-responsive">
+              <table class="table table-striped">
+                <thead class="table-dark">
+                  <td style="font-weight: bold;">Appointment Name</td>
+                  <td style="font-weight: bold;">Appointment Email</td>
+                  <td style="font-weight: bold;">Appointment Date</td>
+                </thead>
+                <tbody>
+                  <td style="font-weight: bold;"></td>
+                  <td style="font-weight: bold;"></td>
+                  <td style="font-weight: bold;"></td>
+                  <tr>
+                    <td colspan="4">
+                      <table class="table mb-0">
+                        <thead>
+                          <td>Doctor</td>
+                          <td>Condition</td>
+                        </thead>
+                        <tbody>
+                          <td></td>
+                          <td></td>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="4">
+                      <table class="table mb-0">
+                        <thead>
+                          <td>Request</td>
+                        </thead>
+                        <tbody>
+                          <td></td>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
             <div class="row">
               <div class="col">
-                [Name]
-              </div>
-              <div class="col">
-                [Doctor]
-              </div>
-              <div class="col">
-                [Email]
-              </div>
-              <div class="col">
-                [Date]
-              </div>
-              <div class="col">
-                [Condition]
-              </div>
-              <div class="col">
-                [Request]
-              </div>
-              <div class="col">
-                <a class="btn btn-info " target="__blank" href="">Delete</a>
+                <form action="" method="POST">
+                  <!--input type="submit" value="Delete" class="btn btn-danger"-->
+
+                  <!-- w3 schools modal button-->
+                  <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                    data-bs-target="#myModal_Appoint_">
+                    Cancel
+                  </button>
+
+                  <!-- The Modal -->
+                  <div class="modal" id="myModal_Appoint_">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                          <h4 class="modal-title">Cancel Confirmation</h4>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                          Are you sure you want to cancel appointment ?
+                        </div>
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                          <input type="submit" value="Cancel" class="btn btn-danger">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+
+                </form>
               </div>
             </div>
             <hr>
-            <div class="row">
-              <div class="col">
-                [Name]
-              </div>
-              <div class="col">
-                [Doctor]
-              </div>
-              <div class="col">
-                [Email]
-              </div>
-              <div class="col">
-                [Date]
-              </div>
-              <div class="col">
-                [Condition]
-              </div>
-              <div class="col">
-                [Request]
-              </div>
-              <div class="col">
-                <a class="btn btn-info " target="__blank" href="">Delete</a>
-              </div>
+            {# endfor  #}
             </div>
           </div>
         </div>

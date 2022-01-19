@@ -72,38 +72,34 @@
             <div class="row">
                <h3>Feedback Forms</h3>
                <div id="Appointments">
-                  <div class=row>
-                     <div style="font-weight: bold;" class="col mb-0">
-                        Feedback Name
-                     </div>
-                     <div style="font-weight: bold;" class="col mb-0">
-                        Feedback Email
-                     </div>
-                     <div style="font-weight: bold;" class="col">
-                        Feedback Subject
-                     </div>
-                     <div style="font-weight: bold;" class="col-3">
-                        Feedback Description
-                     </div>
-                  </div>
-                  <hr>
                   {% for feed in feedback_list %}
-                  <div class="row">
-                     <div class="col mb-0">
-                        {{ feed.get_fb_name() }}
-                     </div>
-                     <div class="col">
-                        {{ feed.get_fb_email() }}
-                     </div>
-                     <div class="col">
-                        {{ feed.get_fb_subject() }}
-                     </div>
-                     <div class="col-3" style="overflow-wrap: break-word;">
-                        {{ feed.get_fb_desc() }}
-                     </div>
-                  </div>
-                  <hr>
-                  <div class="row">
+                  <div class="row table-responsive">
+                     <table class="table table-striped">
+                       <thead class="table-dark">
+                         <td style="font-weight: bold;">Feedback Name</td>
+                         <td style="font-weight: bold;">Feedback Email</td>
+                         <td style="font-weight: bold;">Feedback Subject</td>
+                       </thead>
+                       <tbody>
+                         <td style="font-weight: bold;">{{ feed.get_fb_name() }}</td>
+                         <td style="font-weight: bold;"> {{ feed.get_fb_email() }}</td>
+                         <td style="font-weight: bold;">{{ feed.get_fb_subject() }}</td>
+                         <tr>
+                           <td colspan="4">
+                             <table class="table mb-0">
+                               <thead>
+                                 <td style="font-weight: bold">Feedback Description</td>
+                               </thead>
+                               <tbody>
+                                 <td>{{ feed.get_fb_desc() }}</td>
+                               </tbody>
+                             </table>
+                           </td>
+                         </tr>
+                       </tbody>
+                     </table>
+                   </div>
+                   <div class="row">
                      <form action="{{ url_for('deleteFeedback', id=feed.get_fb_id()) }}" method="POST">
                         <!--input type="submit" value="Delete" class="btn btn-danger"-->
                         <!-- w3 schools modal button-->
@@ -136,6 +132,7 @@
                   </div>
                   <hr>
                   {% endfor %}
+
                   <nav aria-label="Page navigation example" style="margin-top:10px;">
                      <ul class="pagination justify-content-center">
                         {% if page == 1 %}
