@@ -180,7 +180,6 @@ def login():
                     
                 
             
-            
             if validstaffemail == True:
                 print("Running: Checking Staff Password")
                 passwordinshelve = staff_email_key.get_password()
@@ -190,7 +189,6 @@ def login():
                     print("Correct Password")
                     staffname = staff_email_key.get_staff_id()
                     session["staff"] = staffname
-                    staffdb.close()
                     return redirect(url_for("staffapp" , staff = staffname))
                         
             if validemail == True and validpassword == True:
