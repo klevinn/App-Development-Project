@@ -80,6 +80,7 @@
           <div class="text-danger"><span id="error">Staff Member cannot be editted because he/she no longer exists in our database!</span></div>
           {% endif %}
           <div id="Appointments">
+            {% if empty == False %}
             {% for staff in staff_list %}
             <div class="row table-responsive">
               <table class="table table-striped">
@@ -225,6 +226,9 @@
                 {% endif %}
               </ul>
             </nav>
+            {% else %}
+            <h3 style="text-align:center">NO STAFF MEMBERS ADDED</h3>
+            {% endif %}
           </div>
         </div>
       </div>

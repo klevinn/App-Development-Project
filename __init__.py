@@ -1380,12 +1380,12 @@ def stafffeed(page=1):
         valid_session, name = validate_session_open_file_admin(StaffName)
 
         feedback_dict = {}
-        db = shelve.open('feedback', 'c')
+        db = shelve.open('user', 'c')
         try:
-            if 'Users' in db:
-                feedback_dict = db['Users']
+            if 'Feedback' in db:
+                feedback_dict = db['Feedback']
             else:
-                db['Users'] = feedback_dict
+                db['Feedback'] = feedback_dict
         except:
             print("Error in retrieving Users from feedback db")
         

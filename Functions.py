@@ -117,20 +117,20 @@ def generate_staff_id():
 
 """
 feedback_dict = {}
-db = shelve.open('feedback', 'c')
+db = shelve.open('user', 'c')
 try:
-    if 'Users' in db:
-        feedback_dict = db['Users']
+    if 'Feedback' in db:
+        feedback_dict = db['Feedback']
     else:
-        db['Users'] = feedback_dict
+        db['Feedback'] = feedback_dict
 except:
-    print("Error in retrieving Users from feedback db")
+    print("Error in retrieving Feedback from user.db")
 
 id_num = generate_feedback_id()
 feed = Feedback.Feedback('calvin', 'test@gmail.com', 'nah', 'qwertyqwertyqwertyqwertyqwertyqwertyqwertyqwerty', id_num)
 
 feedback_dict[id_num] = feed
-db['Users'] = feedback_dict
+db['Feedback'] = feedback_dict
 db.close()
 """
 
