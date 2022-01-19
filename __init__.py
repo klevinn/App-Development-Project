@@ -1968,14 +1968,17 @@ def verifyEmail(id):
         print("Error in retrieving User from staff.db")
     db.close()
 
+    token = s.dumps(user_dict[id].get_user_id())
+    url = url_for('emailVerification', token=token)
     mail = user_dict[id].get_email()
-    pw_msg = "Dear User, Click on this link to verify the emaiL: "
+    pw_msg = "Dear User, Click on this link to verify the email: %s " %(url)
     msg = Message('Email Verification', sender = 'doctoronthego2022@gmail.com', recipients = [mail])
     msg.body = pw_msg
     mail.send(msg)
+
     return redirect(url_for('user'))
 
-@app.route('/emailVerification', methods = ["GET", "POST"])
+@app.route('/emailVerification/<token>', methods = ["GET", "POST"])
 def emailVerification(token):
     try:
         data = s.loads(token)
@@ -1997,7 +2000,7 @@ def emailVerification(token):
         db.close()
 
         user_dict[data].set_verified()
-    
+        return redirect(url_for('user'))
 
 """Policy Pages Made By Calvin"""
 @app.route('/policyPage', methods = ["GET","POST"])
