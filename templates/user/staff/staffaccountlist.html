@@ -171,11 +171,12 @@
             {% else %}
             <div class="row table-responsive">
               <table class="table table-striped">
-                {% if user.get_verified() %}
-                <thead class="table-success">
-                  {% else %}
-                  <thead class="table-dark">
-                  {% endif %}
+                <thead class="table-dark">
+                {# if user.get_verified() #}
+                <!--thead class="table-success"-->
+                  {# else #}
+                  <!--thead class="table-dark"-->
+                  {# endif #}
                   <td style="font-weight: bold;">Account ID</td>
                   <td style="font-weight: bold;">Account Name</td>
                   <td style="font-weight: bold;">Account Email</td>
@@ -291,8 +292,8 @@
                   </div>
                 </form>
 
-                {% if user.get_verified() == False %}
-                <form action="{{ url_for('sendVerify', id=user.get_user_id()) }}" method="POST">
+                {# if user.get_verified() == False #}
+                <!--form action="{# url_for('sendVerify', id=user.get_user_id()) #}" method="POST">
                   <button type="button" class="btn btn-danger" data-bs-toggle="modal"
                     data-bs-target="#myModal_verify_{{ user.get_user_id() }}">
                     Send Verification Email
@@ -302,18 +303,18 @@
                       <div class="modal-content">
 
                         <!-- Modal Header -->
-                        <div class="modal-header">
+                        <!--div class="modal-header">
                           <h4 class="modal-title">Email Verification Confirmation</h4>
                           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
 
                         <!-- Modal body -->
-                        <div class="modal-body">
+                        <!--div class="modal-body">
                           Are you sure you want to send verification to {{ user.get_username() }}
                         </div>
 
                         <!-- Modal footer -->
-                        <div class="modal-footer">
+                        <!--div class="modal-footer">
                           <input type="submit" value="Send" class="btn btn-danger">
                           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                         </div>
@@ -321,8 +322,8 @@
                       </div>
                     </div>
                   </div>
-                </form>
-                {% endif %}
+                </form-->
+                {# endif #}
               </div>
             </div>
             <hr>
