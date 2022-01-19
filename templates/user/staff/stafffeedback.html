@@ -72,6 +72,7 @@
             <div class="row">
                <h3>Feedback Forms</h3>
                <div id="Appointments">
+                  {% if empty == False %}
                   {% for feed in feedback_list %}
                   <div class="row table-responsive">
                      <table class="table table-striped">
@@ -133,6 +134,7 @@
                   <hr>
                   {% endfor %}
 
+
                   <nav aria-label="Page navigation example" style="margin-top:10px;">
                      <ul class="pagination justify-content-center">
                         {% if page == 1 %}
@@ -172,6 +174,9 @@
                         {% endif %}
                      </ul>
                   </nav>
+                  {% else %}
+                  <h3 style="text-align:center">NO APPOINTMENTS MADE</h3>
+                  {% endif %}
                </div>
             </div>
          </div>

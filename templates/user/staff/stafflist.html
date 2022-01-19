@@ -76,6 +76,9 @@
           {% elif staffpassword == True %}
           <div class="text-danger"><span id="error">Staff Member Deleted</span></div>
           {% endif %}
+          {% if staffgone == True %}
+          <div class="text-danger"><span id="error">Staff Member cannot be editted because he/she no longer exists in our database!</span></div>
+          {% endif %}
           <div id="Appointments">
             {% for staff in staff_list %}
             <div class="row table-responsive">

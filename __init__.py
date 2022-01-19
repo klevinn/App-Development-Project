@@ -1443,12 +1443,16 @@ def stafffeed(page=1):
                     feed.close()
             """
 
-            feedback_list = display_dict[page]
-            all_keys = display_dict.keys()
-            max_value = max(all_keys)
+            max_value = 0
+            empty = True
+            if len(display_dict) != 0:
+                feedback_list = display_dict[page]
+                all_keys = display_dict.keys()
+                max_value = max(all_keys)
+                empty = False
 
             
-            return render_template('user/staff/stafffeedback.html' , count=len(feedback_list), feedback_list=feedback_list , staff = name, display_dict = display_dict, page=page, max_value=max_value)
+            return render_template('user/staff/stafffeedback.html' , count=len(feedback_list), feedback_list=feedback_list , staff = name, display_dict = display_dict, page=page, max_value=max_value, empty = empty)
         else:
             session.clear()
             return redirect(url_for('home'))
@@ -1538,17 +1542,26 @@ def stafflist(page=1):
                     staff = staff_dict.get(key)
                     staff_list.append(staff)
                     display_dict[page_num] = staff_list
-            
-            staff_list = display_dict[page]
-            all_keys = display_dict.keys()
-            max_value = max(all_keys)
+                        
+            max_value = 0
+            empty = True
+            if len(display_dict) != 0:
+                staff_list = display_dict[page]
+                all_keys = display_dict.keys()
+                max_value = max(all_keys)
+                empty = False
 
             staffpassword = ''
             if 'staffpw' in session:
                 staffpassword = session['staffpw']
                 session.pop('staffpw', None)
             
-            return render_template('user/staff/stafflist.html', count=len(staff_list), staff_list=staff_list , staff = name, display_dict = display_dict, page=page, max_value=max_value, staffpassword = staffpassword)
+            staffgone = ''
+            if 'staffgone' in session:
+                staffgone = session['staffgone']
+                session.pop('staffgone', None)
+
+            return render_template('user/staff/stafflist.html', count=len(staff_list), staff_list=staff_list , staff = name, display_dict = display_dict, page=page, max_value=max_value, staffpassword = staffpassword, empty = empty, staffgone = staffgone)
         else:
             session.clear()
             return redirect(url_for('home'))
@@ -1590,14 +1603,28 @@ def staffupdate(id):
                 except:
                     print("Error in retrieving Users from staff.db")
 
-                #key is the id, so it will edit the data of the staff member and its corresponding key
-                user = users_dict.get(id)
-                #using accessor methods to update data
-                user.set_username(Sanitise(update_staff.staff_name.data))
-                user.set_email(Sanitise(update_staff.staff_email.data))
+                staff_id = id
+                for key in users_dict:
+                    print(key)
+                    if staff_id == key:
+                        valid_email = True
+                        break
+                    else:
+                        valid_email = False
+                
+                if valid_email:
+                    #key is the id, so it will edit the data of the staff member and its corresponding key
+                    user = users_dict.get(id)
+                    #using accessor methods to update data
+                    user.set_username(Sanitise(update_staff.staff_name.data))
+                    user.set_email(Sanitise(update_staff.staff_email.data))
+                else:
+                    session['staffgone'] = True
+
 
                 db['Users'] = users_dict
                 db.close()
+
 
                 return redirect(url_for('stafflist', page =1))
 
@@ -1725,8 +1752,17 @@ def deleteStaff(id):
         staff_pass = ''
         staff_pass = request.form['password']
         print(staff_pass)
+        staff_id = id
         if valid_session:
-            if staff_pass == users_dict[id].get_password():
+            for key in users_dict:
+                print(key)
+                if staff_id == key:
+                    valid_email = True
+                    break
+                else:
+                    valid_email = False
+
+            if staff_pass == users_dict[id].get_password() and valid_email:
                 users_dict.pop(id)
 
                 db['Users'] = users_dict
@@ -1735,6 +1771,12 @@ def deleteStaff(id):
                 session['staffpw'] = True
                 
                 return redirect(url_for('stafflist', page=1, staff = name))
+            elif valid_email == False:
+                db.close()
+                session['staffpw'] = False
+                session['staffgone'] = True    
+                return redirect(url_for('stafflist', page=1, staff = name))
+
             else:
                 db.close()
 
@@ -1786,11 +1828,15 @@ def staffaccountlist(page=1):
                     user_list.append(user)
                     display_dict[page_num] = user_list
             
-            user_list = display_dict[page]
-            all_keys = display_dict.keys()
-            max_value = max(all_keys)
+            max_value = 0
+            empty = True
+            if len(display_dict) != 0:
+                user_list = display_dict[page]
+                all_keys = display_dict.keys()
+                max_value = max(all_keys)
+                empty = False
 
-            return render_template('user/staff/staffaccountlist.html', count=len(user_list), user_list=user_list , display_dict = display_dict, staff = name,  page=page, max_value = max_value)
+            return render_template('user/staff/staffaccountlist.html', count=len(user_list), user_list=user_list , display_dict = display_dict, staff = name,  page=page, max_value = max_value, empty = empty)
         else:
             session.clear()
             return redirect(url_for('home'))

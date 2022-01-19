@@ -83,13 +83,17 @@
                   labels:["product", "product1", "product2", "product3", "product4", "product5"],
                   datasets: [
                     {
-                      label: "Product Sales",
+                      label: "Number of Products sold",
                       data : [0, 10, 5, 12, 2, 20],
                     }
                   ],
                 },
                 options:{
-                  responsive:true
+                  responsive:true,
+                  title:{
+                    display:true,
+                    text: "Product Sales"
+                  },
                 }
               });
             </script>
