@@ -183,7 +183,7 @@ def login():
             if validstaffemail == True:
                 print("Running: Checking Staff Password")
                 passwordinshelve = staff_email_key.get_password()
-                #matching = bcrypt.check_password_hash(passwordinshelve, passwordInput)
+                #matching = bcrypt.check_password_hash(passwordinshelve.decode('utf-8'), passwordInput)
                 #if matching:
                 if passwordInput == passwordinshelve:
                     print("Correct Password")
@@ -1457,8 +1457,8 @@ def stafffeed(page=1):
     else:
         return redirect(url_for('login'))
 
+#@app.route('/deleteFeedback/<string:id>', methods=['GET', "POST"])
 @app.route('/deleteFeedback/<int:id>', methods=['GET', "POST"])
-#@app.route('/deleteFeedback/<str:id>', methods=['GET', "POST"])
 def deleteFeedback(id):
     if "staff" in session:
         StaffName = session["staff"]
@@ -1581,8 +1581,8 @@ def staffprod():
     else:
         return redirect(url_for('login'))
 
-#@app.route('/staffupdate/<string:id>/', methods=['GET', 'POST'])
 @app.route('/staffupdate/<int:id>/', methods=['GET', 'POST'])
+#@app.route('/staffupdate/<string:id>/', methods=['GET', 'POST'])
 def staffupdate(id):
     if "staff" in session:
         StaffName = session["staff"]
@@ -1680,7 +1680,7 @@ def staffadd():
 
                 if(duplicated_email == False) and (duplicated_username == False):
                     print("Hello")
-                   #staff_id = generate_staff_id()
+                    #staff_id = generate_staff_id()
 
                     """
                     for key in userDict:
@@ -1693,6 +1693,7 @@ def staffadd():
                     #user = Staff.Staff(nameInput, emailInput, pw_hash)
                     #user.set_staff_id(staff_id)
 
+                
                     user = Staff.Staff(nameInput, emailInput, 'Staff1234')
                     for key in userDict:
                         #To assign Staff ID, ensure that it is persistent and is accurate to the list
@@ -1707,7 +1708,7 @@ def staffadd():
                                 user.set_staff_id(user.get_staff_id() + 1)
                                 print(str(user.get_staff_id()) + "Hello1")
 
-                            
+
                     userDict[user.get_staff_id()] = user
                     db["Users"] = userDict
                     db.close()
@@ -1731,8 +1732,8 @@ def staffadd():
     else:
         return redirect(url_for('login'))
 
-#@app.route('/deleteUser/<string:id>', methods=["GET", 'POST'])
 @app.route('/deleteUser/<int:id>', methods=["GET", 'POST'])
+#@app.route('/deleteUser/<string:id>', methods=["GET", 'POST'])
 def deleteStaff(id):
     if "staff" in session:
         StaffName = session["staff"]
@@ -1759,6 +1760,8 @@ def deleteStaff(id):
                     break
                 else:
                     valid_email = False
+
+            #correctpw = bcrypt.check_password_hash(users_dict[id].get_password(), staff_pass)
 
             if staff_pass == users_dict[id].get_password() and valid_email:
                 users_dict.pop(id)
