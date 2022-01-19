@@ -1955,6 +1955,50 @@ def resetPassUser(id):
     else:
         return redirect(url_for('login'))
 
+@app.route('/verifyEmail', methods = ["GET", "POST"])
+def verifyEmail(id):
+    user_dict = {}
+    db = shelve.open('user', 'c')
+    try:
+        if 'Users' in db:
+            user_dict = db['Users']
+        else:
+            db["Users"] = user_dict
+    except:
+        print("Error in retrieving User from staff.db")
+    db.close()
+
+    mail = user_dict[id].get_email()
+    pw_msg = "Dear User, Click on this link to verify the emaiL: "
+    msg = Message('Email Verification', sender = 'doctoronthego2022@gmail.com', recipients = [mail])
+    msg.body = pw_msg
+    mail.send(msg)
+    return redirect(url_for('user'))
+
+@app.route('/emailVerification', methods = ["GET", "POST"])
+def emailVerification(token):
+    try:
+        data = s.loads(token)
+        print(data)
+        valid = True
+    except:
+        valid = False
+
+    if valid:
+        user_dict = {}
+        db = shelve.open('user', 'c')
+        try:
+            if 'Users' in db:
+                user_dict = db['Users']
+            else:
+                db["Users"] = user_dict
+        except:
+            print("Error in retrieving User from staff.db")
+        db.close()
+
+        user_dict[data].set_verified()
+    
+
 """Policy Pages Made By Calvin"""
 @app.route('/policyPage', methods = ["GET","POST"])
 def policyPage():

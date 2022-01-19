@@ -25,7 +25,7 @@ class User(Person):
         self.__previous_password = ''
         self.__ban_status = False
         self.__profile_picture = ''
-
+        self.__verified = False
 
     def set_card_name(self, card_name):
         self.__card_name = card_name
@@ -91,6 +91,11 @@ class User(Person):
         self.__ban_status = False
     def get_ban_status(self):
         return self.__ban_status
+
+    def set_verified(self):
+        self.__verified = True
+    def get_verified(self):
+        return self.__verified
 
 #Gets last 4 digits of card number and only displays that while censoring the rest
     def get_censored_credit_card(self):
