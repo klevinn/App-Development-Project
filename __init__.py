@@ -1,21 +1,31 @@
 #imported modules
+#Flask for creation of web app
 from flask import Flask, render_template, request, redirect, url_for, session, flash
+#Shelve for Persistent Storage
 import shelve
+#os for stuff like environment variables
 import os
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
-from flask_bcrypt import Bcrypt
-from flask_mail import Mail , Message
+#Different Flask Modules
+from flask_limiter import Limiter #For Limiting Input Requests
+from flask_limiter.util import get_remote_address #For limiter
+from flask_bcrypt import Bcrypt #For password encryption
+from flask_mail import Mail , Message #For Sening emails
+#Modules for profile picture
 from werkzeug.utils import secure_filename
 import urllib.request
+#itsdangerous module for time token
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+#Dicebear for temporary profile picture
 from src import Avatar
 
 #imported files
 import Forms
 import User, Staff, Feedback
+#Validation Functions
 from Security_Validation import validate_card_number, Sanitise, validate_expiry_date, validate_session, validate_session_open_file_admin, validate_session_admin
+#Functions to shorten code
 from Functions import duplicate_email, duplicate_username, get_user_name, check_banned, fix_unit_number, fix_expiry_year, allowed_file, generate_random_password, generate_staff_id, generate_feedback_id
+
 #Start Of Web Dev
 app = Flask(__name__)
 #Done by calvin
@@ -35,6 +45,7 @@ mail = Mail(app)
 
 #Secret Key Required for sessions
 app.secret_key = "session_key"
+#Time Token Creator = 600 seconds
 s = Serializer(app.secret_key, expires_in=600)
 
 #For Profile Picture Upload
@@ -125,7 +136,6 @@ def login():
             passwordinshelve = ""
             emailinshelve = ""
             banned = False
-
 
 
             for key in userDict:
@@ -515,15 +525,17 @@ def passwordforget():
             db['Users'] = userDict
             db.close()
 
-
-            token = s.dumps(email_key.get_user_id())
-            url = url_for('passwordreset', token=token)
-            print(temp_pw, "is the temporary password sent")
-            print(url, "is the temporary URL sent")
-            pw_msg = "Dear user you have requested for a password request. Use this temporary password to log in and reset afterwards: %s \n OR \n Use this link to reset password instead: http://127.0.0.1:5000%s " %(temp_pw, url)
-            msg = Message('Password Reset', sender = 'doctoronthego2022@gmail.com', recipients = [email])
-            msg.body = pw_msg
-            mail.send(msg)
+            try:
+                token = s.dumps(email_key.get_user_id())
+                url = url_for('passwordreset', token=token)
+                print(temp_pw, "is the temporary password sent")
+                print(url, "is the temporary URL sent")
+                pw_msg = "Dear user you have requested for a password request. Use this temporary password to log in and reset afterwards: %s \n OR \n Use this link to reset password instead: http://127.0.0.1:5000%s " %(temp_pw, url)
+                msg = Message('Password Reset', sender = 'doctoronthego2022@gmail.com', recipients = [email])
+                msg.body = pw_msg
+                mail.send(msg)
+            except:
+                print("Error when sending email")
 
             return render_template("user/guest/passwordforget.html", form = email_form, sent = True)
         else:
@@ -693,7 +705,7 @@ def user():
         
         valid_session = validate_session(userid, users_dict)
 
-        db.close()
+
 
         changed = False
         change = ''
@@ -714,6 +726,9 @@ def user():
                 session.pop('change')
             
             av = Avatar(type="pixel-art-neutral", seed=name)
+            users_dict[userid].set_profile_pic(av)
+            db['Users'] = users_dict
+            db.close()
 
             return render_template('user/loggedin/useraccount.html' , user = name, count=len(user_list), user_list=user_list, changed = changed, change = change, av=av)
         else:
@@ -810,6 +825,7 @@ def userinfo():
         
         valid_session = validate_session(idNumber, users_dict)
         
+        av = users_dict[idNumber].get_profile_pic()
 
         db.close()
 
@@ -871,10 +887,13 @@ def userinfo():
                             user.set_email(emailInput)
                             db["Users"] = users_dict
 
-                            email_msg = "Dear user, you have changed your email from %s to %s! If this was not you, contact our staff at 6251 2112 to help fix your issue! " %(oldEmail, emailInput)
-                            msg = Message('Change In Email', sender = 'doctoronthego2022@gmail.com', recipients = [oldEmail])
-                            msg.body = email_msg
-                            mail.send(msg)
+                            try:
+                                email_msg = "Dear user, you have changed your email from %s to %s! If this was not you, contact our staff at 6251 2112 to help fix your issue! " %(oldEmail, emailInput)
+                                msg = Message('Change In Email', sender = 'doctoronthego2022@gmail.com', recipients = [oldEmail])
+                                msg.body = email_msg
+                                mail.send(msg)
+                            except:
+                                print("Error sending email")
 
                             """
                             session["user"] = idNumber
@@ -889,7 +908,7 @@ def userinfo():
                 else:
                     print("Edit Failed = Error Occured")
                     db.close()
-                    return render_template('user/loggedin/user_info_edit.html', form=update_user, duplicated_email=existing_email, duplicated_username=existing_username, user = UserName, check_ban = check_ban) 
+                    return render_template('user/loggedin/user_info_edit.html', form=update_user, duplicated_email=existing_email, duplicated_username=existing_username, user = UserName, check_ban = check_ban, av=av) 
             else:
                 users_dict = {}
                 db = shelve.open('user', 'r')
@@ -905,7 +924,7 @@ def userinfo():
                 user = users_dict.get(idNumber)
                 update_user.new_username.data = user.get_username()
                 update_user.new_email.data = user.get_email()
-                return render_template('user/loggedin/user_info_edit.html', form=update_user, user = UserName)
+                return render_template('user/loggedin/user_info_edit.html', form=update_user, user = UserName, av=av)
         else:
             session.clear()
             return redirect(url_for("home"))
@@ -929,6 +948,8 @@ def userpw():
         
         UserName =  get_user_name(idNumber, users_dict)
         
+        av = users_dict[idNumber].get_profile_pic()
+
         valid_session = validate_session(idNumber, users_dict)
         
         db.close()
@@ -983,10 +1004,13 @@ def userpw():
                     db['Users'] = users_dict
                     db.close()
 
-                    pw_msg = "Dear user, you have changed your password! If this was not you, contact our staff at 6251 2112 to help fix your issue! "
-                    msg = Message('Change In Password', sender = 'doctoronthego2022@gmail.com', recipients = [email])
-                    msg.body = pw_msg
-                    mail.send(msg)
+                    try:
+                        pw_msg = "Dear user, you have changed your password! If this was not you, contact our staff at 6251 2112 to help fix your issue! "
+                        msg = Message('Change In Password', sender = 'doctoronthego2022@gmail.com', recipients = [email])
+                        msg.body = pw_msg
+                        mail.send(msg)
+                    except:
+                        print("Email could not be sent")
 
                     session['change'] = 'Password'
 
@@ -994,10 +1018,10 @@ def userpw():
                 
                 else:
                     db.close()
-                    return render_template('user/loggedin/user_password_edit.html', form=update_password, matched_pw=matched_pw, same_pw = same_pw, old_password = old_pw, user = UserName) 
+                    return render_template('user/loggedin/user_password_edit.html', form=update_password, matched_pw=matched_pw, same_pw = same_pw, old_password = old_pw, user = UserName, av=av) 
             else:
 
-                return render_template('user/loggedin/user_password_edit.html', form=update_password, user = UserName)
+                return render_template('user/loggedin/user_password_edit.html', form=update_password, user = UserName, av=av)
         else:
             session.clear()
             return redirect(url_for("home"))
@@ -1022,7 +1046,8 @@ def useraddress():
 
         UserName =  get_user_name(idNumber, users_dict)
         valid_session = validate_session(idNumber, users_dict)
-        
+        av = users_dict[idNumber].get_profile_pic()
+
         db.close()
         if valid_session:
             update_address = Forms.CreateAddShippingAddressForm(request.form)
@@ -1096,7 +1121,7 @@ def useraddress():
 
                 update_address.phone_no.data = user.get_phone_number()
                 print(user.get_phone_number())
-                return render_template('user/loggedin/user_address.html', form=update_address, user = UserName)
+                return render_template('user/loggedin/user_address.html', form=update_address, user = UserName, av=av)
         else:
             session.clear()
             return redirect(url_for("home"))
@@ -1120,7 +1145,7 @@ def usercard():
             print("Error in retrieving User from staff.db")
         
         UserName =  get_user_name(idNumber, users_dict)
-        
+        av = users_dict[idNumber].get_profile_pic()
         valid_session = validate_session(idNumber, users_dict)
 
         db.close()
@@ -1212,11 +1237,11 @@ def usercard():
 
                         update_card.card_CVV.data = user.get_card_cvv()
                         print(user.get_card_cvv())
-                        return render_template('user/loggedin/user_cardinfo.html', form=update_card, user = UserName, valid_card_num = valid_card_num, valid_card_expiry=valid_card_expiry)
+                        return render_template('user/loggedin/user_cardinfo.html', form=update_card, user = UserName, valid_card_num = valid_card_num, valid_card_expiry=valid_card_expiry, av=av)
                 
                 else:
                     print("Invalid Expiry Date")
-                    return render_template('user/guest/signup2.html' , form=update_card, valid_card_num = valid_card_num, card_expiry_year = card_expiry_year)
+                    return render_template('user/guest/signup2.html' , form=update_card, valid_card_num = valid_card_num, card_expiry_year = card_expiry_year, av=av)
             else:
                 users_dict = {}
                 db = shelve.open('user', 'r')
@@ -1249,7 +1274,7 @@ def usercard():
                     update_card.card_expiry_month.data = int(card_month)
                 update_card.card_CVV.data = user.get_card_cvv()
                 print(user.get_card_cvv())
-                return render_template('user/loggedin/user_cardinfo.html', form=update_card, user = UserName)
+                return render_template('user/loggedin/user_cardinfo.html', form=update_card, user = UserName, av=av)
         
         else:
             return redirect(url_for("home"))
@@ -1712,11 +1737,13 @@ def staffadd():
                     userDict[user.get_staff_id()] = user
                     db["Users"] = userDict
                     db.close()
-
-                    admin_msg = "You have been added to the staff team! Welcome to the team! "
-                    msg = Message('Welcome New Staff Member', sender = 'doctoronthego2022@gmail.com', recipients = [emailInput])
-                    msg.body = admin_msg
-                    mail.send(msg)
+                    try:
+                        admin_msg = "You have been added to the staff team! Welcome to the team! "
+                        msg = Message('Welcome New Staff Member', sender = 'doctoronthego2022@gmail.com', recipients = [emailInput])
+                        msg.body = admin_msg
+                        mail.send(msg)
+                    except:
+                        print("Email could not be sent")
 
                     return redirect(url_for("stafflist", page = 1))
                 else:
@@ -1865,10 +1892,13 @@ def banUser(id):
             user_email = users_dict[id].get_email()
             user_name = users_dict[id].get_username()
 
-            ban_msg = "Dear %s! You have been banned from DoctorOnTheGo. Do contact one of our staff if you feel this was an unfair ban. Have a nice day!" %(user_name)
-            msg = Message('Ban Alert', sender = 'doctoronthego2022@gmail.com', recipients = [user_email])
-            msg.body = ban_msg
-            mail.send(msg)
+            try:
+                ban_msg = "Dear %s! You have been banned from DoctorOnTheGo. Do contact one of our staff if you feel this was an unfair ban. Have a nice day!" %(user_name)
+                msg = Message('Ban Alert', sender = 'doctoronthego2022@gmail.com', recipients = [user_email])
+                msg.body = ban_msg
+                mail.send(msg)
+            except:
+                print("Error to send email")
 
             db['Users'] = users_dict
             db.close()
@@ -1902,10 +1932,13 @@ def unbanUser(id):
             user_email = users_dict[id].get_email()
             user_name = users_dict[id].get_username()
 
-            unban_msg = "Dear %s! You have been unbanned from DoctorOnTheGo. We apologise for the inconvenience. Have a nice day!" %(user_name)
-            msg = Message('Unban Alert', sender = 'doctoronthego2022@gmail.com', recipients = [user_email])
-            msg.body = unban_msg
-            mail.send(msg)
+            try:
+                unban_msg = "Dear %s! You have been unbanned from DoctorOnTheGo. We apologise for the inconvenience. Have a nice day!" %(user_name)
+                msg = Message('Unban Alert', sender = 'doctoronthego2022@gmail.com', recipients = [user_email])
+                msg.body = unban_msg
+                mail.send(msg)
+            except:
+                print("Error in sending email")
 
             db['Users'] = users_dict
             db.close()
@@ -1942,10 +1975,14 @@ def resetPassUser(id):
             db['Users'] = users_dict
             db.close()
             print(temp_pw)
-            pw_msg = "Dear user you have requested for a password request. Use this temporary password to log in and reset afterwards: %s " %(temp_pw)
-            msg = Message('Password Reset', sender = 'doctoronthego2022@gmail.com', recipients = [email])
-            msg.body = pw_msg
-            mail.send(msg)
+
+            try:
+                pw_msg = "Dear user you have requested for a password request. Use this temporary password to log in and reset afterwards: %s " %(temp_pw)
+                msg = Message('Password Reset', sender = 'doctoronthego2022@gmail.com', recipients = [email])
+                msg.body = pw_msg
+                mail.send(msg)
+            except:
+                print("Error in sending email")
 
             return redirect(url_for('staffaccountlist', page=1, staff = name))
         else:
@@ -1970,11 +2007,15 @@ def verifyEmail(id):
 
     token = s.dumps(id)
     url = url_for('emailVerification', token=token)
-    email = user_dict[id].get_email()
-    pw_msg = "Dear User, Click on this link to verify the email: %s " %(url)
-    msg = Message('Email Verification', sender = 'doctoronthego2022@gmail.com', recipients = [email])
-    msg.body = pw_msg
-    mail.send(msg)
+
+    try:
+        email = user_dict[id].get_email()
+        pw_msg = "Dear User, Click on this link to verify the email: %s " %(url)
+        msg = Message('Email Verification', sender = 'doctoronthego2022@gmail.com', recipients = [email])
+        msg.body = pw_msg
+        mail.send(msg)
+    except:
+        print("Email is not sent")
 
     return redirect(url_for('user'))
 
