@@ -1465,19 +1465,19 @@ def deleteFeedback(id):
         valid_session, name = validate_session_open_file_admin(StaffName)
         
         feedback_dict = {}
-        db = shelve.open('feedback', 'w')
+        db = shelve.open('user', 'w')
         try:
-            if 'Users' in db:
-                feedback_dict = db['Users']
+            if 'Feedback' in db:
+                feedback_dict = db['Feedback']
             else:
-                db['Users'] = feedback_dict
+                db['Feedback'] = feedback_dict
         except:
             print("Error in retrieving Users from feedback db")
 
         if valid_session:
             feedback_dict.pop(id)
 
-            db['Users'] = feedback_dict
+            db['Feedback'] = feedback_dict
             db.close()
 
             return redirect(url_for('stafffeed', page=1, staff = name))
@@ -1955,7 +1955,7 @@ def resetPassUser(id):
     else:
         return redirect(url_for('login'))
 
-@app.route('/verifyEmail', methods = ["GET", "POST"])
+@app.route('/verifyEmail/<int:id>', methods = ["GET", "POST"])
 def verifyEmail(id):
     user_dict = {}
     db = shelve.open('user', 'c')
@@ -1968,11 +1968,11 @@ def verifyEmail(id):
         print("Error in retrieving User from staff.db")
     db.close()
 
-    token = s.dumps(user_dict[id].get_user_id())
+    token = s.dumps(id)
     url = url_for('emailVerification', token=token)
-    mail = user_dict[id].get_email()
+    email = user_dict[id].get_email()
     pw_msg = "Dear User, Click on this link to verify the email: %s " %(url)
-    msg = Message('Email Verification', sender = 'doctoronthego2022@gmail.com', recipients = [mail])
+    msg = Message('Email Verification', sender = 'doctoronthego2022@gmail.com', recipients = [email])
     msg.body = pw_msg
     mail.send(msg)
 

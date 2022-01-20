@@ -115,7 +115,7 @@ def generate_staff_id():
     return staff_id
 """
 
-"""
+
 feedback_dict = {}
 db = shelve.open('user', 'c')
 try:
@@ -132,7 +132,7 @@ feed = Feedback.Feedback('calvin', 'test@gmail.com', 'nah', 'qwertyqwertyqwertyq
 feedback_dict[id_num] = feed
 db['Feedback'] = feedback_dict
 db.close()
-"""
+
 
 
 '''
