@@ -1,0 +1,61 @@
+{% extends "user_base.html" %}
+{% block head %} <link rel="stylesheet" href="static/CSS/login_signup.css"> {% endblock %}
+{% block title %}Create Product | DoctorOnTheGo{% endblock %}
+
+{% block content %}
+{% from "includes/_formHelper.html" import render_field %}
+<div class="background-image">
+    <div class="row">
+        <div class="col-md-4 offset-md-4">
+            <div class="login-form bg-colour mt-6 p-4" id="loginForm">
+                <form action="" method="POST" class="row g-3" enctype="multipart/form-data">
+
+                    <h4 class="text-black">Create a product</h4>
+
+                    <div class="col-12">
+                        {{ render_field(form.picture, class="form-control-file") }}
+                        {% if form.picture.errors %}
+                            {% for error in form.picture.errors %}
+                                <span class="text-danger">{{ error }}</span><br>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+
+                    <div class="col-12">
+                        {{ render_field(form.img_file_name, class="form-control") }}
+                    </div>
+
+                    <div class="col-12">
+                        {{ render_field(form.name, class="form-control") }}
+                    </div>
+
+                    <div class="col-12">
+                        {{ render_field(form.price, class="form-control") }}
+                    </div>
+
+                    <div class="col-12">
+                        {{ render_field(form.category, class="form-control") }}
+                    </div>
+
+                    <div class="col-12">
+                        {{ render_field(form.short_description, class="form-control") }}
+                    </div>
+
+                    <div class="col-12">
+                        {{ render_field(form.long_description, class="form-control") }}
+                    </div>
+
+                    <div class="col-12">
+                        {{ render_field(form.stock, class="form-control") }}
+                    </div>
+
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-dark float-end">Create</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

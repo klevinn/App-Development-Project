@@ -1,0 +1,69 @@
+{% extends "user_base.html" %}
+
+{% block head %}
+<link rel="stylesheet" href="static/CSS/store.css">
+{% endblock %}
+
+{% block title %}Retrieve Products | DoctorOnTheGo{% endblock %}
+
+{% block content %}
+
+
+
+<section class="section-products">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="header">
+                    <h2>Products</h2>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+
+            <!-- Products from database -->
+            {% for product in products %}
+            <div class="col-md-6 col-lg-4 col-xl-3">
+                <div id="product-1" class="single-product">
+                    <div class="part-1" style="background-image: url('static/images{{ product.img_file_name }}'); background-size: cover;">
+                        <ul>
+                          <li><a href="/edit_product?id={{ product.id }}"><i class="fas fa-edit"></i></a></li>
+
+                          <!--
+                          <li><button type="button" data-bs-toggle="modal" data-bs-target="#deleteModal"><i class="fas fa-trash"></i></button></li>
+                          -->
+                        </ul>
+                    </div>
+                    <div class="part-2">
+                        <h3 class="product-title">{{ product.name }}</h3>
+                        <h4 class="product-price">${{ product.price }}</h4>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+</section>
+
+<!--Modal for delete-->
+<!--
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Delete Product</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete this product?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Back</button>
+        <button><a href=""></a></button>
+      </div>
+    </div>
+  </div>
+</div>
+-->
+{% endblock %}

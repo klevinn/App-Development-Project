@@ -1,0 +1,100 @@
+{% extends "default_base.html" %}
+
+{% block head %}
+<link rel="stylesheet" href="static/CSS/store.css">
+{% endblock %}
+
+{% block title %}Search Results | DoctorOnTheGo{% endblock %}
+
+{% block content %}
+
+<form method="GET" class="search-bar" action="search">
+    <input type="search" placeholder="Search" name="query">
+    <button type="submit">Search</button>
+</form>
+
+<!--testing some copy paste stuff-->
+
+
+<div class="container-fluid mt-5 mb-5">
+    <div class="row justify-content-start">
+        <div class="col-3">
+            <div class="category p-2">
+                <div class="heading d-flex justify-content-between align-items-center">
+                    <h6 class="text-uppercase">Category</h6> <span>--</span>
+                </div>
+                <div class="d-flex justify-content-between mt-2">
+                    <div class="form-check"> <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"> <label class="form-check-label" for="flexCheckDefault"> Test Kit </label> </div>
+                </div>
+                <div class="d-flex justify-content-between mt-2">
+                    <div class="form-check"> <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"> <label class="form-check-label" for="flexCheckDefault"> Medicine </label> </div>
+                </div>
+                <div class="d-flex justify-content-between mt-2">
+                    <div class="form-check"> <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"> <label class="form-check-label" for="flexCheckDefault"> Supplement </label> </div>
+                </div>
+                <div class="d-flex justify-content-between mt-2">
+                    <div class="form-check"> <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"> <label class="form-check-label" for="flexCheckDefault"> First Aid </label> </div>
+                </div>
+            </div>
+            <div class="pricerange p-2">
+                <div class="heading d-flex justify-content-between align-items-center">
+                    <h6 class="text-uppercase">Price range</h6> <span>--</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-9">
+            <div class="row">
+                {% for product in products %}
+                <div class="col-md-3">
+                    <div id="product-1" class="single-product">
+                        <div class="part-1" style="background-image: url('static/images/{{ product.img_file_name }}'); background-size: cover;">
+                            <ul>
+                                <li><a href="/view_product?id={{ product.id }}"><i class="fas fa-expand"></i></a></li>
+                            </ul>
+                        </div>
+                        <div class="part-2">
+                            <h3 class="product-title">{{ product.name }}</h3>
+                            <h4 class="product-price">${{ product.price }}</h4>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+    
+</div>
+
+
+
+
+<section class="section-products">
+    <div class="container">
+
+        <div class="row">
+
+
+            {% for product in products %}
+            <div class="col-md-6 col-lg-4 col-xl-3">
+                <div id="product-1" class="single-product">
+                    <div class="part-1" style="background-image: url('static/images/{{ product.img_file_name }}'); background-size: cover;">
+                        <ul>
+                          <li><a href="/view_product?id={{ product.id }}"><i class="fas fa-expand"></i></a></li>
+                        </ul>
+                    </div>
+                    <div class="part-2">
+                        <h3 class="product-title">{{ product.name }}</h3>
+                        <h4 class="product-price">${{ product.price }}</h4>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+</section>
+
+
+{% endblock %}
