@@ -31,5 +31,6 @@ Modules Used:
             from src import Avatar
         </ul>
     </li>
+    <li>SQLAcademy</li>
 </ol>
 
