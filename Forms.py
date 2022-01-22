@@ -1,4 +1,4 @@
-from wtforms import Form, StringField, RadioField, SelectField, TextAreaField, validators, MonthField, EmailField, DateField, IntegerField
+from wtforms import Form, StringField, RadioField, SelectField, TextAreaField, validators, MonthField, EmailField, DateField, IntegerField, FloatField, FileField, FileAllowed
 from wtforms.fields.simple import PasswordField
 
 #Form Validation for all Forms in the website
@@ -68,4 +68,15 @@ class CreateNewPasswordForm(Form):
     password_confirm = PasswordField("Confirm Password:", [validators.Length(min=6, max=20)])
 
 
-#Done By
+#Done By Joshua 
+#Done By Joshua
+class CreateProduct(Form):
+    img_file_name = StringField("Filename:", [validators.DataRequired()])
+    name = StringField("Product Name:", [validators.DataRequired()])
+    price = FloatField("Product Price($):", [validators.DataRequired()])
+    category = StringField("Product Category:", [validators.DataRequired()])
+    short_description = StringField("Short Description:", [validators.DataRequired()])
+    long_description = TextAreaField("Long Description:", [validators.DataRequired()])
+    stock = IntegerField("Stock:", [validators.DataRequired()])
+    picture = FileField('Upload Product Picture', validators=[FileAllowed(['jpg', 'jpeg', 'png'])])
+
