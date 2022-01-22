@@ -18,7 +18,7 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 #Dicebear for temporary profile picture
 from src import Avatar
 
-#imported files
+#imported files (stuff that are not modules)
 import Forms
 import User, Staff, Feedback
 #Validation Functions
