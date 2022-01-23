@@ -26,6 +26,7 @@
   <p>There are {{ count }} appointments.</p>
   {% endif %}
 </div>
+
 <div>
   <table class="table table-striped">
     <thead>
@@ -47,9 +48,10 @@
     <tbody>
 
       {% for customer in customers_list %}
-      {% if customer.get_user_id() %}
+      {% if var == customer.get_us() %}
 
         <tr>
+          <td>{{ customer.get_us() }}</td>
           <td>{{ customer.get_user_id() }}</td>
           <td>{{ customer.get_first_name() }}</td>
           <td>{{ customer.get_last_name() }}</td>
