@@ -1,0 +1,207 @@
+{% extends "default_base.html" %}
+{% block title %} Main consultation{% endblock %}
+{% from "includes/_formHelper.html" import render_field %}
+
+
+
+{% block content %}
+
+
+<style>
+.upperboxmain{
+
+width:100%;
+heigh:620px;
+background-color:grey;
+}
+.Upperbox{
+width:60%;
+height:250px;
+display: block;
+margin-left: auto;
+margin-right: auto;
+background-image:url("https://mumbaimirror.indiatimes.com/thumb/msid-77794986,width-1200,height-900,resizemode-4/.jpg");;
+}
+
+h1 {
+text-align:center;
+padding-top:150px;
+}
+
+.button {
+width:90px;
+height:90px;
+border: 2px solid black;
+
+}
+.collapsible {
+  background-color: #eee;
+  color: #444;
+  cursor: pointer;
+  padding: 18px;
+  width: 70%;
+  border: none;
+  text-align: center;
+  outline: none;
+  font-size: 15px;
+
+
+
+}
+
+h2 {
+
+margin-top:120px;
+text-align:center;
+
+}
+
+/* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+.active, .collapsible:hover {
+  background-color: #ccc;
+}
+
+/* Style the collapsible content. Note: hidden by default */
+.content {
+  padding: 10px;
+  display: none;
+  overflow: hidden;
+  background-color: #f1f1f1;
+  /* This is is bad stop gap */
+  margin-left:15%;
+  width:70%
+
+}
+.column {
+  float: left;
+  width: 33.33%;
+
+}
+
+/* Clear floats after image containers */
+.row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+.blank {
+
+padding:50px;
+
+}
+
+.smallblank {
+padding:10px;
+
+}
+
+.but{
+
+
+
+}
+
+.dropdown{
+   text-align:center;
+}
+.con {
+  height: 200px;
+  position: relative;
+
+}
+
+
+.img left {
+
+
+}
+
+.mid {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+</style>
+
+
+<div class="upperboxmain">
+
+
+
+
+<div class="Upperbox">
+<h1>Consultation</h1>
+</div>
+</div>
+
+<div class="blank">
+
+
+</div>
+<div class="Title2">
+
+    <h2> What issues are you having?</h2>
+
+</div>
+<div class="smallerise">
+    <div class="dropdown">
+<button type="button" class="collapsible">Fever</button>
+<div class="content">
+  <p>Here's some infographic about Fever</p>
+
+    <img src="{{url_for('static', filename='cold-flu-or-covid-infographic.jpg')}}"  style="width:67%">
+
+
+
+    </div>
+</div>
+<div class="dropdown">
+<button type="button" class="collapsible">Sore throat</button>
+<div class="content">
+    <img src="{{url_for('static', filename='eob-strep-updated.png')}}"  style="width:50%">
+  <p>Lorem ipsum...</p>
+</div>
+</div>
+<div class="dropdown">
+<button type="button" class="collapsible">Headache</button>
+<div class="content">
+  <p>Lorem ipsum...</p>
+        <img src="{{url_for('static', filename='3281f3bd09fe6fd9c779f6a6004a6671.png')}}"  style="width:50%">
+</div>
+</div>
+</div>
+
+<h2> Unable to find what you need? Make an appointment with one of our doctors. </h2>
+<div class="con">
+<div class="mid">
+ <a class="nav-link" href="/viewandchose">
+<! ideally u want a login verification here but idk how. TBD !>
+ <button type="button" class="but"> Find an appointment </button>
+
+ </a>
+    </div>
+</div>
+
+
+
+<script>
+var coll = document.getElementsByClassName("collapsible");
+var i;
+
+for (i = 0; i < coll.length; i++) {
+  coll[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var content = this.nextElementSibling;
+    if (content.style.display === "block") {
+      content.style.display = "none";
+    } else {
+      content.style.display = "block";
+    }
+  });
+}
+
+</script>
+{% endblock %}

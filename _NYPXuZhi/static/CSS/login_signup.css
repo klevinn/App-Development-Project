@@ -1,0 +1,30 @@
+body{
+    background-color:#FFC0BE ;
+}
+
+a{
+    display:block;
+}
+
+/* ============ Background Image ============ */
+
+.background-image{
+    background: linear-gradient(rgba(0, 0, 0, 0.527),rgba(0, 0, 0, 0.5)), url(../images/bgimage.jpeg) no-repeat left center / cover;
+}
+
+/* ============ End of Background Image ============ */
+
+/* ============ Login & Signup Form ============ */
+
+#loginForm{
+    margin-top:60px;
+    margin-bottom:60px;
+}
+
+.bg-colour{
+    background-color: #FFC0BE;
+    opacity: 0.9;
+}
+
+
+/* ============ End of Login & Signup Form ============ */

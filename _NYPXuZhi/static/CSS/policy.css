@@ -1,0 +1,11 @@
+body{
+    background-color:#f3ccca ;
+}
+
+#policy{
+    margin:20px 30px;
+    border:1px solid black;
+    border-radius: 20px;
+    padding:30px;
+    background-color:rgb(218, 216, 216);
+}

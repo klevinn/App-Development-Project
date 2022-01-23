@@ -1,0 +1,45 @@
+<style>
+
+  body {
+  background-color: black;
+  color: white;
+}
+h1,
+td,
+tr {
+  color: white;
+}
+</style>
+
+{% extends "base2.html" %} {% block content %}
+<div class="container">
+    <h1>COVID-19 Spread Analysis</h1>
+  <div class="row">
+
+    <div class="col-4">
+        <h5><font color="red">Top 15 countries</font></h5>
+        <p>This data comes from a resource</p>
+        <table class="table-responsive-sm table-dark">
+        <thead>
+            <th>
+            <th scope="col">Country</th>
+            <th scope="col">Confirmed</th>
+            </tr>
+        </thead>
+        <tbody>
+    {% for pair in pairs %}
+    <tr>
+    <td>{{ pair[0]}}</td>
+    <td>{{ pair[1]}}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+    </table></div>
+    <div class="col-8">
+        <h5><font color="firebrick">world map of corona cases</font></h5>
+        <p>using the same data we provided an updated map that contains</p>
+        {{cmap|safe}}</div>
+
+  </div>
+</div>
+{% endblock %}

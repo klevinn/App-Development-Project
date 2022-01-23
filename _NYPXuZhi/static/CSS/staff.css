@@ -1,0 +1,95 @@
+body{
+
+    background-color: #FFEBE7;
+
+}
+
+/* ============ The Dashboard  ============ */
+
+.accordion-body a{
+    display:block;
+    color:gray !important;
+}
+
+.accordion-button{
+    color:black !important;
+}
+
+
+#active{
+    text-decoration: underline;
+    font-weight: bold;
+    color:black !important;
+}
+
+
+#dashboard{
+
+    margin:50px 10px;
+
+}
+
+#sidebar{
+
+    height:100%;
+    border-radius:10px 0 0 10px;
+    background-color: #FFC0BE;
+    border:2px solid black;
+
+}
+
+#data{
+
+    height:100%;
+    border-radius:0 10px 10px 0;
+    border: 2px solid black;
+    padding: 10px;
+    background-color: #FFC0BE;
+
+}
+
+#data h3{
+    text-align:center;
+    text-decoration: underline;
+}
+
+
+#Appointments{
+    border:1px solid black;
+    border-radius: 10px;
+    background-color: white;
+    padding:50px;
+
+}
+
+/* ============ End Of Dashboard ============ */
+
+#copybutton{
+    font-size:0.5em;
+    background-color: blue;
+    color:white;
+}
+
+@media(max-width:992px){
+    .merge-boxes{
+        padding:0 !important;
+    }
+
+    #sidebar{
+        border-radius: 0 0 0 0;
+    }
+
+    #data{
+        border-radius: 0 0 0 0;
+    }
+
+    #dashboard{
+        margin:0;
+    }
+}
+
+@media (min-width: 576px){
+    .container{
+        max-width: 100% !important;
+    }
+}
