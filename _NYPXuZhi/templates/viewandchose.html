@@ -1,0 +1,190 @@
+{% extends "default_base.html" %}
+{% block title %}View and chose{% endblock %}
+
+{% block content %}
+
+
+<style>
+
+* {
+
+  box-sizing: border-box;
+}
+
+.all{
+width:100%
+}
+
+.move{
+width:50%;
+float:left;
+}
+
+.moveb{
+
+margin-left: 75%;
+margin-top:80px;
+padding: 15px 32px;
+}
+
+.bl {
+color:black;
+
+}
+.btn btn-primary {
+
+color: black;
+}
+
+</style>
+
+
+
+<style>
+  .centralisation{
+  width:80%
+  float:center
+
+
+  }
+
+
+
+
+</style>
+<h1 class="display-4"> Shown appointments </h1>
+<div class="centralisation">
+<div>
+  {% if count == 0 %}
+  <p>There are no appointments.</p>
+  {% elif count == 1 %}
+  <p>There is 1 appointment.</p>
+  {% else %}
+  <p>There are {{ count }} appointments.</p>
+  {% endif %}
+</div>
+<div>
+  <div class="move">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Gender</th>
+        <th>Email</th>
+        <th>Date of appointment</th>
+        <th>Doctor of choice</th>
+        <th>Zoom Link</th>
+        <th>Remarks</th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for customer in customers_list %}
+        <tr>
+          <td>{{ customer.get_us() }}</td>
+          <td>{{ customer.get_user_id() }}</td>
+          <td>{{ customer.get_first_name() }}</td>
+          <td>{{ customer.get_last_name() }}</td>
+          <td>{{ customer.get_gender() }}</td>
+          <td>{{ customer.get_email() }}</td>
+          <td>{{customer.get_date()}}</td>
+
+          {% if customer.get_doc() == "T"%}
+            <td>Dr Tan</td>
+
+
+          {% elif customer.get_doc() == "M" %}
+            <td>Dr Mok</td>
+
+
+          {% elif customer.get_doc() == "L" %}
+
+            <td>Dr Lim</td>
+
+
+
+
+          {% endif %}
+          {% if customer.get_doc() == "T"%}
+
+            <td> Zoom Link</td>
+
+          {% elif customer.get_doc() == "M" %}
+
+            <td>Zoom Link</td>
+
+
+          {% elif customer.get_doc() == "L" %}
+
+            <td>Zoom link</td>
+
+
+
+
+          {% endif %}
+          <td>{{ customer.get_remarks() }}</td>
+           <td><a href="/updateConsultation/{{customer.get_user_id()}}" class="btn btn-warning">Update</a></td>
+          <td>
+
+
+    <!-- The Modal -->
+
+
+
+      <form action="{{url_for('delete_consultation2', id=customer.get_customer_id())}}" method="POST">
+    <!--<input type="submit" value="Delete" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete {{customer.get_first_name()}} {{customer.get_last_name()}}?');">-->
+    <!-- Button to Open the Modal -->
+    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#myModal_{{customer.get_customer_id()}}">
+      Delete
+    </button>
+    <div class="modal" id="myModal_{{customer.get_customer_id()}}">
+      <div class="modal-dialog">
+        <div class="modal-content">
+
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h4 class="modal-title">Delete Confirmation</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+
+          <!-- Modal body -->
+          <div class="modal-body">
+            Are you sure you want to delete {{customer.get_first_name()}} {{customer.get_last_name()}}
+          </div>
+
+          <!-- Modal footer -->
+          <div class="modal-footer">
+            <input type="submit" value="Delete" class="btn btn-danger">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+      </form>
+          </td>
+        </tr>
+
+
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+  </div>
+
+
+<div class="moveb">
+  <a class="nav-link" href="/createConsultation">
+  <button type="button" class="btn btn-success">
+
+    (Temporary) Consultation
+
+    </button>
+    </a>
+</div>
+
+
+{% endblock %}
