@@ -1,0 +1,14 @@
+
+//For personal reference
+
+//Github rejects some files when uploading in large chunks. So there may be tons of missing files.
+
+//UpdateConsultaion in __init__ breaks seemingly at randomm. It get's "fixed" than breaks on reruns
+
+//WARNING: VSC broke a large chunk of my code. 
+
+//On consistent, multiple reruns, some database related code acts very buggy. 
+
+//CSS is broken when integrated in many places. Likely conflicts with the CSS files.
+
+
