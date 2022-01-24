@@ -1,4 +1,5 @@
-from wtforms import Form, StringField, RadioField, SelectField, TextAreaField, validators, MonthField, EmailField, DateField, IntegerField, FloatField, FileField, FileAllowed
+from wtforms import Form, StringField, RadioField, SelectField, TextAreaField, validators, MonthField, EmailField, DateField, IntegerField, FloatField, FileField
+# FileAllowed
 from wtforms.fields.simple import PasswordField
 
 #Form Validation for all Forms in the website
@@ -78,5 +79,5 @@ class CreateProduct(Form):
     short_description = StringField("Short Description:", [validators.DataRequired()])
     long_description = TextAreaField("Long Description:", [validators.DataRequired()])
     stock = IntegerField("Stock:", [validators.DataRequired()])
-    picture = FileField('Upload Product Picture', validators=[FileAllowed(['jpg', 'jpeg', 'png'])])
+    #picture = FileField('Upload Product Picture', validators=[FileAllowed(['jpg', 'jpeg', 'png'])])
 

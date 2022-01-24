@@ -1,3 +1,4 @@
+"""
 #Done By Joshua
 # only one form since i am reusing the same form for editing product
 
@@ -12,3 +13,4 @@ class CreateProduct(Form):
     picture = FileField('Upload Product Picture', validators=[FileAllowed(['jpg', 'jpeg', 'png'])])
 
 #Done by Joshua end
+"""
