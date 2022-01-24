@@ -1,15 +1,15 @@
-import User
+from User import User
 
-
-class Customer(User.User):
-    def __init__(self, first_name, last_name, gender, remarks, email, date,docter, use):
-        super().__init__( first_name, last_name, gender, remarks,date)
+#Made By XuZhi
+class Customer(User):
+    def __init__(self):
+        super().__init__()
         Customer.count_id += 1
-        self.user =use
+        self.user = ''
         self.__customer =Customer.count_id
-        self.__email =email
-        self.__date =date
-        self.__docter =docter
+        self.__email = ''
+        self.__date = ''
+        self.__docter = ''
 
     def set_us(self, use):
         self.user=use

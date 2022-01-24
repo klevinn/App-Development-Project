@@ -110,6 +110,12 @@ padding:10px;
 
 }
 
+
+.img left {
+
+
+}
+
 .mid {
   margin: 0;
   position: absolute;
@@ -146,14 +152,9 @@ padding:10px;
 <div class="content">
   <p>Here's some infographic about Fever</p>
 
-    <div class="row">
+    <img src="{{url_for('static', filename='cold-flu-or-covid-infographic.jpg')}}"  style="width:67%">
 
-    <div class="column">
-    <img src="{{url_for('static', filename='Fever1.png')}}"  style="width:50%">
-        </div>
-        <div class="column">
-    <img src="{{url_for('static', filename='Fever2.png')}}"  style="width:43%">
-            </div>
+
 
     </div>
 </div>
@@ -169,7 +170,6 @@ padding:10px;
 <div class="content">
   <p>Lorem ipsum...</p>
         <img src="{{url_for('static', filename='3281f3bd09fe6fd9c779f6a6004a6671.png')}}"  style="width:50%">
-</div>
 </div>
 </div>
 </div>

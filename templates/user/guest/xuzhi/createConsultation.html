@@ -1,9 +1,9 @@
 
-{% extends "bootstrap/base.html" %}
+{% extends "default_base.html" %}
 
 {% import "bootstrap/wtf.html" as wtf %}
 {% from "includes/_formHelper.html" import render_field %}
-{% block title %}Library Loan System - Create Customers{% endblock %}
+{% block title %}Clinic - Create Consultation{% endblock %}
 
 
 
@@ -20,6 +20,11 @@
 	position:relative;
 
   }
+
+  *{
+
+  font-size:1.1em;
+  }
 </style>
 
 
@@ -30,7 +35,9 @@
 
   <div class="form-group">
     <P>Choice of doctor</P>
+    <div class="form-check form-check-inline">
     {{ wtf.form_field(form.doc, class="form-control") }}
+    </div>
   </div>
 </div>
   <div class="form-group">

@@ -26,6 +26,9 @@ class User(Person):
         self.__ban_status = False
         self.__profile_picture = ''
         self.__verified = False
+        #XuZhi
+        self.__membership = ''
+        self.__remarks = ''
 
     def set_card_name(self, card_name):
         self.__card_name = card_name
@@ -113,3 +116,17 @@ class User(Person):
     def display_expiry_date(self):
         expiry_date = ('%s-%s' %(self.__card_expiry_year, self.__card_expiry_month))
         return expiry_date
+
+#XuZhi
+    def get_membership(self):
+        return self.__membership
+
+    def get_remarks(self):
+        return self.__remarks
+
+
+    def set_membership(self, membership):
+        self.__membership = membership
+
+    def set_remarks(self, remarks):
+        self.__remarks = remarks
