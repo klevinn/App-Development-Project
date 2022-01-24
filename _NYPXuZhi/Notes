@@ -9,4 +9,6 @@
 
 //On consistent, multiple reruns, some database related code acts very buggy. 
 
+//CSS is broken when integrated in many places. Likely conflicts with the CSS files.
+
 
