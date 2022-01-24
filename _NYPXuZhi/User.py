@@ -3,7 +3,7 @@ from Person import Person
 
 #Child Class
 #Used for storing user-relevant info into the shelve
-
+#Had to change imported "User" to "User1" Cause for some reason changing old "User" breaks the code utterly. No idea why
 class User1(Person):
 
     def __init__(self, username, email, password):
