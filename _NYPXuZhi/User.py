@@ -112,7 +112,7 @@ class User1(Person):
 class User:
     count_id = 0
 
-    def __init__(self, first_name, last_name, gender, membership, remarks):
+    def __init__(self, first_name, last_name, gender, remarks):
         User.count_id += 1
         self.__user_id = User.count_id
         self.__first_name = first_name
@@ -133,11 +133,7 @@ class User:
     def get_gender(self):
         return self.__gender
 
-    def get_membership(self):
-        return self.__membership
 
-    def get_remarks(self):
-        return self.__remarks
 
     def set_user_id(self, user_id):
         self.__user_id = user_id
