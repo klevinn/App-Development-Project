@@ -1,3 +1,5 @@
 Github rejects some files when uploading in large chunks. So there may be tons of missing files.
 
 UpdateConsultaion in __init__ breaks seemingly at randomm
+
+WARNING: VSC broke a large chunk of my code. 
