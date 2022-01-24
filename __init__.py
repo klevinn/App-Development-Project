@@ -2042,6 +2042,8 @@ def emailVerification(token):
 
         user_dict[data].set_verified()
         return redirect(url_for('user'))
+    else:
+        return redirect(url_for("home"))
 
 """Policy Pages Made By Calvin"""
 @app.route('/policyPage', methods = ["GET","POST"])
