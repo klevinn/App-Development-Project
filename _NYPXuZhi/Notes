@@ -3,3 +3,7 @@ Github rejects some files when uploading in large chunks. So there may be tons o
 UpdateConsultaion in __init__ breaks seemingly at randomm
 
 WARNING: VSC broke a large chunk of my code. 
+
+On consistent, multiple reruns, come database related code acts very buggy. 
+
+
