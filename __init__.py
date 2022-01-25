@@ -2366,11 +2366,9 @@ def COVIDdata():
 def contact_us():
     return render_template('user/guest/xuzhi/contactUs.html')
 
-
 @app.route('/New19')
 def New19():
     return render_template('user/guest/xuzhi/New19.html')
-
 
 @app.route('/consultatioPg1')
 def consultatioPg1():
@@ -2382,10 +2380,13 @@ def create_consultation():
     create_customer_form = Forms.CreateForm(request.form)
     if request.method == 'POST' and create_customer_form.validate():
         customers_dict = {}
-        db = shelve.open('customer.db', 'c')
+        db = shelve.open('user', 'c')
 
         try:
-            customers_dict = db['Customers']
+            if 'Customers' in db:
+                customers_dict = db['Customers']
+            else:
+                db['Customers'] = customers_dict
         except:
             print("Error in retrieving Customers from customer.db.")
 
@@ -2414,26 +2415,32 @@ def create_consultation():
 @app.route('/retrieveConsultation')
 def retrieve_consultation():
     if 'user'in session:
-       customers_dict = {}
-       db = shelve.open('customer.db', 'r')
-       customers_dict = db['Customers']
-       db.close()
-       customers_list = []
-       var = session["user"]
-       print(var)
-       for key in customers_dict:
+        customers_dict = {}
+        db = shelve.open('user', 'r')
+        try:
+            if 'Customers' in db:
+                customers_dict = db['Customers']
+            else:
+                db['Customers'] = customers_dict
+        except:
+            print("Error in retrieving Customers from customer.db.")
 
-         customer = customers_dict.get(key)
-         customers_list.append(customer)
-         for customer in customers_list:
-             bonk = customer.get_us()
-             bonk = str(bonk)
-             print("The id is" + bonk)
+        db.close()
+        customers_list = []
+        var = session["user"]
+        print(var)
+        for key in customers_dict:
+            customer = customers_dict.get(key)
+            customers_list.append(customer)
+        for customer in customers_list:
+            bonk = customer.get_us()
+            bonk = str(bonk)
+            print("The id is" + bonk)
 
 
 
 
-       return render_template('user/guest/xuzhi/retrieveConsultation.html', count=len(customers_list), customers_list=customers_list, var = var)
+        return render_template('user/guest/xuzhi/retrieveConsultation.html', count=len(customers_list), customers_list=customers_list, var = var)
 
     elif "staff" in session:
         return render_template("user/guest/xuzhi/Staffviewappointment.html")
@@ -2445,25 +2452,30 @@ def retrieve_consultation():
 @app.route('/viewandchose')
 def retrieve_cus():
     if 'user' in session:
-       customers_dict = {}
-       db = shelve.open('customer.db', 'r')
-       customers_dict = db['Customers']
+        customers_dict = {}
+        db = shelve.open('user', 'r')
+        try:
+            if 'Customers' in db:
+                customers_dict = db['Customers']
+            else:
+                db['Customers'] = customers_dict
+        except:
+            print("Error in retrieving Customers from customer.db.")
 
-       customers_list = []
-       var = session['user']
-       var=str(var)
-       print(var)
-       '''
-       This is unprivated. Anyone can see. Used for testing ONLY 
-       '''
+        customers_list = []
+        var = session['user']
+        var=str(var)
+        print(var)
+        '''
+        This is unprivated. Anyone can see. Used for testing ONLY 
+        '''
 
-       for key in customers_dict:
-         customer = customers_dict.get(key)
-         customers_list.append(customer)
+        for key in customers_dict:
+            customer = customers_dict.get(key)
+            customers_list.append(customer)
+            print(key)
 
-         print(key)
-
-       return render_template('user/guest/xuzhi/viewandchose.html', count=len(customers_list), customers_list=customers_list)
+        return render_template('user/guest/xuzhi/viewandchose.html', count=len(customers_list), customers_list=customers_list)
 
     elif "staff" in session:
         return render_template("user/guest/xuzhi/Staffviewappointment.html")
@@ -2480,8 +2492,14 @@ def retrieve_cusFstaff():
     Untested. IDK how long in to staff
     """
     customers_dict = {}
-    db = shelve.open('customer.db', 'r')
-    customers_dict = db['Customers']
+    db = shelve.open('user', 'r')
+    try:
+        if 'Customers' in db:
+            customers_dict = db['Customers']
+        else:
+            db['Customers'] = customers_dict
+    except:
+        print("Error in Retrieving")
     db.close()
 
     customers_list = []
@@ -2499,11 +2517,15 @@ def update_consultation(id):
 
       update_customer_form = Forms.CreateForm(request.form)
       if request.method == 'POST':
-        users_dict = {}
-        db = shelve.open('customer.db', 'w')
-
-        customer_dict = db['Customers']
-        update_customer_form.populate_obj(customer_dict)
+        customer_dict = {}
+        db = shelve.open('user', 'c')
+        try:
+            if 'Customers' in db:
+                customer_dict = db['Customers']
+            else:
+                db['Customers'] = customer_dict
+        except:
+            update_customer_form.populate_obj(customer_dict)
 
         customer = customer_dict.get(id)
         customer.set_doc(update_customer_form.doc.data)
@@ -2513,7 +2535,7 @@ def update_consultation(id):
         customer.set_remarks(update_customer_form.remarks.data)
 
 
-        db['Customers'] = users_dict
+        db['Customers'] = customer_dict
         db.close()
 
 
@@ -2547,9 +2569,16 @@ def update_consultation(id):
 @app.route('/deleteConsultation/<int:id>', methods=['POST'])
 def delete_consultation(id):
 
-    users_dict = {}
-    db = shelve.open('customer.db', 'w')
-    customer_dict = db['Customers']
+    customer_dict = {}
+    db = shelve.open('user', 'c')
+    try:
+        if 'Customers' in db:
+            customer_dict = db['Customers']
+        else:
+            db['Customers'] = customer_dict
+    except:
+        print("Error in retrieving")
+
     customer_dict.pop(id)
     db['Customers'] = customer_dict
     db.close()
@@ -2559,9 +2588,15 @@ def delete_consultation(id):
 @app.route('/viewandchose/<int:id>', methods=['POST'])
 def delete_consultation2(id):
 
-    users_dict = {}
-    db = shelve.open('customer.db', 'w')
-    customer_dict = db['Customers']
+    customer_dict = {}
+    db = shelve.open('user', 'c')
+    try:
+        if 'Customers' in db:
+            customer_dict = db['Customers']
+        else:
+            db['Customers'] = customer_dict
+    except:
+        print("Error in retrieving")
     customer_dict.pop(id)
     db['Customers'] = customer_dict
     db.close()
@@ -2602,8 +2637,14 @@ def retrieve_consultationBackup():
 def RetriveFuture():
     if 'user' in session:
        customers_dict = {}
-       db = shelve.open('customer.db', 'r')
-       customers_dict = db['Customers']
+       db = shelve.open('user', 'r')
+       try:
+            if 'Customers' in db:
+                customers_dict = db['Customers']
+            else:
+                db['Customers'] = customers_dict
+       except:
+            print("Error in retrieving")
 
        customers_list = []
        var = session['user']
