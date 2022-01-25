@@ -1,5 +1,9 @@
-from wtforms import Form, StringField, RadioField, SelectField, TextAreaField, validators, MonthField, EmailField, DateField, IntegerField, FloatField, FileField
+from wtforms import Form, StringField, RadioField, SelectField, TextAreaField, validators, MonthField, EmailField, DateField, IntegerField, FloatField
+#Joshua
 from flask_wtf.file import FileField, FileAllowed
+#XuZhi
+from wtforms_components import DateRange
+from datetime import datetime, date
 from wtforms.fields.simple import PasswordField
 
 #Form Validation for all Forms in the website
@@ -80,4 +84,28 @@ class CreateProduct(Form):
     long_description = TextAreaField("Long Description:", [validators.DataRequired()])
     stock = IntegerField("Stock:", [validators.DataRequired()])
     picture = FileField('Upload Product Picture', validators=[FileAllowed(['jpg', 'jpeg', 'png'])])
+
+
+#Done By xuzhi
+class CreateForm(Form):
+    first_name = StringField('First Name', [validators.Length(min=1, max=150), validators.DataRequired(), ])
+    last_name = StringField('Last Name', [validators.Length(min=1, max=150), validators.DataRequired()])
+    gender = SelectField('Gender', [validators.DataRequired()], choices=[('', 'Select'), ('F', 'Female'), ('M', 'Male')], default='')
+    email = EmailField('Email', [validators.Email(), validators.DataRequired()])
+    date_joined = DateField('Date of appointment(YY-MM-DD)', format='%Y-%m-%d',validators=[DateRange(min=date.today())])
+
+    remarks = TextAreaField('Additional request', [validators.Optional()])
+    doc=RadioField('Choice of doctor', choices=[('T', 'Dr Tan'), ('M', 'Dr Mok'), ('L', 'Dr Lim')], default='T')
+
+class Graph(Form):
+    DATE1 = StringField('DATE1:', [validators.Length(min=1, max=150), validators.DataRequired(), ])
+    DATE2 = StringField('DATE2:', [validators.Length(min=1, max=150), validators.DataRequired(), ])
+    DATE3 = StringField('DATE3:', [validators.Length(min=1, max=150), validators.DataRequired(), ])
+    DATE4 = StringField('DATE4:', [validators.Length(min=1, max=150), validators.DataRequired(), ])
+    DATE5 = StringField('DATE5:', [validators.Length(min=1, max=150), validators.DataRequired(), ])
+    COVID1 = StringField('COVID1:', [validators.Length(min=1, max=150), validators.DataRequired(), ])
+    COVID2 = StringField('COVID2:', [validators.Length(min=1, max=150), validators.DataRequired(), ])
+    COVID3 = StringField('COVID3:', [validators.Length(min=1, max=150), validators.DataRequired(), ])
+    COVID4 = StringField('COVID4:', [validators.Length(min=1, max=150), validators.DataRequired(), ])
+    COVID5 = StringField('COVID5:', [validators.Length(min=1, max=150), validators.DataRequired(), ])
 

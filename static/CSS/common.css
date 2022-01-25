@@ -2,6 +2,10 @@
 	font-family: sans-serif;
 }
 
+body{
+	background: #f3ccca;
+}
+
 a {
 	text-decoration: none;
 }

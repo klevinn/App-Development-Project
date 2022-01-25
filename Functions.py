@@ -100,6 +100,8 @@ def generate_staff_id():
     uid = str(uuid.uuid4())
     return uid
 
+
+
 """
 def generate_staff_id():
     staff_id = ''

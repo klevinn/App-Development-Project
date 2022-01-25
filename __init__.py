@@ -17,12 +17,22 @@ import urllib.request
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 #Dicebear for temporary profile picture
 from src import Avatar
+
 #For joshua
 from flask_sqlalchemy import SQLAlchemy
 
+#XuZhi
+from wtforms import Form, StringField, RadioField, SelectField, TextAreaField, validators, DateField, IntegerField, PasswordField
+from datetime import datetime, timedelta
+import dash
+from dash import dcc
+from dash import html
+import plotly.graph_objects as go
+from dash.dependencies import Input, Output
+
 #imported files (stuff that are not modules)
 import Forms
-import User, Staff, Feedback
+import User, Staff, Feedback, Customer
 #Validation Functions
 from Security_Validation import validate_card_number, Sanitise, validate_expiry_date, validate_session, validate_session_open_file_admin, validate_session_admin
 #Functions to shorten code
@@ -78,6 +88,14 @@ class Product(j_db.Model):
     stock = j_db.Column(j_db.Integer)
 
 # by joshua end
+
+#Done By xuzhi
+def retriveuser(dic):
+    username= session["user_id"]
+
+    extracts= [username]
+    a_subset = {key: dic[key] for key in extracts}
+#End of by Xuzhi
 
 @app.route('/' , methods=["GET","POST"])
 def home():
@@ -2142,186 +2160,6 @@ def error503(error):
     return render_template('errors/error503.html'), 503
 
 
-
-
-"""
-#Part Done By XuZhi
-
-@app.route("/News")
-def News():
-    data=[
-        ("01-01-2022",20),
-        ("02-01-2022",40),
-        ("03-01-2022",30),
-        ("04-01-2022",27),
-        ("05-01-2022",42),
-        ("06-01-2022",36),
-        ("07-01-2022",41),
-        ("08-01-2022",20)
-
-    ]
-
-    labels = [row[0] for row in data]
-    values = [row[1] for row in data]
-    return render_template('News.html', labels=labels, values=values)
-//Unrefined Pt1 code
-from flask_bootstrap import Bootstrap
-
-
-app = Flask(__name__) #Not Needed already previously mentioned
-bootstrap = Bootstrap(app) #Quite Unsure what this is for?, Bootstrap incorporated into HTML not WTForms
-
-@app.route('/contactUs')
-def contact_us():
-    return render_template('contactUs.html')
-@app.route('/News')
-def News():
-    return render_template('News.html')
-
-@app.route('/consultatioPg1.html')
-def consultatioPg1():
-    return render_template('consultatioPg1.html')
-
-!!!
-#Most of these codes are copied from the Practicals
-#Please ensure they fulfill their function before pushing it onto the github
-!!!
-
-#In shelve.open you are not suppsoed to add the .db.
-#No Use of Adding CreateForm Fucntions if Forms.py is not updated.
-#Our customer database is called user
-#Our staff database is called staff
-
-@app.route('/createConsultation', methods=['GET', 'POST'])
-def create_customer():
-    create_customer_form = CreateForm(request.form)
-    if request.method == 'POST' and create_customer_form.validate():
-        customers_dict = {}
-        db = shelve.open('customer.db', 'c')
-
-        try:
-            customers_dict = db['Customers']
-        except:
-            print("Error in retrieving Customers from customer.db.")
-
-        consultation = Customer.Customer(create_customer_form.first_name.data, create_customer_form.last_name.data,
-                                     create_customer_form.gender.data,
-                                     create_customer_form.remarks.data, create_customer_form.email.data,
-                                     create_customer_form.date_joined.data,
-                                     create_customer_form.doc.data)
-        customers_dict[consultation.get_customer_id()] = consultation
-        db['Customers'] = customers_dict
-
-        db.close()
-
-        return redirect(url_for('retrieve_customers'))
-    return render_template('createConsultation.html', form=create_customer_form)
-
-
-
-
-@app.route('/retrieveCustomer')
-def retrieve_customers():
-    customers_dict = {}
-    db = shelve.open('customer.db', 'r')
-    customers_dict = db['Customers']
-    db.close()
-
-    customers_list = []
-    for key in customers_dict:
-        customer = customers_dict.get(key)
-        customers_list.append(customer)
-        print(key)
-
-
-    return render_template('retrieveCustomer.html', count=len(customers_list), customers_list=customers_list)
-
-@app.route('/viewandchose')
-def retrieve_cus():
-    customers_dict = {}
-    db = shelve.open('customer.db', 'r')
-    customers_dict = db['Customers']
-    db.close()
-
-    customers_list = []
-    for key in customers_dict:
-        customer = customers_dict.get(key)
-        customers_list.append(customer)
-        print(key)
-
-
-    return render_template('viewandchose.html', count=len(customers_list), customers_list=customers_list)
-
-
-
-@app.route('/updateCustomer/<int:id>/', methods=['GET', 'POST'])
-def update_customer(id):
-    update_customer_form = CreateForm(request.form)
-    if request.method == 'POST' and update_customer_form.validate():
-        users_dict = {}
-        db = shelve.open('customer.db', 'w')
-
-        customer_dict = db['Customers']
-
-        customer = customer_dict.get(id)
-        customer.set_doc(update_customer_form.doc.data)
-        customer.set_first_name(update_customer_form.first_name.data)
-        customer.set_last_name(update_customer_form.last_name.data)
-        customer.set_gender(update_customer_form.gender.data)
-        customer.set_membership(update_customer_form.membership.data)
-        customer.set_remarks(update_customer_form.remarks.data)
-
-        db['Customers'] = users_dict
-        db.close()
-
-        return redirect(url_for('retrieve_customers'))
-    else:
-        users_dict = {}
-        oc = shelve.open('user.db', 'w')
-        db = shelve.open('customer.db', 'r')
-        customer_dict = db['Customers']
-
-        users_dict = oc['Users']
-        customer = customer_dict.get(id)
-        user=users_dict.get(id)
-        db.close()
-        oc.close()
-
-        update_customer_form.first_name.data = user.get_first_name()
-        update_customer_form.last_name.data = user.get_last_name()
-        update_customer_form.gender.data = user.get_gender()
-        update_customer_form.remarks.data = user.get_remarks()
-
-        return render_template('updateCustomer.html', form=update_customer_form)
-
-
-
-@app.route('/deleteUser/<int:id>', methods=['POST'])
-def delete_user(id):
-    users_dict = {}
-    db = shelve.open('user.db', 'w')
-    users_dict = db['Users']
-
-    users_dict.pop(id)
-
-    db['Users'] = users_dict
-    db.close()
-
-    return redirect(url_for('retrieve_users'))
-@app.route('/deleteCustomer/<int:id>', methods=['POST'])
-def delete_customer(id):
-    users_dict = {}
-    db = shelve.open('customer.db', 'w')
-    customer_dict = db['Customers']
-
-    customer_dict.pop(id)
-
-    db['Customers'] = customer_dict
-    db.close()
-
-    return redirect(url_for('retrieve_customers'))
-"""
-
 # joshua's work (store, all guest for now, i plan to make products crud for admin, figuring out images related stuff)
 
 # app routes for store (for both user and logged in)
@@ -2489,6 +2327,480 @@ def edit_product():
     else:
         return redirect(url_for("login"))
 
+
+#XuZhi Code
+#Semi integrated
+
+@app.route("/Omni")
+def Omni():
+    return render_template('user/guest/xuzhi/Omni.html')
+
+
+@app.route("/Background")
+def Background():
+    return render_template('user/guest/xuzhi/Background.html')
+
+
+@app.route("/Measure")
+def Measure():
+    return render_template('user/guest/xuzhi/Measure.html')
+
+@app.route("/MOHnews")
+def MOHnews():
+    return render_template("user/guest/xuzhi/MOHnews.html")
+
+@app.route("/Vac")
+def Vac():
+    return render_template("user/guest/xuzhi/Vac.html")
+
+
+@app.route("/World")
+def World():
+    return render_template("user/guest/xuzhi/World.html")
+
+@app.route("/COVIDdata")
+def COVIDdata():
+    return render_template('user/guest/xuzhi/COVIDdata.html')
+
+@app.route('/contactUs')
+def contact_us():
+    return render_template('user/guest/xuzhi/contactUs.html')
+
+
+@app.route('/New19')
+def New19():
+    return render_template('user/guest/xuzhi/New19.html')
+
+
+@app.route('/consultatioPg1')
+def consultatioPg1():
+    return render_template('user/guest/xuzhi/consultatioPg1.html')
+
+
+@app.route('/createConsultation', methods=['GET', 'POST'])
+def create_consultation():
+    create_customer_form = Forms.CreateForm(request.form)
+    if request.method == 'POST' and create_customer_form.validate():
+        customers_dict = {}
+        db = shelve.open('customer.db', 'c')
+
+        try:
+            customers_dict = db['Customers']
+        except:
+            print("Error in retrieving Customers from customer.db.")
+
+
+        username= session['user']
+        consultation = Customer.Customer(create_customer_form.first_name.data, create_customer_form.last_name.data,
+                                     create_customer_form.gender.data,
+                                     create_customer_form.remarks.data, create_customer_form.email.data,
+                                     create_customer_form.date_joined.data,
+                                     create_customer_form.doc.data, username
+
+
+
+
+                                         )
+        customers_dict[consultation.get_customer_id()] = consultation
+        db['Customers'] = customers_dict
+
+        db.close()
+
+        return redirect(url_for('retrieve_consultation'))
+    return render_template('user/guest/xuzhi/createConsultation.html', form=create_customer_form)
+
+
+
+@app.route('/retrieveConsultation')
+def retrieve_consultation():
+    if 'user'in session:
+       customers_dict = {}
+       db = shelve.open('customer.db', 'r')
+       customers_dict = db['Customers']
+       db.close()
+       customers_list = []
+       var = session["user"]
+       print(var)
+       for key in customers_dict:
+
+         customer = customers_dict.get(key)
+         customers_list.append(customer)
+         for customer in customers_list:
+             bonk = customer.get_us()
+             bonk = str(bonk)
+             print("The id is" + bonk)
+
+
+
+
+       return render_template('user/guest/xuzhi/retrieveConsultation.html', count=len(customers_list), customers_list=customers_list, var = var)
+
+    elif "staff" in session:
+        return render_template("user/guest/xuzhi/Staffviewappointment.html")
+
+    else:
+        return render_template("user/guest/xuzhi/ReLogin.html")
+
+
+@app.route('/viewandchose')
+def retrieve_cus():
+    if 'user' in session:
+       customers_dict = {}
+       db = shelve.open('customer.db', 'r')
+       customers_dict = db['Customers']
+
+       customers_list = []
+       var = session['user']
+       var=str(var)
+       print(var)
+       '''
+       This is unprivated. Anyone can see. Used for testing ONLY 
+       '''
+
+       for key in customers_dict:
+         customer = customers_dict.get(key)
+         customers_list.append(customer)
+
+         print(key)
+
+       return render_template('user/guest/xuzhi/viewandchose.html', count=len(customers_list), customers_list=customers_list)
+
+    elif "staff" in session:
+        return render_template("user/guest/xuzhi/Staffviewappointment.html")
+
+    else:
+        return render_template("user/guest/xuzhi/ReLogin.html")
+
+
+
+
+@app.route('/Staffviewappointment')
+def retrieve_cusFstaff():
+    """
+    Untested. IDK how long in to staff
+    """
+    customers_dict = {}
+    db = shelve.open('customer.db', 'r')
+    customers_dict = db['Customers']
+    db.close()
+
+    customers_list = []
+    for key in customers_dict:
+        customer = customers_dict.get(key)
+        customers_list.append(customer)
+        print(key)
+
+
+    return render_template('user/guest/xuzhi/Staffviewappointment.html', count=len(customers_list), customers_list=customers_list)
+
+@app.route('/updateConsultation/<int:id>/', methods=['GET', 'POST'])
+def update_consultation(id):
+
+
+      update_customer_form = Forms.CreateForm(request.form)
+      if request.method == 'POST':
+        users_dict = {}
+        db = shelve.open('customer.db', 'w')
+
+        customer_dict = db['Customers']
+        update_customer_form.populate_obj(customer_dict)
+
+        customer = customer_dict.get(id)
+        customer.set_doc(update_customer_form.doc.data)
+        customer.set_first_name(update_customer_form.first_name.data)
+        customer.set_last_name(update_customer_form.last_name.data)
+        customer.set_gender(update_customer_form.gender.data)
+        customer.set_remarks(update_customer_form.remarks.data)
+
+
+        db['Customers'] = users_dict
+        db.close()
+
+
+        return redirect(url_for('retrieve_customers'))
+
+
+      else:
+
+        """
+        Whatever I throw inside breaks for some stupid reason. Works one moment than breaks. Banged my head against this for days. 
+        I suspect it may be a database problem
+        """
+        
+
+        users_dict = {}
+        db = shelve.open('user.db', 'c')
+        users_dict = db['Users']
+        db.close()
+
+        user = users_dict.get(id)
+        update_customer_form.first_name.data = user.get_first_name()
+        update_customer_form.last_name.data = user.get_last_name()
+
+
+
+        db.close()
+        return render_template('user/guest/xuzhi/updateConsultation.html', form=update_customer_form)
+
+
+
+@app.route('/deleteConsultation/<int:id>', methods=['POST'])
+def delete_consultation(id):
+
+    users_dict = {}
+    db = shelve.open('customer.db', 'w')
+    customer_dict = db['Customers']
+    customer_dict.pop(id)
+    db['Customers'] = customer_dict
+    db.close()
+    return redirect(url_for('retrieve_consultation'))
+
+
+@app.route('/viewandchose/<int:id>', methods=['POST'])
+def delete_consultation2(id):
+
+    users_dict = {}
+    db = shelve.open('customer.db', 'w')
+    customer_dict = db['Customers']
+    customer_dict.pop(id)
+    db['Customers'] = customer_dict
+    db.close()
+
+    return redirect(url_for('retrieve_cus'))
+
+
+"""
+Backup code >
+"""
+
+def retrieve_consultationBackup():
+    if 'user' not in session:
+       customers_dict = {}
+       db = shelve.open('customer.db', 'r')
+       customers_dict = db['Customers']
+       db.close()
+       customers_list = []
+
+       for key in customers_dict:
+         customer = customers_dict.get(key)
+         customers_list.append(customer)
+         print(key)
+
+
+
+       return render_template('user/guest/xuzhi/retrieveConsultation.html', count=len(customers_list), customers_list=customers_list)
+
+    elif "staff" in session:
+        return render_template("user/guest/xuzhi/Staffviewappointment.html")
+
+    else:
+        return render_template("user/guest/xuzhi/ReLogin.html")
+
+
+
+
+def RetriveFuture():
+    if 'user' in session:
+       customers_dict = {}
+       db = shelve.open('customer.db', 'r')
+       customers_dict = db['Customers']
+
+       customers_list = []
+       var = session['user']
+       var=str(var)
+       print(var)
+
+       extracts= [var]
+       avilableUse= '1'
+       print(avilableUse)
+       avilableUser = str(avilableUse)
+       print(avilableUser)
+
+
+
+       if var in customers_dict:
+            print("here")
+            db = shelve.open('customer.db', 'r')
+            customers_dict = db['Customers']
+            db.close()
+            customers_list = []
+
+            for key in customers_dict:
+                customer = customers_dict.get(key)
+                customers_list.append(customer)
+                print(key)
+
+
+
+
+       db.close()
+       return render_template('user/guest/xuzhi/retrieveConsultation.html', count=len(customers_list), customers_list=customers_list)
+
+    elif "staff" in session:
+        return render_template("user/guest/xuzhi/Staffviewappointment.html")
+
+    else:
+        return render_template("user/guest/xuzhi/ReLogin.html")
+
+def createV1():
+
+    create_customer_form = Forms.CreateForm(request.form)
+
+    if 'user' in session:
+
+      if request.method == 'POST' and create_customer_form.validate():
+        customers_dict = {}
+        db = shelve.open('customer.db', 'c')
+        username= session['user']
+
+        try:
+            customers_dict = db['Customers']
+        except:
+            print("Error in retrieving Customers from customer.db.")
+
+
+        print(username)
+        consultation = Customer.Customer(create_customer_form.first_name.data, create_customer_form.last_name.data,
+                                     create_customer_form.gender.data,
+                                     create_customer_form.remarks.data, create_customer_form.email.data,
+                                     create_customer_form.date_joined.data,
+                                     create_customer_form.doc.data, username
+
+
+
+
+                                         )
+        customers_dict[consultation.get_customer_id()] = consultation
+        db['Customers'] = customers_dict
+
+        db.close()
+
+        return redirect(url_for('user/guest/xuzhi/retrieve_consultation'))
+
+
+      else:
+        error = "Start date is greater than End date"
+        return render_template('user/guest/xuzhi/createConsultation.html', form=create_customer_form, error = error)
+
+    else:
+        return render_template("user/guest/xuzhi/ReLogin.html")
+
+
+@app.route("/Graphform",methods=['GET', 'POST'] )
+def Graphform():
+
+    graphform = Forms.Graph(request.form)
+    if request.method == 'POST' and graphform.validate():
+        graphdict = {}
+        db = shelve.open('graph.db', 'c')
+
+        try:
+            graphdict = db['Graph']
+        except:
+            print("Error in retrieving Customers from customer.db.")
+
+
+
+        graphD = Forms.Graph(graphform.DATE1.data, graphform.DATE2.data, graphform.DATE3.data, graphform.DATE4.data,
+                                   graphform.DATE5.data, graphform.COVID1.data, graphform.COVID2.data, graphform.COVID3.data,
+                                   graphform.COVID4.data, graphform.COVID5.data
+
+                                         )
+        graphdict[graphD.get_graph_id()] = graphD
+        db['Graph'] = graphdict
+
+        db.close()
+
+        return redirect(url_for('News'))
+    return render_template('user/guest/xuzhi/Graphform.html', form=graphform)
+
+
+
+
+
+@app.route("/News")
+def News():
+
+
+
+
+    try:
+      graph_dict = {}
+      db = shelve.open('graph.db', 'c')
+      graph_dict = db['Graph']
+      db.close()
+      graph_list = []
+      try:
+
+        db = shelve.open('graph.db', 'r')
+        graph_dict = db['Graph']
+        db.close()
+
+        graph = graph_dict.get(id)
+        graph.DATE1.data = user.get_DATE1()
+        graph.DATE2.data = user.get_DATE2()
+        graph.DATE3.data = user.get_DATE3()
+        graph.DATE4.data = user.get_DATE4()
+        graph.DATE5.data = user.get_DATE5()
+        graph.COVID1.data = user.get_COVID1()
+        graph.COVID2.data = user.get_COVID2()
+        graph.COVID3.data = user.get_COVID3()
+        graph.COVID4.data = user.get_COVID4()
+        graph.COVID5.data = user.get_COVID5()
+
+
+
+
+      except:
+       for key in graph_dict:
+         graph = graph_dict.get(key)
+         graph_list.append(graph)
+         for graph in graph_list:
+             date1= graph.get_DATE1()
+             date2= graph.get_DATE2()
+             date3= graph.get_DATE3()
+             date4= graph.get_DATE4()
+             date5= graph.get_DATE5()
+             COVID1= graph.get_DATE1()
+             COVID2= graph.get_DATE2()
+             COVID3= graph.get_DATE3()
+             COVID4= graph.get_DATE4()
+             COVID5= graph.get_DATE5()
+             data=[
+                (date1,COVID1),
+                (date2,COVID2),
+                (date3,COVID3),
+                (date4,COVID4),
+                (date5,COVID5),
+
+
+               ]
+
+             labels = [row[0] for row in data]
+             values = [row[1] for row in data]
+             return render_template('user/guest/xuzhi/News.html', labels=labels, values=values)
+    except:
+      date1="5-12-2022"
+      date2="13-12-2022"
+      date3="21-12-2021"
+      date4="28-12-2021"
+      date5="04-01-2022"
+      COVID1=836
+      COVID2=547
+      COVID3=320
+      COVID4=289
+      COVID5=455
+      data=[
+        (date1,COVID1),
+        (date2,COVID2),
+        (date3,COVID3),
+        (date4,COVID4),
+        (date5,COVID5),
+        ]
+
+      labels = [row[0] for row in data]
+      values = [row[1] for row in data]
+      return render_template('News.html', labels=labels, values=values)
 
 if __name__ == '__main__':
     j_db.create_all
