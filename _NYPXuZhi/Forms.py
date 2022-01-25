@@ -31,6 +31,22 @@ class CreateForm(Form):
     remarks = TextAreaField('Additional request', [validators.Optional()])
     doc=RadioField('Choice of doctor', choices=[('T', 'Dr Tan'), ('M', 'Dr Mok'), ('L', 'Dr Lim')], default='T')
 
+class Graph(Form):
+    DATE1 = StringField('DATE1:', [validators.Length(min=1, max=150), validators.DataRequired(), ])
+    DATE2 = StringField('DATE2:', [validators.Length(min=1, max=150), validators.DataRequired(), ])
+    DATE3 = StringField('DATE3:', [validators.Length(min=1, max=150), validators.DataRequired(), ])
+    DATE4 = StringField('DATE4:', [validators.Length(min=1, max=150), validators.DataRequired(), ])
+    DATE5 = StringField('DATE5:', [validators.Length(min=1, max=150), validators.DataRequired(), ])
+    COVID1 = StringField('COVID1:', [validators.Length(min=1, max=150), validators.DataRequired(), ])
+    COVID2 = StringField('COVID2:', [validators.Length(min=1, max=150), validators.DataRequired(), ])
+    COVID3 = StringField('COVID3:', [validators.Length(min=1, max=150), validators.DataRequired(), ])
+    COVID4 = StringField('COVID4:', [validators.Length(min=1, max=150), validators.DataRequired(), ])
+    COVID5 = StringField('COVID5:', [validators.Length(min=1, max=150), validators.DataRequired(), ])
+
+
+
+
+
 
 # Done By Calvin
 class CreateLoginForm(Form):
