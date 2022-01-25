@@ -19,7 +19,7 @@ from Security_Validation import validate_card_number, Sanitise, validate_expiry_
 from Functions import duplicate_email, duplicate_username, get_user_name, check_banned, fix_unit_number, fix_expiry_year, allowed_file, generate_random_password, generate_staff_id, generate_feedback_id
 from User import User1
 import User
-import Graph
+
 from wtforms import Form, StringField, RadioField, SelectField, TextAreaField, validators, DateField, IntegerField
 from wtforms import validators, StringField, PasswordField
 import dash
@@ -53,7 +53,7 @@ limiter = Limiter(app, key_func=get_remote_address)
 """
 News is hard coded. Perhaps add a staff way to change it without modifying source code? 
 """
-@app.route("/Graphform")
+@app.route("/Graphform",methods=['GET', 'POST'] )
 def Graphform():
 
     graphform = Graph(request.form)
@@ -90,24 +90,36 @@ def News():
 
 
 
-    date1="5-12-2022"
-    date2="13-12-2022"
-    date3="21-12-2021"
-    date4="28-12-2021"
-    date5="04-01-2022"
-    COVID1=836
-    COVID2=547
-    COVID3=320
-    COVID4=289
-    COVID5=455
+
     try:
       graph_dict = {}
-      db = shelve.open('graph.db', 'r')
+      db = shelve.open('graph.db', 'c')
       graph_dict = db['Graph']
       db.close()
       graph_list = []
+      try:
 
-      for key in graph_dict:
+        db = shelve.open('graph.db', 'r')
+        graph_dict = db['Graph']
+        db.close()
+
+        graph = graph_dict.get(id)
+        graph.DATE1.data = user.get_DATE1()
+        graph.DATE2.data = user.get_DATE2()
+        graph.DATE3.data = user.get_DATE3()
+        graph.DATE4.data = user.get_DATE4()
+        graph.DATE5.data = user.get_DATE5()
+        graph.COVID1.data = user.get_COVID1()
+        graph.COVID2.data = user.get_COVID2()
+        graph.COVID3.data = user.get_COVID3()
+        graph.COVID4.data = user.get_COVID4()
+        graph.COVID5.data = user.get_COVID5()
+
+
+
+
+      except:
+       for key in graph_dict:
          graph = graph_dict.get(key)
          graph_list.append(graph)
          for graph in graph_list:
@@ -116,20 +128,35 @@ def News():
              date3= graph.get_DATE3()
              date4= graph.get_DATE4()
              date5= graph.get_DATE5()
-      data=[
-        (date1,COVID1),
-        (date2,COVID2),
-        (date3,COVID3),
-        (date4,COVID4),
-        (date5,COVID5),
+             COVID1= graph.get_DATE1()
+             COVID2= graph.get_DATE2()
+             COVID3= graph.get_DATE3()
+             COVID4= graph.get_DATE4()
+             COVID5= graph.get_DATE5()
+             data=[
+                (date1,COVID1),
+                (date2,COVID2),
+                (date3,COVID3),
+                (date4,COVID4),
+                (date5,COVID5),
 
 
-        ]
+               ]
 
-      labels = [row[0] for row in data]
-      values = [row[1] for row in data]
-      return render_template('News.html', labels=labels, values=values)
+             labels = [row[0] for row in data]
+             values = [row[1] for row in data]
+             return render_template('News.html', labels=labels, values=values)
     except:
+      date1="5-12-2022"
+      date2="13-12-2022"
+      date3="21-12-2021"
+      date4="28-12-2021"
+      date5="04-01-2022"
+      COVID1=836
+      COVID2=547
+      COVID3=320
+      COVID4=289
+      COVID5=455
       data=[
         (date1,COVID1),
         (date2,COVID2),
@@ -2311,10 +2338,16 @@ def update_consultation(id):
         I suspect it may be a database problem
         """
         
-        db = shelve.open('user.db', 'c')
 
-        customer_dict = db['Users']
-        print(customer_dict)
+        users_dict = {}
+        db = shelve.open('user.db', 'c')
+        users_dict = db['Users']
+        db.close()
+
+        user = users_dict.get(id)
+        update_customer_form.first_name.data = user.get_first_name()
+        update_customer_form.last_name.data = user.get_last_name()
+
 
 
         db.close()
