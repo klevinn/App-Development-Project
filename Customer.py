@@ -19,10 +19,6 @@ class Customer(User):
         self.__customer_id=customer_id
     def get_customer_id(self):
         return self.__customer
-    def set_email(self, email):
-        self.__email=email
-    def get_email(self):
-        return self.__email
     def set_date(self,date):
         self.__date=date
     def get_date(self):

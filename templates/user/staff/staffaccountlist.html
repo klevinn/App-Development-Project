@@ -292,7 +292,7 @@
                   </div>
                 </form>
 
-                {# if user.get_verified() == False #}
+                {% if user.get_verified() == False %}
                 <form action="{{ url_for('verifyEmail', id=user.get_user_id()) }}" method="POST" style="width:400px;">
                   <button type="button" class="btn btn-danger" data-bs-toggle="modal"
                     data-bs-target="#myModal_verify_{{ user.get_user_id() }}">
@@ -323,7 +323,7 @@
                     </div>
                   </div>
                 </form>
-                {# endif #}
+                {% endif %}
               <!--/div-->
             </div>
             <hr>

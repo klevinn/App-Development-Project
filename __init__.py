@@ -757,6 +757,7 @@ def user():
                     user = users_dict.get(key)
                     user_list.append(user)
                     name = user.get_username()
+                    print(user.get_verified())
                     break
             
             if 'change' in session:
@@ -1427,9 +1428,24 @@ def staffapp():
         db.close()
         
         if valid_session:
-            # Take in form submissions and dislay the data to the list.
-            # Upon submission the data will be stored into a list?, Recommend creating a .get() and .set() method for form inputs
-            return render_template('user/staff/staffappoint.html' , staff = name)
+            customers_dict = {}
+            db = shelve.open('user', 'c')
+            try:
+                if 'Customers' in db:
+                    customers_dict = db['Customers']
+                else:
+                    db['Customers'] = customers_dict
+            except:
+                print("Error in retrieving Customers from customer.db.")
+
+            db.close()
+
+            customers_list = []
+            for key in customers_dict:
+                customer = customers_dict.get(key)
+                customers_list.append(customer)
+
+            return render_template('user/staff/staffappoint.html' , staff = name, count=len(customers_list), customers_list=customers_list)
         else:
             session.clear()
             return redirect(url_for("home"))
@@ -1553,20 +1569,6 @@ def deleteFeedback(id):
     else:
         return redirect(url_for('login'))
 
-@app.route('/staffinvent' , methods=["GET","POST"])
-def staffinvent():
-    if "staff" in session:
-        StaffName = session["staff"]
-        valid_session, name = validate_session_open_file_admin(StaffName)
-        if valid_session:
-            #Depends on how Joshua displays the store inventory.
-            # Can easily set up some variable system in jinja, and we modify the jinja through here.
-            return render_template('user/staff/staffinventory.html' , staff = name)
-        else:
-            session.clear()
-            return redirect(url_for('home'))
-    else:
-        return redirect(url_for('login'))
 
 @app.route('/stafflist/<int:page>' , methods=["GET","POST"])
 def stafflist(page=1):
@@ -1929,6 +1931,7 @@ def banUser(id):
 
         if valid_session:
             users_dict[id].set_banned()
+            users_dict[id].unverify()
             user_email = users_dict[id].get_email()
             user_name = users_dict[id].get_username()
 
@@ -2050,7 +2053,7 @@ def verifyEmail(id):
 
     try:
         email = user_dict[id].get_email()
-        pw_msg = "Dear User, Click on this link to verify the email: %s " %(url)
+        pw_msg = "Dear User, Click on this link to verify the email: http://127.0.0.1:5000%s " %(url)
         msg = Message('Email Verification', sender = 'doctoronthego2022@gmail.com', recipients = [email])
         msg.body = pw_msg
         mail.send(msg)
@@ -2078,9 +2081,14 @@ def emailVerification(token):
                 db["Users"] = user_dict
         except:
             print("Error in retrieving User from staff.db")
-        db.close()
+
 
         user_dict[data].set_verified()
+        print(user_dict[data].get_email())
+        print(user_dict[data].get_verified())
+
+        db["Users"] = user_dict
+        db.close()
         return redirect(url_for('user'))
     else:
         return redirect(url_for("home"))
@@ -2236,27 +2244,15 @@ def create_product():
         return redirect(url_for("login"))
 
 #Replace Inventory
-@app.route('/retrieve_products' , methods=["GET","POST"])
+@app.route('/staffinvent' , methods=["GET","POST"])
 def retrieve_products():
     if "staff" in session:
         StaffName = session["staff"]
         valid_session, name = validate_session_open_file_admin(StaffName)
 
-        userDict = {}
-        db = shelve.open('user', 'c')
-        try:
-            if 'Users' in db:
-                userDict = db['Users']
-            else:
-                db['Users']= userDict
-        except:
-            print("Error in retrieving Users from feedback db")
-        
-        db.close()
-
         if valid_session:
             products = Product.query.all()
-            return render_template('user/staff/joshua/StaffInventory/staffinventory.html', products=products)
+            return render_template('user/staff/joshua/StaffInventory/staffinventory.html', products=products, staff = name)
             
             # return render_template('user/loggedin/CRUDProducts/retrieve_products.html', products=products)
         else:
@@ -2374,7 +2370,7 @@ def New19():
 def consultatioPg1():
     return render_template('user/guest/xuzhi/consultatioPg1.html')
 
-
+"""
 @app.route('/createConsultation', methods=['GET', 'POST'])
 def create_consultation():
     create_customer_form = Forms.CreateForm(request.form)
@@ -2410,13 +2406,70 @@ def create_consultation():
         return redirect(url_for('retrieve_consultation'))
     return render_template('user/guest/xuzhi/createConsultation.html', form=create_customer_form)
 
+"""
+@app.route('/createConsultation', methods=['GET', 'POST'])
+def create_consultation():
+    if 'user' in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
+
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+        
+
+        UserName =  get_user_name(idNumber, users_dict)
+        valid_session = validate_session(idNumber, users_dict)
+        db.close()
+
+        create_customer_form = Forms.CreateForm(request.form)
+        if request.method == 'POST' and create_customer_form.validate():
+            customers_dict = {}
+            db = shelve.open('user', 'c')
+
+            try:
+                if 'Customers' in db:
+                    customers_dict = db['Customers']
+                else:
+                    db['Customers'] = customers_dict
+            except:
+                print("Error in retrieving Customers from customer.db.")
+
+            #Remake Class File as dont need email username n input
+            consultation = Customer.Customer()
+
+            consultation.set_first_name(create_customer_form.first_name.data)
+            consultation.set_last_name(create_customer_form.last_name.data)
+            consultation.set_gender(create_customer_form.gender.data)
+            consultation.set_remarks(create_customer_form.remarks.data)
+            consultation.set_email(create_customer_form.email.data)
+            consultation.set_date(create_customer_form.date_joined.data)
+            consultation.set_doc(create_customer_form.doc.data)
+            consultation.set_us(idNumber)
+
+            AppFB = generate_feedback_id()
+
+            customers_dict[AppFB] = consultation
+
+            db['Customers'] = customers_dict
+
+            db.close()
+
+            return redirect(url_for('retrieve_consultation'))
+        return render_template('user/guest/xuzhi/createConsultation.html', form=create_customer_form)
+
 
 
 @app.route('/retrieveConsultation')
 def retrieve_consultation():
     if 'user'in session:
         customers_dict = {}
-        db = shelve.open('user', 'r')
+        db = shelve.open('user', 'c')
         try:
             if 'Customers' in db:
                 customers_dict = db['Customers']
@@ -2426,29 +2479,29 @@ def retrieve_consultation():
             print("Error in retrieving Customers from customer.db.")
 
         db.close()
+        
         customers_list = []
         var = session["user"]
         print(var)
         for key in customers_dict:
             customer = customers_dict.get(key)
             customers_list.append(customer)
+        """
         for customer in customers_list:
             bonk = customer.get_us()
             bonk = str(bonk)
             print("The id is" + bonk)
-
-
+        """
 
 
         return render_template('user/guest/xuzhi/retrieveConsultation.html', count=len(customers_list), customers_list=customers_list, var = var)
 
-    elif "staff" in session:
-        return render_template("user/guest/xuzhi/Staffviewappointment.html")
-
     else:
-        return render_template("user/guest/xuzhi/ReLogin.html")
+        #Should redirect to a page notifying you cannot set appointment without logging in
+        return redirect(url_for('login'))
 
 
+"""
 @app.route('/viewandchose')
 def retrieve_cus():
     if 'user' in session:
@@ -2488,9 +2541,6 @@ def retrieve_cus():
 
 @app.route('/Staffviewappointment')
 def retrieve_cusFstaff():
-    """
-    Untested. IDK how long in to staff
-    """
     customers_dict = {}
     db = shelve.open('user', 'r')
     try:
@@ -2510,6 +2560,8 @@ def retrieve_cusFstaff():
 
 
     return render_template('user/guest/xuzhi/Staffviewappointment.html', count=len(customers_list), customers_list=customers_list)
+
+"""
 
 @app.route('/updateConsultation/<int:id>/', methods=['GET', 'POST'])
 def update_consultation(id):
@@ -2611,8 +2663,14 @@ Backup code >
 def retrieve_consultationBackup():
     if 'user' not in session:
        customers_dict = {}
-       db = shelve.open('customer.db', 'r')
-       customers_dict = db['Customers']
+       db = shelve.open('user', 'r')
+       try:
+           if 'Customers' in db:
+                customers_dict = db['Customers']
+           else:
+                db['Customers'] = customers_dict
+       except:
+            print("Error in retrieving")
        db.close()
        customers_list = []
 
@@ -2661,8 +2719,15 @@ def RetriveFuture():
 
        if var in customers_dict:
             print("here")
-            db = shelve.open('customer.db', 'r')
-            customers_dict = db['Customers']
+            db = shelve.open('user', 'r')
+            try:
+                if 'Customers' in db:
+                    customers_dict = db['Customers']
+                else:
+                    db['Customers'] = customers_dict
+            except:
+                print("Error in retrieving")
+                
             db.close()
             customers_list = []
 

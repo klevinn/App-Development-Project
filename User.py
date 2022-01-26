@@ -97,6 +97,8 @@ class User(Person):
 
     def set_verified(self):
         self.__verified = True
+    def unverify(self):
+        self.__verified = False
     def get_verified(self):
         return self.__verified
 
