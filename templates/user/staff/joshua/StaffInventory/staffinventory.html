@@ -73,16 +73,19 @@
           <h3>Inventory Management</h3>
           <div id="Appointments">
             {% for product in products %}
-            <div class="row">
-              <div class="col mb-0">
-                {{ product.name }}
-              </div>
-              <div class="col">
-                [Product Inventory]
-              </div>
-              <div class="col">
-                <a class="btn btn-info " href="/edit_product?id={{ product.id }}">Edit</a>
-              </div>
+            <div class="row table-responsive">
+              <table class="table table-striped">
+                <thead class="table-dark">
+                  <td style="font-weight: bold;">Product Name ID</td>
+                  <td style="font-weight: bold;">Product Inventory</td>
+                  <td></td>
+                </thead>
+                <tbody>
+                  <td style="font-weight: bold;">{{ product.name }}</td>
+                  <td style="font-weight: bold;">[Product Inventory]</td>
+                  <td><a class="btn btn-info " href="/edit_product?id={{ product.id }}">Edit</a></td>
+                </tbody>
+              </table>
             </div>
             <hr>
             {% endfor %}

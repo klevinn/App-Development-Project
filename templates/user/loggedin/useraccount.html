@@ -34,7 +34,9 @@
          {% for name in user_list %}
          <div class="card">
             <div class="card-body">
-               {% if name.get_verified() == False %}
+               {% if name.get_verified() == True %}
+               <button type="button" class="btn btn-success">Verified</button>
+               {% else %}
                <form action="{{ url_for('verifyEmail', id = name.get_user_id() ) }}" method="POST">
                   <button type="Submit" class="btn btn-danger" data-bs-toggle="modal"
                   data-bs-target="#myModal_Verify">Unverified</button>
@@ -62,8 +64,6 @@
                      </div>
                    </div>
                </form>
-               {% else %}
-               <button type="button" class="btn btn-success">Verified</button>
                {% endif %}
                {% if changed == True %}
                <button type="button" class="btn btn-danger" data-bs-toggle="modal"

@@ -92,6 +92,7 @@ def generate_random_password():
     result_str = ''.join((random.choice(source) for i in range(10)))
     return result_str
 
+#Used as a generate random id function
 def generate_feedback_id():
     source = randint(1000, 999999)
     return source

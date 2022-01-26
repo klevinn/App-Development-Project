@@ -72,28 +72,30 @@
         <div class="row">
           <h3>Appointments Made</h3>
           <div id="Appointments">
-            {# for in  #}
+            {% for con in customers_list %}
             <div class="row table-responsive">
               <table class="table table-striped">
                 <thead class="table-dark">
-                  <td style="font-weight: bold;">Appointment Name</td>
-                  <td style="font-weight: bold;">Appointment Email</td>
-                  <td style="font-weight: bold;">Appointment Date</td>
+                  <td style="font-weight: bold;">User ID</td>
+                  <td style="font-weight: bold;">First Name</td>
+                  <td style="font-weight: bold;">Last Name</td>
                 </thead>
                 <tbody>
-                  <td style="font-weight: bold;"></td>
-                  <td style="font-weight: bold;"></td>
-                  <td style="font-weight: bold;"></td>
+                  <td style="font-weight: bold;">{{ con.get_us() }}</td>
+                  <td style="font-weight: bold;">{{ con.get_first_name() }}</td>
+                  <td style="font-weight: bold;">{{ con.get_last_name() }}</td>
                   <tr>
                     <td colspan="4">
                       <table class="table mb-0">
                         <thead>
-                          <td>Doctor</td>
-                          <td>Condition</td>
+                          <td>Gender</td>
+                          <td>Email</td>
+                          <td>Date of appointment</td>
                         </thead>
                         <tbody>
-                          <td></td>
-                          <td></td>
+                          <td>{{ con.get_gender() }}</td>
+                          <td>{{ con.get_email() }}</td>
+                          <td>{{ con.get_date() }}</td>
                         </tbody>
                       </table>
                     </td>
@@ -102,10 +104,27 @@
                     <td colspan="4">
                       <table class="table mb-0">
                         <thead>
-                          <td>Request</td>
+                          <td>Doctor of choice</td>
+                          <td>Zoom Link</td>
+                          <td>Remarks</td>
                         </thead>
                         <tbody>
-                          <td></td>
+                          {% if con.get_doc() == "T"%}
+                          <td>Dr Tan</td>
+                          {% elif con.get_doc() == "M" %}
+                          <td>Dr Mok</td>
+                          {% elif con.get_doc() == "L" %}
+                          <td>Dr Lim</td>
+                          {% endif %}
+
+                          {% if con.get_doc() == "T"%}
+                          <td> Zoom Link</td>
+                          {% elif con.get_doc() == "M" %}        
+                          <td>Zoom Link</td>
+                          {% elif con.get_doc() == "L" %}
+                          <td>Zoom link</td>
+                          {% endif %}
+                          <td>{{ con.get_remarks() }}</td>
                         </tbody>
                       </table>
                     </td>
@@ -115,46 +134,43 @@
             </div>
             <div class="row">
               <div class="col">
-                <form action="" method="POST">
-                  <!--input type="submit" value="Delete" class="btn btn-danger"-->
-
-                  <!-- w3 schools modal button-->
+                <form action="{{url_for('delete_consultation', id=con.get_us())}}" method="POST">
+                  <!--<input type="submit" value="Delete" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete {{customer.get_first_name()}} {{customer.get_last_name()}}?');">-->
+                  <!-- Button to Open the Modal -->
                   <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                    data-bs-target="#myModal_Appoint_">
-                    Cancel
+                    data-bs-target="#myModal_{{con.get_us()}}">
+                    Delete
                   </button>
-
-                  <!-- The Modal -->
-                  <div class="modal" id="myModal_Appoint_">
+                  <div class="modal" id="myModal_{{con.get_us()}}">
                     <div class="modal-dialog">
                       <div class="modal-content">
-
+    
                         <!-- Modal Header -->
                         <div class="modal-header">
-                          <h4 class="modal-title">Cancel Confirmation</h4>
+                          <h4 class="modal-title">Delete Confirmation</h4>
                           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
-
+    
                         <!-- Modal body -->
                         <div class="modal-body">
-                          Are you sure you want to cancel this appointment ?
+                          Are you sure you want to delete {{con.get_first_name()}} {{con.get_last_name()}}
                         </div>
-
+    
                         <!-- Modal footer -->
                         <div class="modal-footer">
                           <input type="submit" value="Delete" class="btn btn-danger">
                           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                         </div>
-
+    
+    
                       </div>
                     </div>
                   </div>
-
                 </form>
               </div>
             </div>
             <hr>
-            {# endfor  #}
+            {% endfor %}
             </div>
           </div>
         </div>
