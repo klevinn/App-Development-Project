@@ -29,6 +29,7 @@ from dash import dcc
 from dash import html
 import plotly.graph_objects as go
 from dash.dependencies import Input, Output
+import Graph
 
 #imported files (stuff that are not modules)
 import Forms
@@ -2016,7 +2017,6 @@ def resetPassUser(id):
                 db["Users"] = users_dict
         except:
             print("Error in retrieving Users from user.db")
-        
         valid_session , name = validate_session_open_file_admin(StaffName)
         temp_pw = generate_random_password()
         pw_hash =  bcrypt.generate_password_hash(temp_pw)
@@ -2182,30 +2182,156 @@ def error503(error):
 # app routes for store (for both user and logged in)
 @app.route('/store', methods=["GET","POST"])
 def store():
-    products = Product.query.all()
+    if "user" in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
 
-    return render_template('user/guest/joshua/GuestStore/store.html', products=products)
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+        
+        UserName =  get_user_name(idNumber, users_dict)
+        av = users_dict[idNumber].get_profile_pic()
+        valid_session = validate_session(idNumber, users_dict)
+        db.close()
 
-@app.route('/search', methods=["GET","POST"])
-def search():
-    query = request.args.get('query')
+        if valid_session:
+            products = Product.query.all()
 
-    if query:
-        products = Product.query.filter(Product.name.contains(query) |
-        Product.short_description.contains(query) |
-        Product.long_description.contains(query) |
-        Product.category.contains(query))
+            return render_template('user/guest/joshua/userstore/store.html', products=products, user = UserName, av=av)
+        else:
+            session.clear()
+            return redirect(url_for("login"))
+    elif "staff" in session:
+        StaffName = session["staff"]
+        valid_session , name = validate_session_open_file_admin(StaffName)
+
+        if valid_session:
+            products = Product.query.all()
+
+            return render_template('user/guest/joshua/adminstore/store.html', products=products, staff = name)
+        else:
+            session.clear()
+            return redirect(url_for('login'))
     else:
         products = Product.query.all()
 
-    return render_template('user/guest/joshua/GuestStore/search.html', products=products)
+        return render_template('user/guest/joshua/GuestStore/store.html', products=products)
+
+@app.route('/search', methods=["GET","POST"])
+def search():
+    if "user" in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
+
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+        
+        UserName =  get_user_name(idNumber, users_dict)
+        av = users_dict[idNumber].get_profile_pic()
+        valid_session = validate_session(idNumber, users_dict)
+        db.close()
+
+        if valid_session:
+            query = request.args.get('query')
+
+            if query:
+                products = Product.query.filter(Product.name.contains(query) |
+                Product.short_description.contains(query) |
+                Product.long_description.contains(query) |
+                Product.category.contains(query))
+            else:
+                products = Product.query.all()
+
+            return render_template('user/guest/joshua/userstore/search.html', products=products, user = UserName, av=av)
+        else:
+            session.clear()
+            return redirect(url_for('login'))
+    elif "staff" in session:
+        StaffName = session["staff"]
+        valid_session , name = validate_session_open_file_admin(StaffName)
+        if valid_session:
+            query = request.args.get('query')
+
+            if query:
+                products = Product.query.filter(Product.name.contains(query) |
+                Product.short_description.contains(query) |
+                Product.long_description.contains(query) |
+                Product.category.contains(query))
+            else:
+                products = Product.query.all()
+
+            return render_template('user/guest/joshua/adminstore/search.html', products=products, staff = name)
+        else:
+            session.clear()
+            return redirect(url_for('login'))
+    else:
+        query = request.args.get('query')
+
+        if query:
+            products = Product.query.filter(Product.name.contains(query) |
+            Product.short_description.contains(query) |
+            Product.long_description.contains(query) |
+            Product.category.contains(query))
+        else:
+            products = Product.query.all()
+
+        return render_template('user/guest/joshua/GuestStore/search.html', products=products)
 
 @app.route('/view_product', methods=["GET", "POST"])
 def view_product():
-    id = request.args.get('id')
-    products = Product.query.filter(Product.id.contains(id))
+    if "user" in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
 
-    return render_template('user/guest/joshua/GuestStore/view_product.html', products=products)
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+        
+        UserName =  get_user_name(idNumber, users_dict)
+        av = users_dict[idNumber].get_profile_pic()
+        valid_session = validate_session(idNumber, users_dict)
+        db.close()
+        if valid_session:
+            id = request.args.get('id')
+            products = Product.query.filter(Product.id.contains(id))
+
+            return render_template('user/guest/joshua/userstore/view_product.html', products=products, user = UserName, av=av)
+        else:
+            session.clear()
+            return redirect(url_for("login"))
+    elif "staff" in session:
+        StaffName = session["staff"]
+        valid_session , name = validate_session_open_file_admin(StaffName)
+        if valid_session:
+            id = request.args.get('id')
+            products = Product.query.filter(Product.id.contains(id))
+
+            return render_template('user/guest/joshua/adminstore/view_product.html', products=products, staff = name)
+        else:
+            session.clear()
+            return redirect(url_for('login'))
+    else:
+        id = request.args.get('id')
+        products = Product.query.filter(Product.id.contains(id))
+
+        return render_template('user/guest/joshua/GuestStore/view_product.html', products=products)
 
 """
 
@@ -2390,7 +2516,7 @@ def edit_product():
                 j_db.session.commit()
                 return redirect(url_for('retrieve_products'))
 
-            return render_template('user/staff/joshua/StaffInventory/CRUDProducts/edit_product.html', product=product, form=create_product_form)
+            return render_template('user/staff/joshua/StaffInventory/CRUDProducts/edit_product.html', product=product, form=create_product_form, staff = name)
         else:
             session.clear()
             return redirect(url_for("home"))
@@ -2956,7 +3082,7 @@ def Graphform():
         except:
             print("Error in retrieving Graph from graph.db.")
 
-        graphD = graph(graphform.DATE1.data, graphform.DATE2.data, graphform.DATE3.data, graphform.DATE4.data,
+        graphD = Graph.Graph(graphform.DATE1.data, graphform.DATE2.data, graphform.DATE3.data, graphform.DATE4.data,
                                    graphform.DATE5.data, graphform.COVID1.data, graphform.COVID2.data, graphform.COVID3.data,
                                    graphform.COVID4.data, graphform.COVID5.data
 
@@ -3004,77 +3130,267 @@ def Graphform():
 
 @app.route("/News")
 def News():
-
-
-
-
-
-
-    try:
-        graph_dict = {}
+    if "user" in session:
+        idNumber = session["user"]
+        users_dict ={}
         db = shelve.open('user', 'c')
+
         try:
-            if 'graph' in db:
-                graph_dict = db['graph']
+            if 'Users' in db:
+                users_dict = db['Users']
             else:
-                db['graph'] = graph_dict
+                db["Users"] = users_dict
         except:
-            print("Error in retrieving")
+            print("Error in retrieving User from staff.db")
 
+
+        UserName =  get_user_name(idNumber, users_dict)
+        av = users_dict[idNumber].get_profile_pic()
+        valid_session = validate_session(idNumber, users_dict)
         db.close()
-        graph_list = []
-        print('try1')
+
+        if valid_session:
+            date1="5-12-2022"
+            date2="13-12-2022"
+            date3="21-12-2021"
+            date4="28-12-2021"
+            date5="04-01-2022"
+            COVID1=836
+            COVID2=547
+            COVID3=320
+            COVID4=289
+            COVID5=455
+
+            try:
+                graph_dict = {}
+                db = shelve.open('user', 'c')
+                try:
+                    if 'graph' in db:
+                        graph_dict = db['graph']
+                    else:
+                        db['graph'] = graph_dict
+                except:
+                    print("Error in retrieving")
+
+                db.close()
+                graph_list = []
+                print('try1')
 
 
-        for key in graph_dict:
+                for key in graph_dict:
 
-            print('try2')
-            graph = graph_dict.get(key)
-            graph_list.append(graph)
-            for graph in graph_list:
-                print("try3")
-                test= graph.get_COVID1
-                test2 = graph.get_DATE1
-                date1= graph.get_DATE1()
-                date2= graph.get_DATE2()
-                date3= graph.get_DATE3()
-                date4= graph.get_DATE4()
-                date5= graph.get_DATE5()
-                COVID1= graph.get_COVID1()
-                COVID2= graph.get_COVID2()
-                COVID3= graph.get_COVID3()
-                COVID4= graph.get_COVID4()
-                COVID5= graph.get_COVID5()
-                COVID5=int(COVID5)
-                COVID4=int(COVID4)
-                COVID3=int(COVID3)
-                COVID2=int(COVID2)
-                COVID1=int(COVID1)
-                print("SHOULD WORK")
-    except:
-      date1="5-12-2022"
-      date2="13-12-2022"
-      date3="21-12-2021"
-      date4="28-12-2021"
-      date5="04-01-2022"
-      COVID1=836
-      COVID2=547
-      COVID3=320
-      COVID4=289
-      COVID5=455
+                    print('try2')
+                    graph = graph_dict.get(key)
+                    graph_list.append(graph)
+                    for graph in graph_list:
+                        print("try3")
+                        test= graph.get_COVID1
+                        test2 = graph.get_DATE1
+                        date1= graph.get_DATE1()
+                        date2= graph.get_DATE2()
+                        date3= graph.get_DATE3()
+                        date4= graph.get_DATE4()
+                        date5= graph.get_DATE5()
+                        COVID1= graph.get_COVID1()
+                        COVID2= graph.get_COVID2()
+                        COVID3= graph.get_COVID3()
+                        COVID4= graph.get_COVID4()
+                        COVID5= graph.get_COVID5()
+                        COVID5=int(COVID5)
+                        COVID4=int(COVID4)
+                        COVID3=int(COVID3)
+                        COVID2=int(COVID2)
+                        COVID1=int(COVID1)
+                        print("SHOULD WORK")
+            except:
+                date1="5-12-2022"
+                date2="13-12-2022"
+                date3="21-12-2021"
+                date4="28-12-2021"
+                date5="04-01-2022"
+                COVID1=836
+                COVID2=547
+                COVID3=320
+                COVID4=289
+                COVID5=455
 
 
-    data=[
-        (date1,COVID1),
-        (date2,COVID2),
-        (date3,COVID3),
-        (date4,COVID4),
-        (date5,COVID5),
-        ]
+            data=[
+                (date1,COVID1),
+                (date2,COVID2),
+                (date3,COVID3),
+                (date4,COVID4),
+                (date5,COVID5),
+                ]
 
-    labels = [row[0] for row in data]
-    values = [row[1] for row in data]
-    return render_template('user/guest/xuzhi/News.html', labels=labels, values=values)
+            labels = [row[0] for row in data]
+            values = [row[1] for row in data]
+            return render_template('user/guest/xuzhi/News_user.html', labels=labels, values=values, user = UserName, av=av)
+        else:
+            session.clear()
+            return redirect(url_for('login'))
+
+    elif "staff" in session:
+        StaffName = session["staff"]
+        valid_session, name = validate_session_open_file_admin(StaffName)
+        if valid_session:
+            date1="5-12-2022"
+            date2="13-12-2022"
+            date3="21-12-2021"
+            date4="28-12-2021"
+            date5="04-01-2022"
+            COVID1=836
+            COVID2=547
+            COVID3=320
+            COVID4=289
+            COVID5=455
+
+            try:
+                graph_dict = {}
+                db = shelve.open('user', 'c')
+                try:
+                    if 'graph' in db:
+                        graph_dict = db['graph']
+                    else:
+                        db['graph'] = graph_dict
+                except:
+                    print("Error in retrieving")
+
+                db.close()
+                graph_list = []
+                print('try1')
+
+
+                for key in graph_dict:
+
+                    print('try2')
+                    graph = graph_dict.get(key)
+                    graph_list.append(graph)
+                    for graph in graph_list:
+                        print("try3")
+                        test= graph.get_COVID1
+                        test2 = graph.get_DATE1
+                        date1= graph.get_DATE1()
+                        date2= graph.get_DATE2()
+                        date3= graph.get_DATE3()
+                        date4= graph.get_DATE4()
+                        date5= graph.get_DATE5()
+                        COVID1= graph.get_COVID1()
+                        COVID2= graph.get_COVID2()
+                        COVID3= graph.get_COVID3()
+                        COVID4= graph.get_COVID4()
+                        COVID5= graph.get_COVID5()
+                        COVID5=int(COVID5)
+                        COVID4=int(COVID4)
+                        COVID3=int(COVID3)
+                        COVID2=int(COVID2)
+                        COVID1=int(COVID1)
+                        print("SHOULD WORK")
+            except:
+                date1="5-12-2022"
+                date2="13-12-2022"
+                date3="21-12-2021"
+                date4="28-12-2021"
+                date5="04-01-2022"
+                COVID1=836
+                COVID2=547
+                COVID3=320
+                COVID4=289
+                COVID5=455
+
+
+            data=[
+                (date1,COVID1),
+                (date2,COVID2),
+                (date3,COVID3),
+                (date4,COVID4),
+                (date5,COVID5),
+                ]
+
+            labels = [row[0] for row in data]
+            values = [row[1] for row in data]
+            return render_template('user/guest/xuzhi/News_admin.html', labels=labels, values=values, staff = name)
+        else:
+            session.clear()
+            return redirect(url_for('login'))
+    
+    else:
+        date1="5-12-2022"
+        date2="13-12-2022"
+        date3="21-12-2021"
+        date4="28-12-2021"
+        date5="04-01-2022"
+        COVID1=836
+        COVID2=547
+        COVID3=320
+        COVID4=289
+        COVID5=455
+
+        try:
+            graph_dict = {}
+            db = shelve.open('user', 'c')
+            try:
+                if 'graph' in db:
+                    graph_dict = db['graph']
+                else:
+                    db['graph'] = graph_dict
+            except:
+                print("Error in retrieving")
+
+            db.close()
+            graph_list = []
+            print('try1')
+
+
+            for key in graph_dict:
+
+                print('try2')
+                graph = graph_dict.get(key)
+                graph_list.append(graph)
+                for graph in graph_list:
+                    print("try3")
+                    test= graph.get_COVID1
+                    test2 = graph.get_DATE1
+                    date1= graph.get_DATE1()
+                    date2= graph.get_DATE2()
+                    date3= graph.get_DATE3()
+                    date4= graph.get_DATE4()
+                    date5= graph.get_DATE5()
+                    COVID1= graph.get_COVID1()
+                    COVID2= graph.get_COVID2()
+                    COVID3= graph.get_COVID3()
+                    COVID4= graph.get_COVID4()
+                    COVID5= graph.get_COVID5()
+                    COVID5=int(COVID5)
+                    COVID4=int(COVID4)
+                    COVID3=int(COVID3)
+                    COVID2=int(COVID2)
+                    COVID1=int(COVID1)
+                    print("SHOULD WORK")
+        except:
+            date1="5-12-2022"
+            date2="13-12-2022"
+            date3="21-12-2021"
+            date4="28-12-2021"
+            date5="04-01-2022"
+            COVID1=836
+            COVID2=547
+            COVID3=320
+            COVID4=289
+            COVID5=455
+
+
+        data=[
+            (date1,COVID1),
+            (date2,COVID2),
+            (date3,COVID3),
+            (date4,COVID4),
+            (date5,COVID5),
+            ]
+
+        labels = [row[0] for row in data]
+        values = [row[1] for row in data]
+        return render_template('user/guest/xuzhi/News.html', labels=labels, values=values)
 
 @app.route('/resetdb')
 def resetdb():
