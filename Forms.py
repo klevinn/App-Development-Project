@@ -85,6 +85,8 @@ class CreateProduct(Form):
     stock = IntegerField("Stock:", [validators.DataRequired()])
     picture = FileField('Upload Product Picture', validators=[FileAllowed(['jpg', 'jpeg', 'png'])])
 
+class Filter(Form):
+    pass
 
 #Done By xuzhi
 class CreateForm(Form):
