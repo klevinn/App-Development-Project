@@ -2941,30 +2941,57 @@ def createV1():
 @app.route("/Graphform",methods=['GET', 'POST'] )
 def Graphform():
 
-    graphform = Forms.Graph(request.form)
-    if request.method == 'POST' and graphform.validate():
+
+      graphform = Graph(request.form)
+      if request.method == 'POST':
+
         graphdict = {}
-        db = shelve.open('graph.db', 'c')
+        db = shelve.open('graph.db', 'w')
 
         try:
-            graphdict = db['Graph']
+            graphdict = db['graph']
         except:
-            print("Error in retrieving Customers from customer.db.")
+            print("Error in retrieving Graph from graph.db.")
 
-
-
-        graphD = Forms.Graph(graphform.DATE1.data, graphform.DATE2.data, graphform.DATE3.data, graphform.DATE4.data,
+        graphD = graph(graphform.DATE1.data, graphform.DATE2.data, graphform.DATE3.data, graphform.DATE4.data,
                                    graphform.DATE5.data, graphform.COVID1.data, graphform.COVID2.data, graphform.COVID3.data,
                                    graphform.COVID4.data, graphform.COVID5.data
 
                                          )
+        print(graphform.DATE1.data)
         graphdict[graphD.get_graph_id()] = graphD
-        db['Graph'] = graphdict
+        db['graph'] = graphdict
 
         db.close()
+        return redirect(url_for("News"))
 
-        return redirect(url_for('News'))
-    return render_template('user/guest/xuzhi/Graphform.html', form=graphform)
+
+ 
+
+
+      else:
+
+
+        users_dict = {}
+        customers_dict = {}
+        db = shelve.open('graph.db', 'r')
+        graph_dict = db['graph']
+        db.close()
+        customers_list = []
+        for key in graph_dict:
+
+            graphfill = graph_dict.get(key)
+            graphform.DATE1.data = graphfill.get_DATE1()
+            graphform.DATE2.data = graphfill.get_DATE2()
+            graphform.DATE3.data = graphfill.get_DATE3()
+            graphform.DATE4.data = graphfill.get_DATE4()
+            graphform.DATE5.data = graphfill.get_DATE5()
+            graphform.COVID1.data = graphfill.get_COVID1()
+            graphform.COVID2.data = graphfill.get_COVID2()
+            graphform.COVID3.data = graphfill.get_COVID3()
+            graphform.COVID4.data = graphfill.get_COVID4()
+            graphform.COVID5.data = graphfill.get_COVID5()
+        return render_template('user/guest/xuzhi/Graphform.html', form=graphform)
 
 
 
@@ -2974,61 +3001,45 @@ def News():
 
 
 
+
+
     try:
       graph_dict = {}
-      db = shelve.open('graph.db', 'c')
-      graph_dict = db['Graph']
+      db = shelve.open('graph.db', 'r')
+      graph_dict = db['graph']
       db.close()
       graph_list = []
-      try:
-
-        db = shelve.open('graph.db', 'r')
-        graph_dict = db['Graph']
-        db.close()
-
-        graph = graph_dict.get(id)
-        graph.DATE1.data = user.get_DATE1()
-        graph.DATE2.data = user.get_DATE2()
-        graph.DATE3.data = user.get_DATE3()
-        graph.DATE4.data = user.get_DATE4()
-        graph.DATE5.data = user.get_DATE5()
-        graph.COVID1.data = user.get_COVID1()
-        graph.COVID2.data = user.get_COVID2()
-        graph.COVID3.data = user.get_COVID3()
-        graph.COVID4.data = user.get_COVID4()
-        graph.COVID5.data = user.get_COVID5()
+      print('try1')
 
 
 
 
-      except:
-       for key in graph_dict:
+
+      for key in graph_dict:
+
+         print('try2')
          graph = graph_dict.get(key)
          graph_list.append(graph)
          for graph in graph_list:
+             print("try3")
+             test= graph.get_COVID1
+             test2 = graph.get_DATE1
              date1= graph.get_DATE1()
              date2= graph.get_DATE2()
              date3= graph.get_DATE3()
              date4= graph.get_DATE4()
              date5= graph.get_DATE5()
-             COVID1= graph.get_DATE1()
-             COVID2= graph.get_DATE2()
-             COVID3= graph.get_DATE3()
-             COVID4= graph.get_DATE4()
-             COVID5= graph.get_DATE5()
-             data=[
-                (date1,COVID1),
-                (date2,COVID2),
-                (date3,COVID3),
-                (date4,COVID4),
-                (date5,COVID5),
-
-
-               ]
-
-             labels = [row[0] for row in data]
-             values = [row[1] for row in data]
-             return render_template('user/guest/xuzhi/News.html', labels=labels, values=values)
+             COVID1= graph.get_COVID1()
+             COVID2= graph.get_COVID2()
+             COVID3= graph.get_COVID3()
+             COVID4= graph.get_COVID4()
+             COVID5= graph.get_COVID5()
+             COVID5=int(COVID5)
+             COVID4=int(COVID4)
+             COVID3=int(COVID3)
+             COVID2=int(COVID2)
+             COVID1=int(COVID1)
+             print("SHOULD WORK")
     except:
       date1="5-12-2022"
       date2="13-12-2022"
@@ -3040,7 +3051,9 @@ def News():
       COVID3=320
       COVID4=289
       COVID5=455
-      data=[
+
+
+    data=[
         (date1,COVID1),
         (date2,COVID2),
         (date3,COVID3),
@@ -3048,9 +3061,9 @@ def News():
         (date5,COVID5),
         ]
 
-      labels = [row[0] for row in data]
-      values = [row[1] for row in data]
-      return render_template('News.html', labels=labels, values=values)
+    labels = [row[0] for row in data]
+    values = [row[1] for row in data]
+    return render_template('user/guest/xuzhi/News.html', labels=labels, values=values)
 
 @app.route('/resetdb')
 def resetdb():
