@@ -6,7 +6,7 @@ from flask import Flask
 from flask_bootstrap import Bootstrap
 from wtforms.fields.html5 import DateField
 from flask_wtf import Form
-from wtforms import TextField, BooleanField, PasswordField, TextAreaField, validators
+from wtforms import TextField, BooleanField, PasswordField, TextAreaField, validators, DecimalField
 from wtforms.validators import ValidationError
 from wtforms.fields import DateField
 from wtforms_components import DateRange
@@ -32,16 +32,16 @@ class CreateForm(Form):
     doc=RadioField('Choice of doctor', choices=[('T', 'Dr Tan'), ('M', 'Dr Mok'), ('L', 'Dr Lim')], default='T')
 
 class Graph(Form):
-    DATE1 = StringField('DATE1:', [validators.Length(min=1, max=150), validators.DataRequired(), ])
-    DATE2 = StringField('DATE2:', [validators.Length(min=1, max=150), validators.DataRequired(), ])
-    DATE3 = StringField('DATE3:', [validators.Length(min=1, max=150), validators.DataRequired(), ])
-    DATE4 = StringField('DATE4:', [validators.Length(min=1, max=150), validators.DataRequired(), ])
-    DATE5 = StringField('DATE5:', [validators.Length(min=1, max=150), validators.DataRequired(), ])
-    COVID1 = StringField('COVID1:', [validators.Length(min=1, max=150), validators.DataRequired(), ])
-    COVID2 = StringField('COVID2:', [validators.Length(min=1, max=150), validators.DataRequired(), ])
-    COVID3 = StringField('COVID3:', [validators.Length(min=1, max=150), validators.DataRequired(), ])
-    COVID4 = StringField('COVID4:', [validators.Length(min=1, max=150), validators.DataRequired(), ])
-    COVID5 = StringField('COVID5:', [validators.Length(min=1, max=150), validators.DataRequired(), ])
+    DATE1 = DateField('Date 1: ', format='%Y-%m-%d')
+    DATE2 = DateField('Date 2: ', format='%Y-%m-%d')
+    DATE3 = DateField('Date 3: ', format='%Y-%m-%d')
+    DATE4 = DateField('Date 4: ', format='%Y-%m-%d')
+    DATE5 = DateField('Date 5: ', format='%Y-%m-%d')
+    COVID1 = DecimalField('DATE1 Cases:', [validators.Length(min=1), validators.DataRequired(), ])
+    COVID2 = DecimalField('DATE2 Cases:', [validators.Length(min=1), validators.DataRequired(), ])
+    COVID3 = DecimalField('DATE3 Cases:', [validators.Length(min=1), validators.DataRequired(), ])
+    COVID4 = DecimalField('DATE4 Cases:', [validators.Length(min=1), validators.DataRequired(), ])
+    COVID5 = DecimalField('DATE5 Cases:', [validators.Length(min=1), validators.DataRequired(), ])
 
 
 

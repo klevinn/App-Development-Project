@@ -31,7 +31,7 @@ Modules Used:
             from src import Avatar
         </ul>
     </li>
-    <li>SQLAcademy</li>
+    <li>SQLAcademy (pip install flask-sqlalchemy)</li>
     <li>dash</li>
 </ol>
 
