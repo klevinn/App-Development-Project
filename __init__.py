@@ -2568,11 +2568,41 @@ def New19():
 
 @app.route('/consultatioPg1')
 def consultatioPg1():
-    if "user" or "staff" in session:
-        return render_template('user/guest/xuzhi/consultatioPg1.html')
+    if "user" in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
+
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+        
+
+        UserName =  get_user_name(idNumber, users_dict)
+        av = users_dict[idNumber].get_profile_pic()
+        valid_session = validate_session(idNumber, users_dict)
+        db.close()
+        if valid_session:
+            return render_template('user/guest/xuzhi/consultatioPg1_user.html', user = UserName, av=av)
+        else:
+            session.clear()
+            return redirect(url_for('login'))
+    elif "staff" in session:
+        StaffName = session["staff"]
+        valid_session, name = validate_session_open_file_admin(StaffName)
+        if valid_session:
+            return render_template('user/guest/xuzhi/consultatioPg1_admin.html', staff = name)
+        else:
+            session.clear()
+            return redirect(url_for('login'))
     else:
-        #Should redirect to a page that can be used
-        return redirect(url_for('login'))
+        return render_template('user/guest/xuzhi/consultatioPg1.html')
+
+
 
 """
 @app.route('/createConsultation', methods=['GET', 'POST'])
@@ -2673,6 +2703,7 @@ def create_consultation():
             session.clear()
             return redirect(url_for('home'))
     else:
+        #should redirect back to the consultation page and state that you need to login to create an appointment
         return redirect(url_for('login'))
 
 

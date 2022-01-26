@@ -1,4 +1,4 @@
-{% extends "user_base.html" %}
+{% extends "default_base.html" %}
 {% block title %} Main consultation{% endblock %}
 {% from "includes/_formHelper.html" import render_field %}
 
@@ -142,7 +142,7 @@ padding:10px;
 <div class="content">
   <p>Here's some infographic about Fever</p>
 
-    <img src="{{url_for('static', filename='cold-flu-or-covid-infographic.jpg')}}"  style="width:67%">
+    <img src="{{url_for('static', filename='images/xuzhi/cold-flu-or-covid-infographic.jpg')}}"  style="width:67%">
 
 
 
@@ -151,7 +151,7 @@ padding:10px;
 <div class="dropdown">
 <button type="button" class="collapsible">Sore throat</button>
 <div class="content">
-    <img src="{{url_for('static', filename='eob-strep-updated.png')}}"  style="width:50%">
+    <img src="{{url_for('static', filename='images/xuzhi/eob-strep-updated.png')}}"  style="width:50%">
   <p>Lorem ipsum...</p>
 </div>
 </div>
