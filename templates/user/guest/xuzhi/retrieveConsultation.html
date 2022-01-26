@@ -1,4 +1,4 @@
-{% extends "default_base.html" %}
+{% extends "user_base.html" %}
 {% block title %}Doctor on the go - Retrieve Customers{% endblock %}
 
 {% block content %}
@@ -8,11 +8,11 @@
 
   <div>
     {% if count == 0 %}
-    <p>There are no appointments.</p>
+    <p>You Have no appointments.</p>
     {% elif count == 1 %}
-    <p>There is 1 appointment.</p>
+    <p>You have 1 appointment.</p>
     {% else %}
-    <p>There are {{ count }} appointments.</p>
+    <p>You have {{ count }} appointments.</p>
     {% endif %}
   </div>
 
@@ -82,7 +82,7 @@
           {% endif %}
           <td>{{ customer.get_remarks() }}</td>
 
-          <td><a href="/updateConsultation/{{customer.get_user_id()}}" class="btn btn-warning">Update</a></td>
+          <td><a href="/updateConsultation/{{customer.get_consult()}}" class="btn btn-warning">Update</a></td>
           <td>
 
 
@@ -90,14 +90,14 @@
 
 
 
-            <form action="{{url_for('delete_consultation', id=customer.get_customer_id())}}" method="POST">
+            <form action="{{url_for('delete_consultation', id=customer.get_consult())}}" method="POST">
               <!--<input type="submit" value="Delete" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete {{customer.get_first_name()}} {{customer.get_last_name()}}?');">-->
               <!-- Button to Open the Modal -->
               <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                data-bs-target="#myModal_{{customer.get_customer_id()}}">
+                data-bs-target="#myModal_{{customer.get_consult()}}">
                 Delete
               </button>
-              <div class="modal" id="myModal_{{customer.get_customer_id()}}">
+              <div class="modal" id="myModal_{{customer.get_consult()}}">
                 <div class="modal-dialog">
                   <div class="modal-content">
 

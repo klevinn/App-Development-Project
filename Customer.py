@@ -7,6 +7,7 @@ class Customer(User):
         self.__session_id = ''
         self.__date = ''
         self.__docter = ''
+        self.__consult_id = ''
 
     def set_us(self, use):
         self.__session_id=use
@@ -20,6 +21,10 @@ class Customer(User):
         self.__docter=doc
     def get_doc(self):
         return self.__docter
+    def set_consult(self, conslt):
+        self.__consult_id = conslt
+    def get_consult(self):
+        return self.__consult_id
     
 
 

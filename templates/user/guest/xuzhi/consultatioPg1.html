@@ -1,4 +1,4 @@
-{% extends "default_base.html" %}
+{% extends "user_base.html" %}
 {% block title %} Main consultation{% endblock %}
 {% from "includes/_formHelper.html" import render_field %}
 
@@ -167,7 +167,7 @@ padding:10px;
 <h2> Unable to find what you need? Make an appointment with one of our doctors. </h2>
 <div class="con">
 <div class="mid">
- <a class="nav-link" href="/viewandchose">
+ <a class="nav-link" href="/retrieveConsultation">
 <! ideally u want a login verification here but idk how. TBD !>
  <button type="button" class="but"> Find an appointment </button>
 

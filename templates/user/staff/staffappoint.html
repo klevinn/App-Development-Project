@@ -79,23 +79,31 @@
                   <td style="font-weight: bold;">User ID</td>
                   <td style="font-weight: bold;">First Name</td>
                   <td style="font-weight: bold;">Last Name</td>
+                  <td style="font-weight: bold;">Gender</td>
                 </thead>
                 <tbody>
                   <td style="font-weight: bold;">{{ con.get_us() }}</td>
                   <td style="font-weight: bold;">{{ con.get_first_name() }}</td>
                   <td style="font-weight: bold;">{{ con.get_last_name() }}</td>
+                  <td style="font-weight: bold;">{{ con.get_gender() }}</td>
                   <tr>
                     <td colspan="4">
                       <table class="table mb-0">
                         <thead>
-                          <td>Gender</td>
                           <td>Email</td>
                           <td>Date of appointment</td>
+                          <td>Zoom Link</td>
                         </thead>
                         <tbody>
-                          <td>{{ con.get_gender() }}</td>
                           <td>{{ con.get_email() }}</td>
                           <td>{{ con.get_date() }}</td>
+                          {% if con.get_doc() == "T"%}
+                          <td> Zoom Link</td>
+                          {% elif con.get_doc() == "M" %}        
+                          <td>Zoom Link</td>
+                          {% elif con.get_doc() == "L" %}
+                          <td>Zoom link</td>
+                          {% endif %}
                         </tbody>
                       </table>
                     </td>
@@ -105,7 +113,6 @@
                       <table class="table mb-0">
                         <thead>
                           <td>Doctor of choice</td>
-                          <td>Zoom Link</td>
                           <td>Remarks</td>
                         </thead>
                         <tbody>
@@ -115,14 +122,6 @@
                           <td>Dr Mok</td>
                           {% elif con.get_doc() == "L" %}
                           <td>Dr Lim</td>
-                          {% endif %}
-
-                          {% if con.get_doc() == "T"%}
-                          <td> Zoom Link</td>
-                          {% elif con.get_doc() == "M" %}        
-                          <td>Zoom Link</td>
-                          {% elif con.get_doc() == "L" %}
-                          <td>Zoom link</td>
                           {% endif %}
                           <td>{{ con.get_remarks() }}</td>
                         </tbody>
@@ -135,8 +134,6 @@
             <div class="row">
               <div class="col">
                 <form action="{{url_for('delete_consultation', id=con.get_us())}}" method="POST">
-                  <!--<input type="submit" value="Delete" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete {{customer.get_first_name()}} {{customer.get_last_name()}}?');">-->
-                  <!-- Button to Open the Modal -->
                   <button type="button" class="btn btn-danger" data-bs-toggle="modal"
                     data-bs-target="#myModal_{{con.get_us()}}">
                     Delete

@@ -114,12 +114,13 @@ def home():
             print("Error in retrieving User from staff.db")
         
         UserName = get_user_name(idNumber, users_dict)
+        av = users_dict[idNumber].get_profile_pic()
         valid_session = validate_session(idNumber, users_dict)
 
         db.close()
         if valid_session:
             print("%s is entering and his session is Valid" %(UserName))
-            return render_template('user_home.html' , user = UserName)
+            return render_template('user_home.html' , user = UserName, av=av)
         else:
             session.clear()
             print("Invalid Session")
@@ -330,6 +331,8 @@ def signup():
                         #print(str(user.get_user_id()) + "Hello1")
 
                 print(user.get_user_id(),  "was the next available user id.")
+                av = Avatar(type="pixel-art-neutral", seed=usernameInput)
+                user.set_profile_pic(av)
                 userDict[user.get_user_id()] = user
                 db["Users"] = userDict
                 db.close()
@@ -512,14 +515,14 @@ def signupC():
             print("Error in retrieving User from staff.db")
         
         UserName =  get_user_name(idNumber, users_dict)
-        
+        av = users_dict[idNumber].get_profile_pic()
         valid_session = validate_session(idNumber, users_dict)
 
         db.close()
 
         if valid_session:
             session.pop('Customer',None)
-            return render_template('user/guest/signupcomplete.html' , user = UserName)
+            return render_template('user/guest/signupcomplete.html' , user = UserName, av=av)
         else:
             session.clear()
             return redirect(url_for('home'))
@@ -752,6 +755,7 @@ def user():
 
         changed = False
         change = ''
+        av = ''
 
         if valid_session:
             user_list = []
@@ -760,6 +764,7 @@ def user():
                     user = users_dict.get(key)
                     user_list.append(user)
                     name = user.get_username()
+                    av = user.get_profile_pic()
                     print(user.get_verified())
                     break
             
@@ -769,8 +774,6 @@ def user():
                 print(change)
                 session.pop('change')
             
-            av = Avatar(type="pixel-art-neutral", seed=name)
-            users_dict[userid].set_profile_pic(av)
             db['Users'] = users_dict
             db.close()
 
@@ -2439,7 +2442,11 @@ def New19():
 
 @app.route('/consultatioPg1')
 def consultatioPg1():
-    return render_template('user/guest/xuzhi/consultatioPg1.html')
+    if "user" or "staff" in session:
+        return render_template('user/guest/xuzhi/consultatioPg1.html')
+    else:
+        #Should redirect to a page that can be used
+        return redirect(url_for('login'))
 
 """
 @app.route('/createConsultation', methods=['GET', 'POST'])
@@ -2496,14 +2503,77 @@ def create_consultation():
         
 
         UserName =  get_user_name(idNumber, users_dict)
+        av = users_dict[idNumber].get_profile_pic()
+        valid_session = validate_session(idNumber, users_dict)
+        db.close()
+        if valid_session:
+            create_customer_form = Forms.CreateForm(request.form)
+            if request.method == 'POST' and create_customer_form.validate():
+                customers_dict = {}
+                db = shelve.open('user', 'c')
+
+                try:
+                    if 'Customers' in db:
+                        customers_dict = db['Customers']
+                    else:
+                        db['Customers'] = customers_dict
+                except:
+                    print("Error in retrieving Customers from customer.db.")
+
+                #Remake Class File as dont need email username n input
+                consultation = Customer.Customer()
+                consultation.set_first_name(create_customer_form.first_name.data)
+                consultation.set_last_name(create_customer_form.last_name.data)
+                consultation.set_gender(create_customer_form.gender.data)
+                consultation.set_remarks(create_customer_form.remarks.data)
+                consultation.set_email(create_customer_form.email.data)
+                consultation.set_date(create_customer_form.date_joined.data)
+                consultation.set_doc(create_customer_form.doc.data)
+                consultation.set_us(idNumber)
+
+                AppFB = generate_feedback_id()
+                consultation.set_consult(AppFB)
+
+                customers_dict[AppFB] = consultation
+
+                db['Customers'] = customers_dict
+
+                db.close()
+
+                return redirect(url_for('retrieve_consultation'))
+            else:
+                return render_template('user/guest/xuzhi/createConsultation.html', form=create_customer_form, user = UserName, av=av)
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+    else:
+        return redirect(url_for('login'))
+
+
+@app.route('/retrieveConsultation')
+def retrieve_consultation():
+    if 'user'in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
+
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+        
+
+        UserName =  get_user_name(idNumber, users_dict)
+        av = users_dict[idNumber].get_profile_pic()
         valid_session = validate_session(idNumber, users_dict)
         db.close()
 
-        create_customer_form = Forms.CreateForm(request.form)
-        if request.method == 'POST' and create_customer_form.validate():
+        if valid_session:
             customers_dict = {}
             db = shelve.open('user', 'c')
-
             try:
                 if 'Customers' in db:
                     customers_dict = db['Customers']
@@ -2512,61 +2582,29 @@ def create_consultation():
             except:
                 print("Error in retrieving Customers from customer.db.")
 
-            #Remake Class File as dont need email username n input
-            consultation = Customer.Customer()
-            consultation.set_first_name(create_customer_form.first_name.data)
-            consultation.set_last_name(create_customer_form.last_name.data)
-            consultation.set_gender(create_customer_form.gender.data)
-            consultation.set_remarks(create_customer_form.remarks.data)
-            consultation.set_email(create_customer_form.email.data)
-            consultation.set_date(create_customer_form.date_joined.data)
-            consultation.set_doc(create_customer_form.doc.data)
-            consultation.set_us(idNumber)
-
-            AppFB = generate_feedback_id()
-            customers_dict[AppFB] = consultation
-
-            db['Customers'] = customers_dict
-
             db.close()
-
-            return redirect(url_for('retrieve_consultation'))
-        return render_template('user/guest/xuzhi/createConsultation.html', form=create_customer_form)
-    else:
-        return redirect(url_for('login'))
-
-
-@app.route('/retrieveConsultation')
-def retrieve_consultation():
-    if 'user'in session:
-        customers_dict = {}
-        db = shelve.open('user', 'c')
-        try:
-            if 'Customers' in db:
-                customers_dict = db['Customers']
-            else:
-                db['Customers'] = customers_dict
-        except:
-            print("Error in retrieving Customers from customer.db.")
-
-        db.close()
-        
-        customers_list = []
-        var = session["user"]
-        print(var)
-        for key in customers_dict:
-            customer = customers_dict.get(key)
-            customers_list.append(customer)
-        """
-        for customer in customers_list:
-            bonk = customer.get_us()
-            bonk = str(bonk)
-            print("The id is" + bonk)
-        """
+            
+            customers_list = []
+            var = session["user"]
+            print(var)
+            for key in customers_dict:
+                customer = customers_dict.get(key)
+                print(customer)
+                print(customer.get_us())
+                print(customer.get_consult())
+                customers_list.append(customer)
+            """
+            for customer in customers_list:
+                bonk = customer.get_us()
+                bonk = str(bonk)
+                print("The id is" + bonk)
+            """
 
 
-        return render_template('user/guest/xuzhi/retrieveConsultation.html', count=len(customers_list), customers_list=customers_list, var = var)
-
+            return render_template('user/guest/xuzhi/retrieveConsultation.html', count=len(customers_list), customers_list=customers_list, var = var, user = UserName, av=av)
+        else:
+            session.clear()
+            return redirect(url_for('home'))
     else:
         #Should redirect to a page notifying you cannot set appointment without logging in
         return redirect(url_for('login'))
@@ -2978,6 +3016,13 @@ def News():
       labels = [row[0] for row in data]
       values = [row[1] for row in data]
       return render_template('News.html', labels=labels, values=values)
+
+@app.route('/resetdb')
+def resetdb():
+    customer_dict = {}
+    db = shelve.open('user', 'c')
+    db['Customers'] = customer_dict
+    return redirect(url_for('home'))
 
 if __name__ == '__main__':
     j_db.create_all
