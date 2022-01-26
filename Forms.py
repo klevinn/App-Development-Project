@@ -100,18 +100,16 @@ class CreateForm(Form):
     doc=RadioField('Choice of doctor', choices=[('T', 'Dr Tan'), ('M', 'Dr Mok'), ('L', 'Dr Lim')], default='T')
 
 class Graph(Form):
-    DATE1 = DateField('Date 1: ', format='%Y-%m-%d')
-    DATE2 = DateField('Date 2: ', format='%Y-%m-%d')
-    DATE3 = DateField('Date 3: ', format='%Y-%m-%d')
-    DATE4 = DateField('Date 4: ', format='%Y-%m-%d')
-    DATE5 = DateField('Date 5: ', format='%Y-%m-%d')
+    DATE1 = StringField('Date 1:', [validators.Length(min=1, max=2000), validators.DataRequired()])
+    DATE2 = StringField('Date 2:', [validators.Length(min=1, max=2000), validators.DataRequired()])
+    DATE3 = StringField('Date 3:', [validators.Length(min=1, max=2000), validators.DataRequired()])
+    DATE4 = StringField('Date 4:', [validators.Length(min=1, max=2000), validators.DataRequired()])
+    DATE5 = StringField('Date 5:', [validators.Length(min=1, max=2000), validators.DataRequired()])
     COVID1 = DecimalField('DATE1 Cases:', [validators.Length(min=1), validators.DataRequired(), ])
     COVID2 = DecimalField('DATE2 Cases:', [validators.Length(min=1), validators.DataRequired(), ])
     COVID3 = DecimalField('DATE3 Cases:', [validators.Length(min=1), validators.DataRequired(), ])
     COVID4 = DecimalField('DATE4 Cases:', [validators.Length(min=1), validators.DataRequired(), ])
     COVID5 = DecimalField('DATE5 Cases:', [validators.Length(min=1), validators.DataRequired(), ])
-
-
 
 
 
