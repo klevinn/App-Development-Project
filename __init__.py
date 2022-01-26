@@ -313,7 +313,10 @@ def signup():
             
             if (matched_pw == False) and (duplicated_email == False) and (duplicated_username == False) and (check_ban != True):
                 print("Account Made!, Creating USER ID")
-                user = User.User(usernameInput, emailInput, pw_hash)
+                user = User.User()
+                user.set_username(usernameInput)
+                user.set_email(emailInput)
+                user.set_password(passwordInput)
                 print(user.get_user_id())
                 for key in userDict:
                     useridshelve = userDict[key].get_user_id()
@@ -1761,7 +1764,10 @@ def staffadd():
                     #user.set_staff_id(staff_id)
 
                 
-                    user = Staff.Staff(nameInput, emailInput, 'Staff1234')
+                    user = Staff.Staff()
+                    user.set_username(nameInput)
+                    user.set_email(emailInput)
+                    user.set_password('Staff1234')
                     for key in userDict:
                         #To assign Staff ID, ensure that it is persistent and is accurate to the list
                         staffidshelve = userDict[key].get_staff_id()
@@ -2407,6 +2413,7 @@ def create_consultation():
     return render_template('user/guest/xuzhi/createConsultation.html', form=create_customer_form)
 
 """
+#Attribute Errors
 @app.route('/createConsultation', methods=['GET', 'POST'])
 def create_consultation():
     if 'user' in session:
@@ -2442,7 +2449,6 @@ def create_consultation():
 
             #Remake Class File as dont need email username n input
             consultation = Customer.Customer()
-
             consultation.set_first_name(create_customer_form.first_name.data)
             consultation.set_last_name(create_customer_form.last_name.data)
             consultation.set_gender(create_customer_form.gender.data)
@@ -2453,7 +2459,6 @@ def create_consultation():
             consultation.set_us(idNumber)
 
             AppFB = generate_feedback_id()
-
             customers_dict[AppFB] = consultation
 
             db['Customers'] = customers_dict
@@ -2462,7 +2467,8 @@ def create_consultation():
 
             return redirect(url_for('retrieve_consultation'))
         return render_template('user/guest/xuzhi/createConsultation.html', form=create_customer_form)
-
+    else:
+        return redirect(url_for('login'))
 
 
 @app.route('/retrieveConsultation')

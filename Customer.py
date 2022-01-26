@@ -4,21 +4,14 @@ from User import User
 class Customer(User):
     def __init__(self):
         super().__init__()
-        Customer.count_id += 1
-        self.user = ''
-        self.__customer =Customer.count_id
-        self.__email = ''
+        self.__session_id = ''
         self.__date = ''
         self.__docter = ''
 
     def set_us(self, use):
-        self.user=use
+        self.__session_id=use
     def get_us(self):
-        return self.user
-    def set_customer_id(self, customer_id):
-        self.__customer_id=customer_id
-    def get_customer_id(self):
-        return self.__customer
+        return self.__session_id
     def set_date(self,date):
         self.__date=date
     def get_date(self):
@@ -27,4 +20,6 @@ class Customer(User):
         self.__docter=doc
     def get_doc(self):
         return self.__docter
+    
+
 

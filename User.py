@@ -7,8 +7,8 @@ from Person import Person
 
 class User(Person):
 
-    def __init__(self, username, email, password):
-        super().__init__(username, email, password)
+    def __init__(self):
+        super().__init__()
         user_id = 0
         user_id += 1
         self.__user_id = user_id

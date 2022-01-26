@@ -5,10 +5,10 @@ import random
 
 class Person:
 
-    def __init__(self, username, email, password):
-        self.__username = username
-        self.__email = email
-        self.__password = password
+    def __init__(self):
+        self.__username = ''
+        self.__email = ''
+        self.__password = ''
         self.__first_name = ''
         self.__last_name = ''
         self.__gender = ''
