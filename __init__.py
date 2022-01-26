@@ -2204,17 +2204,81 @@ def view_product():
 
     return render_template('user/guest/joshua/GuestStore/view_product.html', products=products)
 
+"""
+
+    if "user" in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
+
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+            
+        UserName =  get_user_name(idNumber, users_dict)
+            
+        valid_session = validate_session(idNumber, users_dict)
+
+        db.close()
+
+        if valid_session:
+            pass
+
+        else:
+            session.clear()
+            return redirect(url_for("home"))
+
+    else:
+        return redirect(url_for("login"))  
+
+
+
+
+    if "staff" in session:
+        StaffName = session["staff"]
+        valid_session, name = validate_session_open_file_admin(StaffName)
+
+        userDict = {}
+        db = shelve.open('user', 'c')
+        try:
+            if 'Users' in db:
+                userDict = db['Users']
+            else:
+                db['Users']= userDict
+        except:
+            print("Error in retrieving Users from feedback db")
+        
+        db.close()
+
+        if valid_session:
+            pass
+        else:
+            session.clear()
+            return redirect(url_for("home"))
+    else:
+        return redirect(url_for("login"))
+
+"""
+
 # function to save picture (does not work)
 def save_picture(form_picture):
-    #random_hex = secrets.token_hex(8)
+    PRODUCTPIC_UPLOAD_PATH = 'static/images/productpics'
+    app.config['UPLOAD_FOLDER'] = PRODUCTPIC_UPLOAD_PATH
+
     f_name, f_ext = os.path.splitext(form_picture.filename)
     picture_filename = f_name + f_ext
-    picture_path = os.path.join(app.root_path, 'static/images/productpics', picture_filename)
-    form_picture.save(picture_path)
+    #picture_path = os.path.join(app.root_path, 'static/images/productpics', picture_filename)
+    #form_picture.save(picture_path)
+
+    form_picture.save(os.path.join(app.config['UPLOAD_FOLDER'], picture_filename))
 
     return picture_filename
 
-# crud for products (with authentication for logged in for now)
+# crud for products (with authentication)
 @app.route('/create_product', methods=["GET", "POST"])
 def create_product():
     if "staff" in session:
@@ -2236,6 +2300,7 @@ def create_product():
         if valid_session:
             create_product_form = Forms.CreateProduct(request.form)
             if request.method == 'POST' and create_product_form.validate():
+                save_picture(create_product_form.picture.data)
                 product = Product(img_file_name = create_product_form.img_file_name.data, name = create_product_form.name.data, price = create_product_form.price.data, category = create_product_form.category.data, short_description = create_product_form.short_description.data, long_description = create_product_form.long_description.data)
                 j_db.session.add(product)
                 j_db.session.commit()
