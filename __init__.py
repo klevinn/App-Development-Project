@@ -2942,14 +2942,17 @@ def createV1():
 def Graphform():
 
 
-      graphform = Graph(request.form)
+      graphform = Forms.Graph(request.form)
       if request.method == 'POST':
 
         graphdict = {}
-        db = shelve.open('graph.db', 'w')
+        db = shelve.open('user', 'c')
 
         try:
-            graphdict = db['graph']
+            if 'graph' in db:
+                graphdict = db['graph']
+            else:
+                db['graph'] =graphdict
         except:
             print("Error in retrieving Graph from graph.db.")
 
@@ -2970,14 +2973,18 @@ def Graphform():
 
 
       else:
+        graph_dict = {}
+        db = shelve.open('user', 'c')
+        try:
+            if 'graph' in db:
+                graph_dict = db['graph']
+            else:
+                db['graph'] = graph_dict
+        except:
+            print("Error in retrieving")
 
-
-        users_dict = {}
-        customers_dict = {}
-        db = shelve.open('graph.db', 'r')
-        graph_dict = db['graph']
         db.close()
-        customers_list = []
+
         for key in graph_dict:
 
             graphfill = graph_dict.get(key)
@@ -3004,42 +3011,46 @@ def News():
 
 
     try:
-      graph_dict = {}
-      db = shelve.open('graph.db', 'r')
-      graph_dict = db['graph']
-      db.close()
-      graph_list = []
-      print('try1')
+        graph_dict = {}
+        db = shelve.open('user', 'c')
+        try:
+            if 'graph' in db:
+                graph_dict = db['graph']
+            else:
+                db['graph'] = graph_dict
+        except:
+            print("Error in retrieving")
+
+        db.close()
+        graph_list = []
+        print('try1')
 
 
+        for key in graph_dict:
 
-
-
-      for key in graph_dict:
-
-         print('try2')
-         graph = graph_dict.get(key)
-         graph_list.append(graph)
-         for graph in graph_list:
-             print("try3")
-             test= graph.get_COVID1
-             test2 = graph.get_DATE1
-             date1= graph.get_DATE1()
-             date2= graph.get_DATE2()
-             date3= graph.get_DATE3()
-             date4= graph.get_DATE4()
-             date5= graph.get_DATE5()
-             COVID1= graph.get_COVID1()
-             COVID2= graph.get_COVID2()
-             COVID3= graph.get_COVID3()
-             COVID4= graph.get_COVID4()
-             COVID5= graph.get_COVID5()
-             COVID5=int(COVID5)
-             COVID4=int(COVID4)
-             COVID3=int(COVID3)
-             COVID2=int(COVID2)
-             COVID1=int(COVID1)
-             print("SHOULD WORK")
+            print('try2')
+            graph = graph_dict.get(key)
+            graph_list.append(graph)
+            for graph in graph_list:
+                print("try3")
+                test= graph.get_COVID1
+                test2 = graph.get_DATE1
+                date1= graph.get_DATE1()
+                date2= graph.get_DATE2()
+                date3= graph.get_DATE3()
+                date4= graph.get_DATE4()
+                date5= graph.get_DATE5()
+                COVID1= graph.get_COVID1()
+                COVID2= graph.get_COVID2()
+                COVID3= graph.get_COVID3()
+                COVID4= graph.get_COVID4()
+                COVID5= graph.get_COVID5()
+                COVID5=int(COVID5)
+                COVID4=int(COVID4)
+                COVID3=int(COVID3)
+                COVID2=int(COVID2)
+                COVID1=int(COVID1)
+                print("SHOULD WORK")
     except:
       date1="5-12-2022"
       date2="13-12-2022"
