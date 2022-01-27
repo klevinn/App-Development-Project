@@ -99,8 +99,8 @@ class CategoryFilter(Form):
     apply_filters = SubmitField("Apply Filters")
 
 class PriceFilter(Form):
-    price_range_lower = FloatField("From($)", [validators.DataRequired()])
-    price_range_upper = FloatField("To($):", [validators.DataRequired()])
+    price_range_lower = FloatField("From($)", [validators.Optional()])
+    price_range_upper = FloatField("To($):", [validators.Optional()])
     apply_filters = SubmitField("Apply Filters")
 
 #Done By xuzhi

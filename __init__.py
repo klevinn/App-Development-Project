@@ -2232,7 +2232,10 @@ def search():
 
         # filter for price range
         if request.method == 'POST' and form2.validate():
-            products = Product.query.filter(form2.price_range_lower.data < Product.price, Product.price < form2.price_range_upper.data)
+            try:
+                products = Product.query.filter(form2.price_range_lower.data < Product.price, Product.price < form2.price_range_upper.data)
+            except:
+                products = products
 
         return render_template('user/guest/joshua/GuestStore/search.html', products=products, form = form, form2 = form2 )
 
