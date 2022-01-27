@@ -1,6 +1,7 @@
+
 {% extends "default_base.html" %}
 
-{# import "bootstrap/wtf.html" as wtf #}
+{% import "bootstrap/wtf.html" as wtf %}
 {% from "includes/_formHelper.html" import render_field %}
 {% block title %}Clinic - Update Graph{% endblock %}
 
@@ -12,60 +13,67 @@
 
 
 <style>
-  .text-primary {
 
-    display: inline;
-    position: relative;
+  .text-primary{
 
+  	display:inline;
+	position:relative;
+
+  }
+
+  *{
+
+  font-size:1.1em;
   }
 </style>
 
 
-<h1 class="display-4">Your appointment</h1>
+<h1 class="display-4">Update Graph</h1>
+<p>Note that Date 1 is the earliest.</p>
 <div class="container">
-  <form method="POST" action="">
-    <div class="text-primary">
+<form method="POST" action="">
+<div class="text-primary">
 
-      <div class="form-group">
+  <div class="form-group">
 
-        {{ render_field(form.DATE1, class="form-control") }}
+    {{ wtf.form_field(form.DATE1, class="form-control") }}
 
-      </div>
-    </div>
-    <div class="form-group">
-      {{ render_field(form.DATE2, class="form-control") }}
-    </div>
-    <div class="form-group">
-      {{ render_field(form.DATE3, class="form-control") }}
-    </div>
-    <div class="form-group">
-      {{ render_field(form.DATE4, class="form-control") }}
-    </div>
-    <div class="form-group">
-      {{ render_field(form.DATE5, class="form-control") }}
-    </div>
+  </div>
+</div>
+  <div class="form-group">
+    {{ wtf.form_field(form.DATE2, class="form-control datepicker") }}
+  </div>
+  <div class="form-group">
+    {{ wtf.form_field(form.DATE3, class="form-control datepicker") }}
+  </div>
+  <div class="form-group">
+    {{ wtf.form_field(form.DATE4, class="form-control datepicker") }}
+  </div>
+  <div class="form-group">
+    {{ wtf.form_field(form.DATE5, class="form-control datepicker") }}
+  </div>
 
-    <div class="form-group">
+  <div class="form-group">
 
-      {{ render_field(form.COVID1, class="form-control") }}
+    {{ wtf.form_field(form.COVID1, class="form-control") }}
 
-    </div>
-    <div class="form-group">
-      {{ render_field(form.COVID2, class="form-control") }}
-    </div>
-    <div class="form-group">
-      {{ render_field(form.COVID3, class="form-control") }}
-    </div>
-    <div class="form-group">
-      {{ render_field(form.COVID4, class="form-control") }}
-    </div>
-    <div class="form-group">
-      {{ render_field(form.COVID5, class="form-control") }}
-    </div>
+  </div>
+  <div class="form-group">
+    {{ wtf.form_field(form.COVID2, class="form-control") }}
+  </div>
+  <div class="form-group">
+    {{ wtf.form_field(form.COVID3, class="form-control") }}
+  </div>
+  <div class="form-group">
+    {{ wtf.form_field(form.COVID4, class="form-control") }}
+  </div>
+  <div class="form-group">
+    {{ wtf.form_field(form.COVID5, class="form-control") }}
+  </div>
 
-    <form action="retrieveConsultation">
-      <input type="submit" value="Submit" class="btn btn-primary" />
-    </form>
-  </form>
+  <form action="News">
+  <input type="submit" value="Submit" class="btn btn-primary"/>
+</form>
+</form>
 </div>
 {% endblock %}
