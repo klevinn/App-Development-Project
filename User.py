@@ -120,6 +120,11 @@ class User(Person):
         return expiry_date
 
 #XuZhi
+
+"""
+The membership code I think is pointless, they are tutorial leftovers and I forgot to remove them. 
+Should be able to delete without conflict.
+"""
     def get_membership(self):
         return self.__membership
 
