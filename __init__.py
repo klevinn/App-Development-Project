@@ -2436,7 +2436,7 @@ def create_product():
 
                 return redirect(url_for('retrieve_products'))
 
-            return render_template('user/staff/joshua/StaffInventory/CRUDProducts/create_product.html', form=create_product_form)
+            return render_template('user/staff/joshua/StaffInventory/CRUDProducts/create_product.html', form=create_product_form, staff = name)
         else:
             session.clear()
             return redirect(url_for("home"))
