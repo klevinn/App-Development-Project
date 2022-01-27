@@ -245,7 +245,7 @@ def login():
                     print("Correct Password")
                     staffname = staff_email_key.get_staff_id()
                     session["staff"] = staffname
-                    return redirect(url_for("staffapp" , staff = staffname))
+                    return redirect(url_for("staffapp" , page=1))
                         
             if validemail == True and validpassword == True:
                 if banned != True:
@@ -270,7 +270,7 @@ def login():
         if "user" in session:
             return redirect(url_for("user"))
         else:
-            return redirect(url_for('staffapp'))
+            return redirect(url_for('staffapp', page =1))
 
 @app.route('/logout')
 def logout():
@@ -1576,7 +1576,7 @@ def staffprod():
     else:
         return redirect(url_for('login'))
 
-@app.route('/staffupdate/<int:id>/', methods=['GET', 'POST'])
+@app.route('/staffupdate/<id>/', methods=['GET', 'POST'])
 #@app.route('/staffupdate/<string:id>/', methods=['GET', 'POST'])
 def staffupdate(id):
     if "staff" in session:
@@ -1675,24 +1675,27 @@ def staffadd():
 
                 if(duplicated_email == False) and (duplicated_username == False):
                     print("Hello")
-                    #staff_id = generate_staff_id()
+                    staff_id = generate_staff_id()
 
-                    """
+
                     for key in userDict:
                         staffidshelve = userDict[key].get_staff_id()
                         if staff_id == staffidshelve:
                             staff_id = generate_staff_id()
-                    """
+
  
                     #pw_hash = bcrypt.generate_password_hash(staff_id)
                     #user = Staff.Staff(nameInput, emailInput, pw_hash)
-                    #user.set_staff_id(staff_id)
+                    
 
                 
                     user = Staff.Staff()
+                    user.set_staff_id(staff_id)
                     user.set_username(nameInput)
                     user.set_email(emailInput)
-                    user.set_password('Staff1234')
+                    user.set_password(staff_id)
+
+                    """
                     for key in userDict:
                         #To assign Staff ID, ensure that it is persistent and is accurate to the list
                         staffidshelve = userDict[key].get_staff_id()
@@ -1705,7 +1708,7 @@ def staffadd():
                                 print(str(user.get_staff_id()), str(userDict[key].get_staff_id()))
                                 user.set_staff_id(user.get_staff_id() + 1)
                                 print(str(user.get_staff_id()) + "Hello1")
-
+                    """
 
                     userDict[user.get_staff_id()] = user
                     db["Users"] = userDict
@@ -1732,7 +1735,7 @@ def staffadd():
     else:
         return redirect(url_for('login'))
 
-@app.route('/deleteUser/<int:id>', methods=["GET", 'POST'])
+@app.route('/deleteUser/<id>', methods=["GET", 'POST'])
 #@app.route('/deleteUser/<string:id>', methods=["GET", 'POST'])
 def deleteStaff(id):
     if "staff" in session:
@@ -3229,7 +3232,7 @@ def delete_consultation(id):
             customer_dict.pop(id)
             db['Customers'] = customer_dict
             db.close()
-            return redirect(url_for('staffapp'))
+            return redirect(url_for('staffapp', page=1))
         else:
             session.clear()
             return redirect(url_for('home'))
@@ -3574,8 +3577,8 @@ def News():
 @app.route('/resetdb')
 def resetdb():
     customer_dict = {}
-    db = shelve.open('user', 'c')
-    db['Customers'] = customer_dict
+    db = shelve.open('staff', 'c')
+    db['Users'] = customer_dict
     return redirect(url_for('home'))
 
 if __name__ == '__main__':
