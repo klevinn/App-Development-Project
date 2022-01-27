@@ -1,4 +1,10 @@
+{% if staffsession %}
+{% extends "admin_base.html" %}
+{% elif usersession %}
+{% extends "user_base.html" %}
+{% else %}
 {% extends "default_base.html" %}
+{% endif %}
 {% block head %}
 <link rel="stylesheet" href="static/CSS/cookiealert.css">{% endblock %}
 {% block title %}Home | DoctorOnTheGo{% endblock %}

@@ -33,11 +33,15 @@
     <div class="form-group">
       {{ render_field(form.date_joined, class="form-control datepicker") }}
     </div>
+    <div class="form-group">
+      {{ render_field(form.time, class="form-control") }}
+    </div>
 
     <div id="prof">
       <div class="form-group">
         {{ render_field(form.remarks, class="form-control") }}
       </div>
+      {% if samedate and sametime and samedoc %}<div class="text-danger"><span id="error">The Doctor for this date and time is unavailable</span></div>{% endif %}
     </div>
     <form action="retrieveConsultation">
       <input type="submit" value="Submit" class="btn btn-primary" />

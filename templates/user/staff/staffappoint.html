@@ -92,11 +92,13 @@
                         <thead>
                           <td>Email</td>
                           <td>Date of appointment</td>
+                          <td>Time</td>
                           <td>Zoom Link</td>
                         </thead>
                         <tbody>
                           <td>{{ con.get_email() }}</td>
                           <td>{{ con.get_date() }}</td>
+                          <td>{{ con.get_time() }}</td>
                           {% if con.get_doc() == "T"%}
                           <td> Zoom Link</td>
                           {% elif con.get_doc() == "M" %}        

@@ -1,4 +1,11 @@
+{% if staffsession %}
+{% extends "admin_base.html" %}
+{% elif usersession %}
+{% extends "user_base.html" %}
+{% else %}
 {% extends "default_base.html" %}
+{% endif %}
+
 {% block title %} Main consultation{% endblock %}
 {% from "includes/_formHelper.html" import render_field %}
 

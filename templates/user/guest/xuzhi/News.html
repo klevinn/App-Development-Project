@@ -1,4 +1,11 @@
+{% if staffsession %}
+{% extends "admin_base.html" %}
+{% elif usersession %}
+{% extends "user_base.html" %}
+{% else %}
 {% extends "default_base.html" %}
+{% endif %}
+
 {% block head %}
 <link rel="stylesheet" type="text/css" href="Newshelper.css" />
 <script src="http://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
@@ -193,6 +200,15 @@
       <canvas id="lineChart" width="900" height="400">
       </canvas>
     </div>
+    {% if staffsession %}
+    <a class="nav-link" href="/Graphform">
+      <button type="button" class="btn btn-success">
+
+        (Temporary) Consultation
+
+      </button>
+    </a>
+    {% endif %}
   </div>
 
 
