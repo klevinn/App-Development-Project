@@ -13,16 +13,32 @@
             <!-- Links -->
             <ul class="navbar-nav">
                 <li class="nav-item">
+                    {% if storeactive %}
+                    <a class="nav-link active" href="/store">Store</a>
+                    {% else %}
                     <a class="nav-link" href="/store">Store</a>
+                    {% endif %}
                 </li>
                 <li class="nav-item">
+                    {% if newsactive %}
+                    <a class="nav-link active" href="/News">News</a>
+                    {% else %}
                     <a class="nav-link" href="/News">News</a>
+                    {% endif %}
                 </li>
                 <li class="nav-item">
+                    {% if consultactive %}
+                    <a class="nav-link active" href="/consultatioPg1">Consultation</a>
+                    {% else %}
                     <a class="nav-link" href="/consultatioPg1">Consultation</a>
+                    {% endif %}
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Help</a>
+                    {% if contactactive %}
+                    <a class="nav-link active" href="/contactUs">Help</a>
+                    {% else %}
+                    <a class="nav-link" href="/contactUs">Help</a>
+                    {% endif %}
                 </li>
             </ul>
 

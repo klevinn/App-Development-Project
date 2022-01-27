@@ -2128,7 +2128,7 @@ def store():
         if valid_session:
             products = Product.query.all()
 
-            return render_template('user/guest/joshua/GuestStore/store.html', products=products, user = UserName, av=av, usersession = True)
+            return render_template('user/guest/joshua/GuestStore/store.html', products=products, user = UserName, av=av, usersession = True, storeactive = True)
         else:
             session.clear()
             return redirect(url_for("login"))
@@ -2140,14 +2140,14 @@ def store():
         if valid_session:
             products = Product.query.all()
 
-            return render_template('user/guest/joshua/GuestStore/store.html', products=products, staff = name, staffsession = True)
+            return render_template('user/guest/joshua/GuestStore/store.html', products=products, staff = name, staffsession = True, storeactive = True)
         else:
             session.clear()
             return redirect(url_for('login'))
     else:
         products = Product.query.all()
 
-        return render_template('user/guest/joshua/GuestStore/store.html', products=products)
+        return render_template('user/guest/joshua/GuestStore/store.html', products=products, storeactive = True)
 
 @app.route('/search', methods=["GET","POST"])
 def search():
@@ -2180,7 +2180,7 @@ def search():
             else:
                 products = Product.query.all()
 
-            return render_template('user/guest/joshua/GuestStore/search.html', products=products, user = UserName, av=av, usersession = True)
+            return render_template('user/guest/joshua/GuestStore/search.html', products=products, user = UserName, av=av, usersession = True, storeactive = True)
         else:
             session.clear()
             return redirect(url_for('login'))
@@ -2199,7 +2199,7 @@ def search():
             else:
                 products = Product.query.all()
 
-            return render_template('user/guest/joshua/GuestStore/search.html', products=products, staff = name, staffsession = True)
+            return render_template('user/guest/joshua/GuestStore/search.html', products=products, staff = name, staffsession = True, storeactive = True)
         else:
             session.clear()
             return redirect(url_for('login'))
@@ -2237,7 +2237,7 @@ def search():
             except:
                 products = products
 
-        return render_template('user/guest/joshua/GuestStore/search.html', products=products, form = form, form2 = form2 )
+        return render_template('user/guest/joshua/GuestStore/search.html', products=products, form = form, form2 = form2, storeactive = True)
 
 @app.route('/view_product', methods=["GET", "POST"])
 def view_product():
@@ -2262,7 +2262,7 @@ def view_product():
             id = request.args.get('id')
             products = Product.query.filter(Product.id.contains(id))
 
-            return render_template('user/guest/joshua/GuestStore/view_product.html', products=products, user = UserName, av=av, usersession = True)
+            return render_template('user/guest/joshua/GuestStore/view_product.html', products=products, user = UserName, av=av, usersession = True, storeactive = True)
         else:
             session.clear()
             return redirect(url_for("login"))
@@ -2273,7 +2273,7 @@ def view_product():
             id = request.args.get('id')
             products = Product.query.filter(Product.id.contains(id))
 
-            return render_template('user/guest/joshua/GuestStore/view_product.html', products=products, staff = name, staffsession = True)
+            return render_template('user/guest/joshua/GuestStore/view_product.html', products=products, staff = name, staffsession = True, storeactive = True)
         else:
             session.clear()
             return redirect(url_for('login'))
@@ -2281,7 +2281,7 @@ def view_product():
         id = request.args.get('id')
         products = Product.query.filter(Product.id.contains(id))
 
-        return render_template('user/guest/joshua/GuestStore/view_product.html', products=products)
+        return render_template('user/guest/joshua/GuestStore/view_product.html', products=products, storeactive = True)
 
 """
 
@@ -2499,7 +2499,7 @@ def Omni():
         valid_session = validate_session(idNumber, users_dict)
         db.close()
         if valid_session:
-            return render_template('user/guest/xuzhi/Omni.html', user = UserName, av=av, usersession = True)
+            return render_template('user/guest/xuzhi/Omni.html', user = UserName, av=av, usersession = True, newsactive = True)
         else:
             session.clear()
             return redirect(url_for('home'))
@@ -2507,11 +2507,11 @@ def Omni():
         StaffName = session["staff"]
         valid_session, name = validate_session_open_file_admin(StaffName)
         if valid_session:
-            return render_template('user/guest/xuzhi/Omni.html', staff= name, staffsession = True)
+            return render_template('user/guest/xuzhi/Omni.html', staff= name, staffsession = True, newsactive = True)
         else:
             return redirect(url_for('home'))
     else:
-        return render_template('user/guest/xuzhi/Omni.html')
+        return render_template('user/guest/xuzhi/Omni.html', newsactive = True)
 
 
 @app.route("/Background")
@@ -2535,7 +2535,7 @@ def Background():
         valid_session = validate_session(idNumber, users_dict)
         db.close()
         if valid_session:
-            return render_template('user/guest/xuzhi/Background.html', user = UserName, av=av, usersession = True)
+            return render_template('user/guest/xuzhi/Background.html', user = UserName, av=av, usersession = True, newsactive = True)
         else:
             session.clear()
             return redirect(url_for('home'))
@@ -2543,12 +2543,12 @@ def Background():
         StaffName = session["staff"]
         valid_session, name = validate_session_open_file_admin(StaffName)
         if valid_session:
-            return render_template('user/guest/xuzhi/Background.html', staff = name, staffsession = True)
+            return render_template('user/guest/xuzhi/Background.html', staff = name, staffsession = True, newsactive = True)
         else:
             session.clear()
             return redirect(url_for('home'))
     else:
-        return render_template('user/guest/xuzhi/Background.html')
+        return render_template('user/guest/xuzhi/Background.html', newsactive = True)
 
 
 @app.route("/Measure")
@@ -2572,7 +2572,7 @@ def Measure():
         valid_session = validate_session(idNumber, users_dict)
         db.close()
         if valid_session:
-            return render_template('user/guest/xuzhi/Measure.html', user = UserName, av=av, usersession = True)
+            return render_template('user/guest/xuzhi/Measure.html', user = UserName, av=av, usersession = True, newsactive = True)
         else:
             session.clear()
             return redirect(url_for('home'))
@@ -2580,11 +2580,11 @@ def Measure():
         StaffName = session["staff"]
         valid_session, name = validate_session_open_file_admin(StaffName)
         if valid_session:
-            return render_template('user/guest/xuzhi/Measure.html', staff = name, staffsession = True)
+            return render_template('user/guest/xuzhi/Measure.html', staff = name, staffsession = True, newsactive = True)
         else:
             return redirect(url_for('home'))
     else:
-        return render_template('user/guest/xuzhi/Measure.html')
+        return render_template('user/guest/xuzhi/Measure.html', newsactive = True)
 
 
 @app.route("/MOHnews")
@@ -2608,7 +2608,7 @@ def MOHnews():
         valid_session = validate_session(idNumber, users_dict)
         db.close()
         if valid_session:
-            return render_template("user/guest/xuzhi/MOHnews.html", user = UserName, av=av, usersession = True)
+            return render_template("user/guest/xuzhi/MOHnews.html", user = UserName, av=av, usersession = True, newsactive = True)
         else:
             session.clear()
             return redirect(url_for('home'))
@@ -2616,12 +2616,12 @@ def MOHnews():
         StaffName = session["staff"]
         valid_session, name = validate_session_open_file_admin(StaffName)
         if valid_session:
-            return render_template("user/guest/xuzhi/MOHnews.html", staff = name, staffsession = True)
+            return render_template("user/guest/xuzhi/MOHnews.html", staff = name, staffsession = True, newsactive = True)
         else:
             session.clear()
             return redirect(url_for('home'))
     else:
-        return render_template("user/guest/xuzhi/MOHnews.html")
+        return render_template("user/guest/xuzhi/MOHnews.html", newsactive = True)
 
 @app.route("/Vac")
 def Vac():
@@ -2644,7 +2644,7 @@ def Vac():
         valid_session = validate_session(idNumber, users_dict)
         db.close()
         if valid_session:
-            return render_template("user/guest/xuzhi/Vac.html", user = UserName, av=av, usersession = True)
+            return render_template("user/guest/xuzhi/Vac.html", user = UserName, av=av, usersession = True, newsactive = True)
         else:
             session.clear()
             return redirect(url_for('home'))
@@ -2652,12 +2652,12 @@ def Vac():
         StaffName = session["staff"]
         valid_session, name = validate_session_open_file_admin(StaffName)
         if valid_session:
-            return render_template("user/guest/xuzhi/Vac.html", staff = name, staffsession = True)
+            return render_template("user/guest/xuzhi/Vac.html", staff = name, staffsession = True, newsactive = True)
         else:
             session.clear()
             return redirect(url_for('home'))
     else:
-        return render_template("user/guest/xuzhi/Vac.html")
+        return render_template("user/guest/xuzhi/Vac.html", newsactive = True)
 
 @app.route("/World")
 def World():
@@ -2680,7 +2680,7 @@ def World():
         valid_session = validate_session(idNumber, users_dict)
         db.close()
         if valid_session:
-            return render_template("user/guest/xuzhi/World.html", user = UserName, av=av, usersession = True)
+            return render_template("user/guest/xuzhi/World.html", user = UserName, av=av, usersession = True, newsactive = True)
         else:
             session.clear()
             return redirect(url_for('home'))
@@ -2689,12 +2689,12 @@ def World():
         StaffName = session["staff"]
         valid_session, name = validate_session_open_file_admin(StaffName)
         if valid_session:
-            return render_template("user/guest/xuzhi/World.html", staff = name, staffsession = True)
+            return render_template("user/guest/xuzhi/World.html", staff = name, staffsession = True, newsactive = True)
         else:
             session.clear()
             return redirect(url_for('home'))
     else:
-        return render_template("user/guest/xuzhi/World.html")
+        return render_template("user/guest/xuzhi/World.html", newsactive = True)
 
 @app.route("/COVIDdata")
 def COVIDdata():
@@ -2717,7 +2717,7 @@ def COVIDdata():
         valid_session = validate_session(idNumber, users_dict)
         db.close()
         if valid_session:
-            return render_template('user/guest/xuzhi/COVIDdata.html', user = UserName, av=av, usersession = True)
+            return render_template('user/guest/xuzhi/COVIDdata.html', user = UserName, av=av, usersession = True, newsactive = True)
         else:
             session.clear()
             return redirect(url_for('home'))
@@ -2725,11 +2725,11 @@ def COVIDdata():
         StaffName = session["staff"]
         valid_session, name = validate_session_open_file_admin(StaffName)
         if valid_session:
-            return render_template('user/guest/xuzhi/COVIDdata.html', staff = name, staffsession = True)
+            return render_template('user/guest/xuzhi/COVIDdata.html', staff = name, staffsession = True, newsactive = True)
         else:
             return redirect(url_for('home'))
     else:
-        return render_template('user/guest/xuzhi/COVIDdata.html')
+        return render_template('user/guest/xuzhi/COVIDdata.html', newsactive = True)
 
 @app.route('/New19')
 def New19():
@@ -2752,7 +2752,7 @@ def New19():
         valid_session = validate_session(idNumber, users_dict)
         db.close()
         if valid_session:
-            return render_template('user/guest/xuzhi/New19.html', user = UserName, av=av, usersession = True)
+            return render_template('user/guest/xuzhi/New19.html', user = UserName, av=av, usersession = True, newsactive = True)
         else:
             session.clear()
             return redirect(url_for('home'))
@@ -2760,12 +2760,12 @@ def New19():
         StaffName = session["staff"]
         valid_session, name = validate_session_open_file_admin(StaffName)
         if valid_session:
-            return render_template('user/guest/xuzhi/New19.html', staff= name, staffsession = True)
+            return render_template('user/guest/xuzhi/New19.html', staff= name, staffsession = True, newsactive = True)
         else:
             session.clear()
             return redirect(url_for('home'))
     else:
-        return render_template('user/guest/xuzhi/New19.html')
+        return render_template('user/guest/xuzhi/New19.html', newsactive = True)
 
 
 @app.route('/consultatioPg1')
@@ -2789,7 +2789,7 @@ def consultatioPg1():
         valid_session = validate_session(idNumber, users_dict)
         db.close()
         if valid_session:
-            return render_template('user/guest/xuzhi/consultatioPg1.html', user = UserName, av=av, usersession = True)
+            return render_template('user/guest/xuzhi/consultatioPg1.html', user = UserName, av=av, usersession = True, consultactive = True)
         else:
             session.clear()
             return redirect(url_for('login'))
@@ -2797,7 +2797,7 @@ def consultatioPg1():
         StaffName = session["staff"]
         valid_session, name = validate_session_open_file_admin(StaffName)
         if valid_session:
-            return render_template('user/guest/xuzhi/consultatioPg1.html', staff = name, staffsession = True)
+            return render_template('user/guest/xuzhi/consultatioPg1.html', staff = name, staffsession = True, consultactive = True)
         else:
             session.clear()
             return redirect(url_for('login'))
@@ -2805,9 +2805,9 @@ def consultatioPg1():
         if "notloggedin" in session:
             notloggedin = session["notloggedin"]
             session.pop("notloggedin", None)
-            return render_template('user/guest/xuzhi/consultatioPg1.html', notloggedin = notloggedin)
+            return render_template('user/guest/xuzhi/consultatioPg1.html', notloggedin = notloggedin, consultactive = True)
         else:
-            return render_template('user/guest/xuzhi/consultatioPg1.html')
+            return render_template('user/guest/xuzhi/consultatioPg1.html', consultactive = True)
 
 
 
@@ -2901,9 +2901,9 @@ def create_consultation():
 
                     return redirect(url_for('retrieve_consultation'))
                 else:
-                    return render_template('user/guest/xuzhi/createConsultation.html', user = UserName, av=av, form = create_customer_form, samedate = samedate, sametime = sametime, samedoc = samedoc)
+                    return render_template('user/guest/xuzhi/createConsultation.html', user = UserName, av=av, form = create_customer_form, samedate = samedate, sametime = sametime, samedoc = samedoc, consultactive = True)
             else:
-                return render_template('user/guest/xuzhi/createConsultation.html', form=create_customer_form, user = UserName, av=av)
+                return render_template('user/guest/xuzhi/createConsultation.html', form=create_customer_form, user = UserName, av=av, consultactive = True)
         else:
             session.clear()
             return redirect(url_for('home'))
@@ -2963,7 +2963,7 @@ def retrieve_consultation():
             """
 
 
-            return render_template('user/guest/xuzhi/retrieveConsultation.html', count=len(customers_list), customers_list=customers_list, var = var, user = UserName, av=av)
+            return render_template('user/guest/xuzhi/retrieveConsultation.html', count=len(customers_list), customers_list=customers_list, var = var, user = UserName, av=av, consultactive = True)
         else:
             session.clear()
             return redirect(url_for('home'))
@@ -3000,7 +3000,7 @@ def retrieve_consultation():
             """
 
 
-            return render_template('user/guest/xuzhi/retrieveConsultation.html', count=len(customers_list), customers_list=customers_list, var = var, staff = name)
+            return render_template('user/guest/xuzhi/retrieveConsultation.html', count=len(customers_list), customers_list=customers_list, var = var, staff = name, consultactive = True)
         else:
             session.clear()
             return redirect(url_for('home'))
@@ -3087,7 +3087,7 @@ def update_consultation(id):
 
                     return redirect(url_for('retrieve_consultation'))
                 else:
-                    return render_template('user/guest/xuzhi/updateConsultation.html', form=update_customer_form, user = UserName, av=av, sametime = sametime, samedoc=samedoc, samedate = samedate)
+                    return render_template('user/guest/xuzhi/updateConsultation.html', form=update_customer_form, user = UserName, av=av, sametime = sametime, samedoc=samedoc, samedate = samedate, consultactive = True)
 
 
             else:
@@ -3117,7 +3117,7 @@ def update_consultation(id):
 
 
                 db.close()
-                return render_template('user/guest/xuzhi/updateConsultation.html', form=update_customer_form, user = UserName, av=av)
+                return render_template('user/guest/xuzhi/updateConsultation.html', form=update_customer_form, user = UserName, av=av, consultactive = True)
         else:
             session.clear()
             return redirect(url_for('login')) 
@@ -3178,7 +3178,7 @@ def update_consultation(id):
                 update_customer_form.remarks.data = user.get_remarks()
 
 
-                return render_template('user/guest/xuzhi/updateConsultation.html', form=update_customer_form, staff=name)
+                return render_template('user/guest/xuzhi/updateConsultation.html', form=update_customer_form, staff=name, consultactive = True)
 
         else:
             session.clear()
@@ -3310,7 +3310,7 @@ def Graphform():
                     graphform.COVID3.data = graphfill.get_COVID3()
                     graphform.COVID4.data = graphfill.get_COVID4()
                     graphform.COVID5.data = graphfill.get_COVID5()
-                return render_template('user/guest/xuzhi/Graphform.html', form=graphform, staff = name)
+                return render_template('user/guest/xuzhi/Graphform.html', form=graphform, staff = name, newsactive = True, staffsession = True)
         else:
             session.clear()
             return redirect(url_for('home'))
@@ -3416,7 +3416,7 @@ def News():
 
             labels = [row[0] for row in data]
             values = [row[1] for row in data]
-            return render_template('user/guest/xuzhi/News.html', labels=labels, values=values, user = UserName, av=av, usersession = True)
+            return render_template('user/guest/xuzhi/News.html', labels=labels, values=values, user = UserName, av=av, usersession = True, newsactive = True)
         else:
             session.clear()
             return redirect(url_for('login'))
@@ -3500,7 +3500,7 @@ def News():
 
             labels = [row[0] for row in data]
             values = [row[1] for row in data]
-            return render_template('user/guest/xuzhi/News.html', labels=labels, values=values, staff = name, staffsession = True)
+            return render_template('user/guest/xuzhi/News.html', labels=labels, values=values, staff = name, staffsession = True, newsactive = True)
         else:
             session.clear()
             return redirect(url_for('login'))
@@ -3581,7 +3581,7 @@ def News():
 
         labels = [row[0] for row in data]
         values = [row[1] for row in data]
-        return render_template('user/guest/xuzhi/News.html', labels=labels, values=values)
+        return render_template('user/guest/xuzhi/News.html', labels=labels, values=values, newsactive = True)
 
 @app.route('/resetdb')
 def resetdb():
