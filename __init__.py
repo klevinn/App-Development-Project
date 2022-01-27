@@ -2665,6 +2665,59 @@ def create_consultation():
         db.close()
         if valid_session:
             create_customer_form = Forms.CreateForm(request.form)
+                    timelist=[]
+        
+        
+        customers_dict = {}
+        db = shelve.open('user', 'c')
+
+        try:
+                    if 'Customers' in db:
+                        customers_dict = db['Customers']
+                    else:
+                        db['Customers'] = customers_dict
+        except:
+              print("Error in retrieving Customers from customer.db.")
+        doclist=[]
+        datelist=[]
+        appointment = True
+        for key in customers_dict:
+
+          customer = customers_dict.get(key)
+          customers_list.append(customer)
+          print("form data is "+ str(create_customer_form.date_joined.data))
+          for customer in customers_list:
+             bonk = customer.get_time()
+             bonk = str(bonk)
+             timelist.append(bonk)
+             doc = customer.get_doc()
+             doc = str(doc)
+             doclist.append(doc)
+             print(doclist)
+             date = customer.get_date()
+             date = str(date)
+             datelist.append(date)
+             print(datelist)
+
+        
+        dateVal = str(create_customer_form.date_joined.data)
+        if create_customer_form.doc.data in doclist:
+            print("Doc exist")
+            if create_customer_form.time.data in timelist:
+
+                print("time exist")
+                if dateVal in str(datelist):
+                    print("here!!!")
+                    appointment = False
+                    return render_template("ErrorDate.html")
+
+            
+            
+            
+            
+            
+           if appointment = True
+            
             if request.method == 'POST' and create_customer_form.validate():
                 customers_dict = {}
                 db = shelve.open('user', 'c')
@@ -2686,6 +2739,7 @@ def create_consultation():
                 consultation.set_email(create_customer_form.email.data)
                 consultation.set_date(create_customer_form.date_joined.data)
                 consultation.set_doc(create_customer_form.doc.data)
+                consultation.set_time(create_customer_form.time.data)
                 consultation.set_us(idNumber)
 
                 AppFB = generate_feedback_id()
