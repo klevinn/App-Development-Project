@@ -110,7 +110,7 @@ class CreateForm(Form):
     gender = SelectField('Gender', [validators.DataRequired()], choices=[('', 'Select'), ('F', 'Female'), ('M', 'Male')], default='')
     email = EmailField('Email', [validators.Email(), validators.DataRequired()])
     date_joined = DateField('Date of appointment(YY-MM-DD)', format='%Y-%m-%d',validators=[DateRange(min=date.today())])
-
+    time = SelectField('Appointment time', [validators.DataRequired()], choices=[('9.00am - 9.30am','9.00am - 9.30am'),('10.00am - 10.30am', '10.00am - 10.30am'), ('11.00am - 11.30am', '11.00am - 11.30am'),('12.00pm -12.30pm','12.00pm -12.30pm'),('3.00pm - 3.30pm','3.00pm - 3.30pm'),('4.00pm - 4.30pm', '4.00pm - 4.30pm'),('5.00pm -5.30pm',' 5.00pm -5.30pm')], default = '9.00am - 9.30am')
     remarks = TextAreaField('Additional request', [validators.Optional()])
     doc=RadioField('Choice of doctor', choices=[('T', 'Dr Tan'), ('M', 'Dr Mok'), ('L', 'Dr Lim')], default='T')
 

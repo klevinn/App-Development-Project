@@ -26,6 +26,7 @@
           <th>Gender</th>
           <th>Email</th>
           <th>Date of appointment</th>
+          <th>Time: </th>
           <th>Doctor of choice</th>
           <th>Zoom Link</th>
           <th>Remarks</th>
@@ -45,6 +46,7 @@
           <td>{{ customer.get_gender() }}</td>
           <td>{{ customer.get_email() }}</td>
           <td>{{ customer.get_date() }}</td>
+          <td>{{ customer.get_time() }}</td>
 
           {% if customer.get_doc() == "T"%}
           <td>Dr Tan</td>

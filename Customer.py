@@ -8,6 +8,11 @@ class Customer(User):
         self.__date = ''
         self.__docter = ''
         self.__consult_id = ''
+        
+    def set_time(self,time):
+        self.__time= time
+    def get_time(self):
+        return self.__time
 
     def set_us(self, use):
         self.__session_id=use
