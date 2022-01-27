@@ -2395,17 +2395,18 @@ def view_product():
 
 # function to save picture (does not work)
 def save_picture(form_picture):
-    PRODUCTPIC_UPLOAD_PATH = 'static/images/productpics'
+    PRODUCTPIC_UPLOAD_PATH = './static/images/productpics'
     app.config['UPLOAD_FOLDER'] = PRODUCTPIC_UPLOAD_PATH
 
-    f_name, f_ext = os.path.splitext(form_picture.filename)
-    picture_filename = f_name + f_ext
+    form_picture = request.files['picture']
+    picture_filename = form_picture.filename
     #picture_path = os.path.join(app.root_path, 'static/images/productpics', picture_filename)
     #form_picture.save(picture_path)
 
     form_picture.save(os.path.join(app.config['UPLOAD_FOLDER'], picture_filename))
 
     return picture_filename
+
 
 # crud for products (with authentication)
 @app.route('/create_product', methods=["GET", "POST"])

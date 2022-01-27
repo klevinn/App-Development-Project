@@ -76,10 +76,15 @@ class CreateNewPasswordForm(Form):
 #Done By Joshua 
 #Done By Joshua
 class CreateProduct(Form):
+
+    # choices for the category select field
+    categories = [('Medicine', 'Medicine'), ('Test Kit', 'Test Kit'), ('Supplement', 'Supplement'), ('First Aid', 'First Aid')]
+    category = SelectField(u'Product Category', choices = categories)
+
     img_file_name = StringField("Filename:", [validators.DataRequired()])
     name = StringField("Product Name:", [validators.DataRequired()])
     price = FloatField("Product Price($):", [validators.DataRequired()])
-    category = StringField("Product Category:", [validators.DataRequired()])
+    # category = StringField("Product Category:", [validators.DataRequired()])
     short_description = StringField("Short Description:", [validators.DataRequired()])
     long_description = TextAreaField("Long Description:", [validators.DataRequired()])
     stock = IntegerField("Stock:", [validators.DataRequired()])
