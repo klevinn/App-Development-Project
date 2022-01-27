@@ -133,12 +133,12 @@
             </div>
             <div class="row">
               <div class="col">
-                <form action="{{url_for('delete_consultation', id=con.get_us())}}" method="POST">
+                <form action="{{url_for('delete_consultation', id=con.get_consult())}}" method="POST">
                   <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                    data-bs-target="#myModal_{{con.get_us()}}">
+                    data-bs-target="#myModal_{{con.get_consult()}}">
                     Delete
                   </button>
-                  <div class="modal" id="myModal_{{con.get_us()}}">
+                  <div class="modal" id="myModal_{{con.get_consult()}}">
                     <div class="modal-dialog">
                       <div class="modal-content">
     

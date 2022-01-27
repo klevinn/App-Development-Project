@@ -318,7 +318,7 @@ def signup():
                 user = User.User()
                 user.set_username(usernameInput)
                 user.set_email(emailInput)
-                user.set_password(passwordInput)
+                user.set_password(pw_hash)
                 print(user.get_user_id())
                 for key in userDict:
                     useridshelve = userDict[key].get_user_id()
@@ -2641,7 +2641,7 @@ def create_consultation():
     return render_template('user/guest/xuzhi/createConsultation.html', form=create_customer_form)
 
 """
-#Attribute Errors
+
 @app.route('/createConsultation', methods=['GET', 'POST'])
 def create_consultation():
     if 'user' in session:
@@ -2762,72 +2762,46 @@ def retrieve_consultation():
         else:
             session.clear()
             return redirect(url_for('home'))
+    elif "staff" in session:
+        StaffName = session["staff"]
+        valid_session, name = validate_session_open_file_admin(StaffName)
+        if valid_session:
+            customers_dict = {}
+            db = shelve.open('user', 'c')
+            try:
+                if 'Customers' in db:
+                    customers_dict = db['Customers']
+                else:
+                    db['Customers'] = customers_dict
+            except:
+                print("Error in retrieving Customers from customer.db.")
+
+            db.close()
+            
+            customers_list = []
+            var = session["user"]
+            print(var)
+            for key in customers_dict:
+                customer = customers_dict.get(key)
+                print(customer)
+                print(customer.get_us())
+                print(customer.get_consult())
+                customers_list.append(customer)
+            """
+            for customer in customers_list:
+                bonk = customer.get_us()
+                bonk = str(bonk)
+                print("The id is" + bonk)
+            """
+
+
+            return render_template('user/guest/xuzhi/retrieveConsultation.html', count=len(customers_list), customers_list=customers_list, var = var, staff = name)
+        else:
+            session.clear()
+            return redirect(url_for('home'))
     else:
         #Should redirect to a page notifying you cannot set appointment without logging in
         return redirect(url_for('login'))
-
-
-"""
-@app.route('/viewandchose')
-def retrieve_cus():
-    if 'user' in session:
-        customers_dict = {}
-        db = shelve.open('user', 'r')
-        try:
-            if 'Customers' in db:
-                customers_dict = db['Customers']
-            else:
-                db['Customers'] = customers_dict
-        except:
-            print("Error in retrieving Customers from customer.db.")
-
-        customers_list = []
-        var = session['user']
-        var=str(var)
-        print(var)
-        '''
-        This is unprivated. Anyone can see. Used for testing ONLY 
-        '''
-
-        for key in customers_dict:
-            customer = customers_dict.get(key)
-            customers_list.append(customer)
-            print(key)
-
-        return render_template('user/guest/xuzhi/viewandchose.html', count=len(customers_list), customers_list=customers_list)
-
-    elif "staff" in session:
-        return render_template("user/guest/xuzhi/Staffviewappointment.html")
-
-    else:
-        return render_template("user/guest/xuzhi/ReLogin.html")
-
-
-
-
-@app.route('/Staffviewappointment')
-def retrieve_cusFstaff():
-    customers_dict = {}
-    db = shelve.open('user', 'r')
-    try:
-        if 'Customers' in db:
-            customers_dict = db['Customers']
-        else:
-            db['Customers'] = customers_dict
-    except:
-        print("Error in Retrieving")
-    db.close()
-
-    customers_list = []
-    for key in customers_dict:
-        customer = customers_dict.get(key)
-        customers_list.append(customer)
-        print(key)
-
-
-    return render_template('user/guest/xuzhi/Staffviewappointment.html', count=len(customers_list), customers_list=customers_list)
-
-"""
 
 @app.route('/updateConsultation/<int:id>/', methods=['GET', 'POST'])
 def update_consultation(id):
@@ -2881,12 +2855,6 @@ def update_consultation(id):
 
             else:
 
-                """
-                Whatever I throw inside breaks for some stupid reason. Works one moment than breaks. Banged my head against this for days. 
-                I suspect it may be a database problem
-                """
-
-
                 customer_dict = {}
                 db = shelve.open('user', 'c')
                 try:
@@ -2914,7 +2882,70 @@ def update_consultation(id):
                 return render_template('user/guest/xuzhi/updateConsultation.html', form=update_customer_form, user = UserName, av=av)
         else:
             session.clear()
-            return redirect(url_for('login'))   
+            return redirect(url_for('login')) 
+    elif "staff" in session:
+        StaffName = session["staff"]
+        valid_session, name = validate_session_open_file_admin(StaffName)
+        if valid_session:
+            update_customer_form = Forms.CreateForm(request.form)
+            if request.method == 'POST':
+                customer_dict = {}
+                db = shelve.open('user', 'c')
+                try:
+                    if 'Customers' in db:
+                        customer_dict = db['Customers']
+                    else:
+                        db['Customers'] = customer_dict
+                except:
+                    update_customer_form.populate_obj(customer_dict)
+
+                customer = customer_dict.get(id)
+                customer.set_doc(update_customer_form.doc.data)
+                customer.set_first_name(update_customer_form.first_name.data)
+                customer.set_last_name(update_customer_form.last_name.data)
+                customer.set_gender(update_customer_form.gender.data)
+                customer.set_remarks(update_customer_form.remarks.data)
+                customer.set_date(update_customer_form.date_joined.data)
+                customer.set_email(update_customer_form.email.data)
+
+
+                db['Customers'] = customer_dict
+                db.close()
+
+
+                return redirect(url_for('retrieve_consultation'))
+
+
+            else:
+
+                customer_dict = {}
+                db = shelve.open('user', 'c')
+                try:
+                    if 'Customers' in db:
+                        customer_dict = db['Customers']
+                    else:
+                        db['Customers'] = customer_dict
+                except:
+                    print("Error in retrieving")
+
+                db.close()
+
+                user = customer_dict.get(id)
+                update_customer_form.first_name.data = user.get_first_name()
+                update_customer_form.last_name.data = user.get_last_name()
+                update_customer_form.doc.data = user.get_doc()
+                update_customer_form.email.data = user.get_email()
+                update_customer_form.date_joined.data = user.get_date()
+                update_customer_form.gender.data = user.get_gender()
+                update_customer_form.remarks.data = user.get_remarks()
+
+
+                return render_template('user/guest/xuzhi/updateConsultation.html', form=update_customer_form, staff=name)
+
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+
     else:
         return redirect(url_for('login'))
 
@@ -2922,240 +2953,131 @@ def update_consultation(id):
 
 @app.route('/deleteConsultation/<int:id>', methods=['POST'])
 def delete_consultation(id):
-
-    customer_dict = {}
-    db = shelve.open('user', 'c')
-    try:
-        if 'Customers' in db:
-            customer_dict = db['Customers']
-        else:
-            db['Customers'] = customer_dict
-    except:
-        print("Error in retrieving")
-
-    customer_dict.pop(id)
-    db['Customers'] = customer_dict
-    db.close()
-    return redirect(url_for('retrieve_consultation'))
-
-"""
-@app.route('/viewandchose/<int:id>', methods=['POST'])
-def delete_consultation2(id):
-
-    customer_dict = {}
-    db = shelve.open('user', 'c')
-    try:
-        if 'Customers' in db:
-            customer_dict = db['Customers']
-        else:
-            db['Customers'] = customer_dict
-    except:
-        print("Error in retrieving")
-    customer_dict.pop(id)
-    db['Customers'] = customer_dict
-    db.close()
-
-    return redirect(url_for('retrieve_cus'))
-
-"""
-"""
-Backup code >
-
-
-def retrieve_consultationBackup():
-    if 'user' not in session:
-       customers_dict = {}
-       db = shelve.open('user', 'r')
-       try:
-           if 'Customers' in db:
-                customers_dict = db['Customers']
-           else:
-                db['Customers'] = customers_dict
-       except:
-            print("Error in retrieving")
-       db.close()
-       customers_list = []
-
-       for key in customers_dict:
-         customer = customers_dict.get(key)
-         customers_list.append(customer)
-         print(key)
-
-
-
-       return render_template('user/guest/xuzhi/retrieveConsultation.html', count=len(customers_list), customers_list=customers_list)
-
-    elif "staff" in session:
-        return render_template("user/guest/xuzhi/Staffviewappointment.html")
-
-    else:
-        return render_template("user/guest/xuzhi/ReLogin.html")
-
-
-
-
-def RetriveFuture():
-    if 'user' in session:
-       customers_dict = {}
-       db = shelve.open('user', 'r')
-       try:
-            if 'Customers' in db:
-                customers_dict = db['Customers']
-            else:
-                db['Customers'] = customers_dict
-       except:
-            print("Error in retrieving")
-
-       customers_list = []
-       var = session['user']
-       var=str(var)
-       print(var)
-
-       extracts= [var]
-       avilableUse= '1'
-       print(avilableUse)
-       avilableUser = str(avilableUse)
-       print(avilableUser)
-
-
-
-       if var in customers_dict:
-            print("here")
-            db = shelve.open('user', 'r')
-            try:
-                if 'Customers' in db:
-                    customers_dict = db['Customers']
-                else:
-                    db['Customers'] = customers_dict
-            except:
-                print("Error in retrieving")
-                
-            db.close()
-            customers_list = []
-
-            for key in customers_dict:
-                customer = customers_dict.get(key)
-                customers_list.append(customer)
-                print(key)
-
-
-
-
-       db.close()
-       return render_template('user/guest/xuzhi/retrieveConsultation.html', count=len(customers_list), customers_list=customers_list)
-
-    elif "staff" in session:
-        return render_template("user/guest/xuzhi/Staffviewappointment.html")
-
-    else:
-        return render_template("user/guest/xuzhi/ReLogin.html")
-
-def createV1():
-
-    create_customer_form = Forms.CreateForm(request.form)
-
-    if 'user' in session:
-
-      if request.method == 'POST' and create_customer_form.validate():
-        customers_dict = {}
-        db = shelve.open('customer.db', 'c')
-        username= session['user']
+    if "user" in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
 
         try:
-            customers_dict = db['Customers']
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
         except:
-            print("Error in retrieving Customers from customer.db.")
+            print("Error in retrieving User from staff.db")
 
-
-        print(username)
-        consultation = Customer.Customer(create_customer_form.first_name.data, create_customer_form.last_name.data,
-                                     create_customer_form.gender.data,
-                                     create_customer_form.remarks.data, create_customer_form.email.data,
-                                     create_customer_form.date_joined.data,
-                                     create_customer_form.doc.data, username
-
-
-
-
-                                         )
-        customers_dict[consultation.get_customer_id()] = consultation
-        db['Customers'] = customers_dict
-
+        valid_session = validate_session(idNumber, users_dict)
         db.close()
+        if valid_session:
+            customer_dict = {}
+            db = shelve.open('user', 'c')
+            try:
+                if 'Customers' in db:
+                    customer_dict = db['Customers']
+                else:
+                    db['Customers'] = customer_dict
+            except:
+                print("Error in retrieving")
 
-        return redirect(url_for('user/guest/xuzhi/retrieve_consultation'))
+            customer_dict.pop(id)
+            db['Customers'] = customer_dict
+            db.close()
+            return redirect(url_for('retrieve_consultation'))
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+    elif "staff" in session:
+        StaffName = session["staff"]
+        valid_session, name = validate_session_open_file_admin(StaffName)
+        if valid_session:
+            customer_dict = {}
+            db = shelve.open('user', 'c')
+            try:
+                if 'Customers' in db:
+                    customer_dict = db['Customers']
+                else:
+                    db['Customers'] = customer_dict
+            except:
+                print("Error in retrieving")
 
-
-      else:
-        error = "Start date is greater than End date"
-        return render_template('user/guest/xuzhi/createConsultation.html', form=create_customer_form, error = error)
-
+            customer_dict.pop(id)
+            db['Customers'] = customer_dict
+            db.close()
+            return redirect(url_for('staffapp'))
+        else:
+            session.clear()
+            return redirect(url_for('home'))
     else:
-        return render_template("user/guest/xuzhi/ReLogin.html")
-
-"""
+        return redirect(url_for('login'))
 
 @app.route("/Graphform",methods=['GET', 'POST'] )
 def Graphform():
+    if "staff" in session:
+        StaffName = session["staff"]
+        valid_session, name = validate_session_open_file_admin(StaffName)
+        if valid_session:
+            graphform = Forms.Graph(request.form)
+            if request.method == 'POST':
+
+                graphdict = {}
+                db = shelve.open('user', 'c')
+
+                try:
+                    if 'graph' in db:
+                        graphdict = db['graph']
+                    else:
+                        db['graph'] =graphdict
+                except:
+                    print("Error in retrieving Graph from graph.db.")
+
+                graphD = Graph.Graph(graphform.DATE1.data, graphform.DATE2.data, graphform.DATE3.data, graphform.DATE4.data,
+                                        graphform.DATE5.data, graphform.COVID1.data, graphform.COVID2.data, graphform.COVID3.data,
+                                        graphform.COVID4.data, graphform.COVID5.data
+
+                                                )
+                print(graphform.DATE1.data)
+                graphdict[graphD.get_graph_id()] = graphD
+                db['graph'] = graphdict
+
+                db.close()
+                return redirect(url_for("News"))
 
 
-      graphform = Forms.Graph(request.form)
-      if request.method == 'POST':
+        
 
-        graphdict = {}
-        db = shelve.open('user', 'c')
 
-        try:
-            if 'graph' in db:
-                graphdict = db['graph']
             else:
-                db['graph'] =graphdict
-        except:
-            print("Error in retrieving Graph from graph.db.")
+                graph_dict = {}
+                db = shelve.open('user', 'c')
+                try:
+                    if 'graph' in db:
+                        graph_dict = db['graph']
+                    else:
+                        db['graph'] = graph_dict
+                except:
+                    print("Error in retrieving")
 
-        graphD = Graph.Graph(graphform.DATE1.data, graphform.DATE2.data, graphform.DATE3.data, graphform.DATE4.data,
-                                   graphform.DATE5.data, graphform.COVID1.data, graphform.COVID2.data, graphform.COVID3.data,
-                                   graphform.COVID4.data, graphform.COVID5.data
+                db.close()
 
-                                         )
-        print(graphform.DATE1.data)
-        graphdict[graphD.get_graph_id()] = graphD
-        db['graph'] = graphdict
+                for key in graph_dict:
 
-        db.close()
-        return redirect(url_for("News"))
-
-
- 
-
-
-      else:
-        graph_dict = {}
-        db = shelve.open('user', 'c')
-        try:
-            if 'graph' in db:
-                graph_dict = db['graph']
-            else:
-                db['graph'] = graph_dict
-        except:
-            print("Error in retrieving")
-
-        db.close()
-
-        for key in graph_dict:
-
-            graphfill = graph_dict.get(key)
-            graphform.DATE1.data = graphfill.get_DATE1()
-            graphform.DATE2.data = graphfill.get_DATE2()
-            graphform.DATE3.data = graphfill.get_DATE3()
-            graphform.DATE4.data = graphfill.get_DATE4()
-            graphform.DATE5.data = graphfill.get_DATE5()
-            graphform.COVID1.data = graphfill.get_COVID1()
-            graphform.COVID2.data = graphfill.get_COVID2()
-            graphform.COVID3.data = graphfill.get_COVID3()
-            graphform.COVID4.data = graphfill.get_COVID4()
-            graphform.COVID5.data = graphfill.get_COVID5()
-        return render_template('user/guest/xuzhi/Graphform.html', form=graphform)
+                    graphfill = graph_dict.get(key)
+                    graphform.DATE1.data = graphfill.get_DATE1()
+                    graphform.DATE2.data = graphfill.get_DATE2()
+                    graphform.DATE3.data = graphfill.get_DATE3()
+                    graphform.DATE4.data = graphfill.get_DATE4()
+                    graphform.DATE5.data = graphfill.get_DATE5()
+                    graphform.COVID1.data = graphfill.get_COVID1()
+                    graphform.COVID2.data = graphfill.get_COVID2()
+                    graphform.COVID3.data = graphfill.get_COVID3()
+                    graphform.COVID4.data = graphfill.get_COVID4()
+                    graphform.COVID5.data = graphfill.get_COVID5()
+                return render_template('user/guest/xuzhi/Graphform.html', form=graphform, staff = name)
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+    else:
+        return redirect(url_for('login'))
 
 
 
