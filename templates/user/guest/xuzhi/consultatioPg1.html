@@ -175,10 +175,9 @@ padding:10px;
 <div class="con">
 <div class="mid">
  <a class="nav-link" href="/retrieveConsultation">
-<! ideally u want a login verification here but idk how. TBD !>
  <button type="button" class="but"> Find an appointment </button>
-
  </a>
+ {% if notloggedin %}<div class="text-danger"><span id="error">You need to <a href="/signup">signup</a> / <a href="/login">login</a> to make/find appointments</span></div>{% endif %}
     </div>
 </div>
 

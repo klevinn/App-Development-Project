@@ -2799,7 +2799,12 @@ def consultatioPg1():
             session.clear()
             return redirect(url_for('login'))
     else:
-        return render_template('user/guest/xuzhi/consultatioPg1.html')
+        if "notloggedin" in session:
+            notloggedin = session["notloggedin"]
+            session.pop("notloggedin", None)
+            return render_template('user/guest/xuzhi/consultatioPg1.html', notloggedin = notloggedin)
+        else:
+            return render_template('user/guest/xuzhi/consultatioPg1.html')
 
 
 
@@ -2900,8 +2905,8 @@ def create_consultation():
             session.clear()
             return redirect(url_for('home'))
     else:
-        #should redirect back to the consultation page and state that you need to login to create an appointment
         return redirect(url_for('login'))
+
 
 
 @app.route('/retrieveConsultation')
@@ -2997,8 +3002,9 @@ def retrieve_consultation():
             session.clear()
             return redirect(url_for('home'))
     else:
-        #Should redirect to a page notifying you cannot set appointment without logging in
-        return redirect(url_for('login'))
+        session["notloggedin"] = True
+        #should redirect back to the consultation page and state that you need to login to create an appointment
+        return redirect(url_for('consultatioPg1'))
 
 @app.route('/updateConsultation/<int:id>/', methods=['GET', 'POST'])
 def update_consultation(id):
