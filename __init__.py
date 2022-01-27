@@ -2207,6 +2207,7 @@ def store():
         else:
             session.clear()
             return redirect(url_for("login"))
+
     elif "staff" in session:
         StaffName = session["staff"]
         valid_session , name = validate_session_open_file_admin(StaffName)
@@ -2258,6 +2259,7 @@ def search():
         else:
             session.clear()
             return redirect(url_for('login'))
+
     elif "staff" in session:
         StaffName = session["staff"]
         valid_session , name = validate_session_open_file_admin(StaffName)
@@ -2278,6 +2280,8 @@ def search():
             return redirect(url_for('login'))
     else:
         query = request.args.get('query')
+        form = Forms.CategoryFilter(request.form)
+        form2 = Forms.PriceFilter(request.form)
 
         if query:
             products = Product.query.filter(Product.name.contains(query) |
@@ -2287,7 +2291,25 @@ def search():
         else:
             products = Product.query.all()
 
-        return render_template('user/guest/joshua/GuestStore/search.html', products=products)
+        # filters (only works when 1 is checked)
+        if request.method == "POST":
+            if form.Medicine_category.data:
+                products = Product.query.filter(Product.category.contains("Medicine"))
+
+            if form.TestKit_category.data:
+                products = Product.query.filter(Product.category.contains("Test Kit"))
+
+            if form.Supplement_category.data:
+                products = Product.query.filter(Product.category.contains("Supplement"))
+
+            if form.FirstAid_category.data:
+                products = Product.query.filter(Product.category.contains("First Aid"))
+
+        # filter for price range
+        if request.method == 'POST' and form2.validate():
+            products = Product.query.filter(form2.price_range_lower.data < Product.price, Product.price < form2.price_range_upper.data)
+
+        return render_template('user/guest/joshua/GuestStore/search.html', products=products, form = form, form2 = form2 )
 
 @app.route('/view_product', methods=["GET", "POST"])
 def view_product():
@@ -2430,7 +2452,7 @@ def create_product():
         if valid_session:
             create_product_form = Forms.CreateProduct(request.form)
             if request.method == 'POST' and create_product_form.validate():
-                save_picture(create_product_form.picture.data)
+                # save_picture(create_product_form.picture.data)
                 product = Product(img_file_name = create_product_form.img_file_name.data, name = create_product_form.name.data, price = create_product_form.price.data, category = create_product_form.category.data, short_description = create_product_form.short_description.data, long_description = create_product_form.long_description.data)
                 j_db.session.add(product)
                 j_db.session.commit()

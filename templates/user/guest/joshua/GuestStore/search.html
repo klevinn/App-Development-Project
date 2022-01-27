@@ -7,6 +7,7 @@
 {% block title %}Search Results | DoctorOnTheGo{% endblock %}
 
 {% block content %}
+{% from "includes/_formHelper.html" import render_field %}
 
 <form method="GET" class="search-bar" action="search">
     <input type="search" placeholder="Search" name="query">
@@ -23,23 +24,59 @@
                     <div class="heading d-flex justify-content-between align-items-center">
                         <h6 class="text-uppercase">Category</h6> <span>--</span>
                     </div>
-                    <div class="d-flex justify-content-between mt-2">
-                        <div class="form-check"> <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"> <label class="form-check-label" for="flexCheckDefault"> Test Kit </label> </div>
-                    </div>
-                    <div class="d-flex justify-content-between mt-2">
-                        <div class="form-check"> <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"> <label class="form-check-label" for="flexCheckDefault"> Medicine </label> </div>
-                    </div>
-                    <div class="d-flex justify-content-between mt-2">
-                        <div class="form-check"> <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"> <label class="form-check-label" for="flexCheckDefault"> Supplement </label> </div>
-                    </div>
-                    <div class="d-flex justify-content-between mt-2">
-                        <div class="form-check"> <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"> <label class="form-check-label" for="flexCheckDefault"> First Aid </label> </div>
-                    </div>
+
+                    <form action="", method="POST">
+                        <div class="d-flex justify-content-between mt-2">
+                            <div class="form-check">
+                                {{ render_field(form.Medicine_category, class="form-check-input") }}
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-2">
+                            <div class="form-check">
+                                {{ render_field(form.TestKit_category, class="form-check-input") }}
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-2">
+                            <div class="form-check">
+                                {{ render_field(form.Supplement_category, class="form-check-input") }}
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-2">
+                            <div class="form-check">
+                                {{ render_field(form.FirstAid_category, class="form-check-input") }}
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-2">
+                            {{ render_field(form.apply_filters, class="btn btn-dark float-end") }}
+                        </div>
+                    </form>
                 </div>
                 <div class="pricerange p-2">
                     <div class="heading d-flex justify-content-between align-items-center">
                         <h6 class="text-uppercase">Price range</h6> <span>--</span>
                     </div>
+
+                    <form action="", method="POST">
+                        <div class="d-flex justify-content-between mt-2">
+                            <div class="form-check">
+                                {{ render_field(form2.price_range_lower, class="form-control") }}
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-2">
+                            <div class="form-check">
+                                {{ render_field(form2.price_range_upper, class="form-control") }}
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-2">
+                            {{ render_field(form2.apply_filters, class="btn btn-dark float-end") }}
+                        </div>
+                    </form>
                 </div>
             </div>
 

@@ -1,4 +1,5 @@
-from wtforms import Form, StringField, RadioField, SelectField, TextAreaField, validators, MonthField, EmailField, DateField, IntegerField, FloatField, DecimalField
+from ast import In
+from wtforms import Form, StringField, RadioField, SelectField, TextAreaField, validators, MonthField, EmailField, DateField, IntegerField, FloatField, DecimalField, BooleanField, SubmitField
 #Joshua
 from flask_wtf.file import FileField, FileAllowed
 #XuZhi
@@ -90,8 +91,17 @@ class CreateProduct(Form):
     stock = IntegerField("Stock:", [validators.DataRequired()])
     picture = FileField('Upload Product Picture', validators=[FileAllowed(['jpg', 'jpeg', 'png'])])
 
-class Filter(Form):
-    pass
+class CategoryFilter(Form):
+    Medicine_category = BooleanField("Medicine")
+    TestKit_category = BooleanField("Test Kit")
+    Supplement_category = BooleanField("Supplement")
+    FirstAid_category = BooleanField("First Aid")
+    apply_filters = SubmitField("Apply Filters")
+
+class PriceFilter(Form):
+    price_range_lower = FloatField("From($)", [validators.DataRequired()])
+    price_range_upper = FloatField("To($):", [validators.DataRequired()])
+    apply_filters = SubmitField("Apply Filters")
 
 #Done By xuzhi
 class CreateForm(Form):
