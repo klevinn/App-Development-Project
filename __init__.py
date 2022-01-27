@@ -101,6 +101,7 @@ def retriveuser(dic):
 
 @app.route('/' , methods=["GET","POST"])
 def home():
+    session.pop("Customer", None)
     if 'user' in session:
         idNumber = session["user"]
         usersession = True
@@ -266,7 +267,10 @@ def login():
         else:
             return render_template('user/guest/login.html' , form=login_form)
     else:
-        return redirect(url_for("home"))
+        if "user" in session:
+            return redirect(url_for("user"))
+        else:
+            return redirect(url_for('staffapp'))
 
 @app.route('/logout')
 def logout():
@@ -352,7 +356,7 @@ def signup():
         else:
             return render_template('user/guest/signup.html',  form=signup_form)
     else:
-        return redirect(url_for("home"))
+        return redirect(url_for("user"))
 
 
 @app.route('/signup2' , methods=["GET","POST"])
@@ -651,90 +655,6 @@ def passwordreset(token):
         print("Token No Longer Valid")
         return redirect(url_for('home'))
 
-"""
-POTENTIAL PASSWORD RESET (Email sent and given link)
-
-@app.route('/passwordreset', methods = ["GET","POST"])
-def passwordreset():
-    if "reset" in session:
-        reset_password = Forms.CreateResetPWForm(request.form)
-        if request.method =="POST" and reset_password.validate():
-            checkEmail = session["reset"]
-            banned = False
-            validemail = False
-            correct_email = ''
-            password_confirm = reset_password.confirm_password.data
-            passwordInput = reset_password.new_password.data
-            emailInput = Sanitise(reset_password.email.data.lower())
-
-            if checkEmail == emailInput:
-                correct_email = True
-            else:
-                correct_email = False
-
-                #To determine if passwords are matched or not
-            if password_confirm == passwordInput:
-                matched_pw = False
-                pw_hash = bcrypt.generate_password_hash(passwordInput)
-                #Console
-                print("Matched Passwords")
-            else:
-                matched_pw = True
-                #Console
-                print("Password not matched")
-
-            userDict = {}
-            db = shelve.open("user", "c")
-
-            try:
-                if 'Users' in db:
-                    userDict = db['Users']
-                else:
-                    db["Users"] = userDict
-            except:
-                print("Error in retrieving Users from user.db")
-            
-            for key in userDict:
-                #getting email stored in the shelve
-                emailinshelve = userDict[key].get_email()
-                ban_status = userDict[key].get_ban_status()
-                #comparing the data and seeing if matched
-                if emailInput == emailinshelve.lower():
-                    email_key = userDict[key]
-                    validemail = True #As previously mentioned, set to true if found in shelve
-                    #Console Checking
-                    print("Registered Email & Inputted Email: ", emailinshelve, emailInput)
-                    if ban_status == True:
-                        banned = True
-                    break
-
-            if (matched_pw == False) and (validemail == True) and (correct_email == True):
-                if banned != True:
-                        print("Reset Password")
-                        email_key.set_password(pw_hash)
-                        db['Users'] = userDict
-                        db.close()
-                        session.pop('reset')
-                        return render_template("user/guest/passwordreset.html", form = reset_password , sent = True)
-                else:
-                    db.close()
-                    return render_template('user/guest/passwordreset.html', form=reset_password, banned = banned, sent = False) 
-            else:
-                db.close()
-                return render_template('user/guest/passwordreset.html', form=reset_password, matched_pw=matched_pw, banned = banned, validemail= False, sent = False, correct_email = correct_email) 
-
-        else:
-            return render_template("user/guest/passwordreset.html", form=reset_password, sent = False)
-    else:
-        return redirect(url_for('home'))
-"""
-"""
-Email Verification
-@app.route('/emailVerify/<token>', methods =["GET","POST"])
-def emailVerify(token):
-    return render_template("user/loggedin/emailverification.html")
-
-"""
 """ USER PROFILE SETTINGS DONE BY CALVIN"""
 
 @app.route('/user' , methods=["GET","POST"])
@@ -1419,8 +1339,10 @@ def deleteAddress():
 
 """ADMIN ACCOUNT SETTINGS DONE MY CALVIN"""
 
-@app.route('/staffapp' , methods=["GET","POST"])
-def staffapp():
+#https://www.blog.pythonlibrary.org/2017/12/13/flask-101-how-to-add-a-search-form/
+
+@app.route('/staffapp/<int:page>' , methods=["GET","POST"])
+def staffapp(page=1):
     if "staff" in session:
         StaffName = session["staff"]
         valid_session, name = validate_session_open_file_admin(StaffName)
@@ -1450,12 +1372,33 @@ def staffapp():
 
             db.close()
 
+            display_dict = {}
+            page_num = 1
             customers_list = []
             for key in customers_dict:
-                customer = customers_dict.get(key)
-                customers_list.append(customer)
+                if len(customers_list) == 5:
+                    display_dict[page_num] = customers_list
+                    page_num += 1
 
-            return render_template('user/staff/staffappoint.html' , staff = name, count=len(customers_list), customers_list=customers_list)
+                    customers_list = []
+                    appoint = customers_dict.get(key)
+                    customers_list.append(appoint)
+                    display_dict[page_num] = customers_list
+                else:
+                    appoint = customers_dict.get(key)
+                    customers_list.append(appoint)
+                    display_dict[page_num] = customers_list
+
+            max_value = 0
+            empty = True
+            if len(display_dict) != 0:
+                customers_list = display_dict[page]
+                all_keys = display_dict.keys()
+                max_value = max(all_keys)
+                empty = False
+
+
+            return render_template('user/staff/staffappoint.html' , staff = name, count=len(customers_list), customers_list=customers_list, display_dict = display_dict, page=page, max_value=max_value, empty = empty)
         else:
             session.clear()
             return redirect(url_for("home"))
@@ -1506,31 +1449,6 @@ def stafffeed(page=1):
                     feedback = feedback_dict.get(key)
                     feedback_list.append(feedback)
                     display_dict[page_num] = feedback_list
-            """
-            feed = open("forsimulation.txt", 'r')
-            line = feed.read()
-            test = line.split(', \n')
-            print(test)
-            for i in test:
-                if len(feedback_list) == 5:
-                    display = i.split(", ")
-                    feedback_list.append(display)
-                    print(feedback_list)
-
-                    display_dict[page_num] = feedback_list
-                    page_num += 1
-
-                    feedback_list = []
-                    display = i.split(", ")
-                    print(display, "HELLo")
-                    #feedback_list.append(display)
-                    display_dict[page_num] = feedback_list
-                else:
-                    display = i.split(", ")
-                    feedback_list.append(display)
-                    display_dict[page_num] = feedback_list
-                    feed.close()
-            """
 
             max_value = 0
             empty = True
@@ -2556,42 +2474,293 @@ def edit_product():
 
 @app.route("/Omni")
 def Omni():
-    return render_template('user/guest/xuzhi/Omni.html')
+    if "user" in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
+
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+        
+
+        UserName =  get_user_name(idNumber, users_dict)
+        av = users_dict[idNumber].get_profile_pic()
+        valid_session = validate_session(idNumber, users_dict)
+        db.close()
+        if valid_session:
+            return render_template('user/guest/xuzhi/Omni.html', user = UserName, av=av, usersession = True)
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+    elif "staff" in session:
+        StaffName = session["staff"]
+        valid_session, name = validate_session_open_file_admin(StaffName)
+        if valid_session:
+            return render_template('user/guest/xuzhi/Omni.html', staff= name, staffsession = True)
+        else:
+            return redirect(url_for('home'))
+    else:
+        return render_template('user/guest/xuzhi/Omni.html')
 
 
 @app.route("/Background")
 def Background():
-    return render_template('user/guest/xuzhi/Background.html')
+    if "user" in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
+
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+        
+
+        UserName =  get_user_name(idNumber, users_dict)
+        av = users_dict[idNumber].get_profile_pic()
+        valid_session = validate_session(idNumber, users_dict)
+        db.close()
+        if valid_session:
+            return render_template('user/guest/xuzhi/Background.html', user = UserName, av=av, usersession = True)
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+    elif "staff" in session:
+        StaffName = session["staff"]
+        valid_session, name = validate_session_open_file_admin(StaffName)
+        if valid_session:
+            return render_template('user/guest/xuzhi/Background.html', staff = name, staffsession = True)
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+    else:
+        return render_template('user/guest/xuzhi/Background.html')
 
 
 @app.route("/Measure")
 def Measure():
-    return render_template('user/guest/xuzhi/Measure.html')
+    if "user" in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
+
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+        
+
+        UserName =  get_user_name(idNumber, users_dict)
+        av = users_dict[idNumber].get_profile_pic()
+        valid_session = validate_session(idNumber, users_dict)
+        db.close()
+        if valid_session:
+            return render_template('user/guest/xuzhi/Measure.html', user = UserName, av=av, usersession = True)
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+    elif "staff" in session:
+        StaffName = session["staff"]
+        valid_session, name = validate_session_open_file_admin(StaffName)
+        if valid_session:
+            return render_template('user/guest/xuzhi/Measure.html', staff = name, staffsession = True)
+        else:
+            return redirect(url_for('home'))
+    else:
+        return render_template('user/guest/xuzhi/Measure.html')
+
 
 @app.route("/MOHnews")
 def MOHnews():
-    return render_template("user/guest/xuzhi/MOHnews.html")
+    if "user" in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
+
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+        
+
+        UserName =  get_user_name(idNumber, users_dict)
+        av = users_dict[idNumber].get_profile_pic()
+        valid_session = validate_session(idNumber, users_dict)
+        db.close()
+        if valid_session:
+            return render_template("user/guest/xuzhi/MOHnews.html", user = UserName, av=av, usersession = True)
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+    elif "staff" in session:
+        StaffName = session["staff"]
+        valid_session, name = validate_session_open_file_admin(StaffName)
+        if valid_session:
+            return render_template("user/guest/xuzhi/MOHnews.html", staff = name, staffsession = True)
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+    else:
+        return render_template("user/guest/xuzhi/MOHnews.html")
 
 @app.route("/Vac")
 def Vac():
-    return render_template("user/guest/xuzhi/Vac.html")
+    if "user" in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
 
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+        
+
+        UserName =  get_user_name(idNumber, users_dict)
+        av = users_dict[idNumber].get_profile_pic()
+        valid_session = validate_session(idNumber, users_dict)
+        db.close()
+        if valid_session:
+            return render_template("user/guest/xuzhi/Vac.html", user = UserName, av=av, usersession = True)
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+    elif "staff" in session:
+        StaffName = session["staff"]
+        valid_session, name = validate_session_open_file_admin(StaffName)
+        if valid_session:
+            return render_template("user/guest/xuzhi/Vac.html", staff = name, staffsession = True)
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+    else:
+        return render_template("user/guest/xuzhi/Vac.html")
 
 @app.route("/World")
 def World():
-    return render_template("user/guest/xuzhi/World.html")
+    if "user" in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
+
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+        
+
+        UserName =  get_user_name(idNumber, users_dict)
+        av = users_dict[idNumber].get_profile_pic()
+        valid_session = validate_session(idNumber, users_dict)
+        db.close()
+        if valid_session:
+            return render_template("user/guest/xuzhi/World.html", user = UserName, av=av, usersession = True)
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+
+    elif "staff" in session:
+        StaffName = session["staff"]
+        valid_session, name = validate_session_open_file_admin(StaffName)
+        if valid_session:
+            return render_template("user/guest/xuzhi/World.html", staff = name, staffsession = True)
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+    else:
+        return render_template("user/guest/xuzhi/World.html")
 
 @app.route("/COVIDdata")
 def COVIDdata():
-    return render_template('user/guest/xuzhi/COVIDdata.html')
+    if "user" in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
 
-@app.route('/contactUs')
-def contact_us():
-    return render_template('user/guest/xuzhi/contactUs.html')
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+        
+
+        UserName =  get_user_name(idNumber, users_dict)
+        av = users_dict[idNumber].get_profile_pic()
+        valid_session = validate_session(idNumber, users_dict)
+        db.close()
+        if valid_session:
+            return render_template('user/guest/xuzhi/COVIDdata.html', user = UserName, av=av, usersession = True)
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+    elif "staff" in session:
+        StaffName = session["staff"]
+        valid_session, name = validate_session_open_file_admin(StaffName)
+        if valid_session:
+            return render_template('user/guest/xuzhi/COVIDdata.html', staff = name, staffsession = True)
+        else:
+            return redirect(url_for('home'))
+    else:
+        return render_template('user/guest/xuzhi/COVIDdata.html')
 
 @app.route('/New19')
 def New19():
-    return render_template('user/guest/xuzhi/New19.html')
+    if "user" in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
+
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+        
+
+        UserName =  get_user_name(idNumber, users_dict)
+        av = users_dict[idNumber].get_profile_pic()
+        valid_session = validate_session(idNumber, users_dict)
+        db.close()
+        if valid_session:
+            return render_template('user/guest/xuzhi/New19.html', user = UserName, av=av, usersession = True)
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+    elif "staff" in session:
+        StaffName = session["staff"]
+        valid_session, name = validate_session_open_file_admin(StaffName)
+        if valid_session:
+            return render_template('user/guest/xuzhi/New19.html', staff= name, staffsession = True)
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+    else:
+        return render_template('user/guest/xuzhi/New19.html')
+
 
 @app.route('/consultatioPg1')
 def consultatioPg1():
@@ -2630,44 +2799,6 @@ def consultatioPg1():
         return render_template('user/guest/xuzhi/consultatioPg1.html')
 
 
-
-"""
-@app.route('/createConsultation', methods=['GET', 'POST'])
-def create_consultation():
-    create_customer_form = Forms.CreateForm(request.form)
-    if request.method == 'POST' and create_customer_form.validate():
-        customers_dict = {}
-        db = shelve.open('user', 'c')
-
-        try:
-            if 'Customers' in db:
-                customers_dict = db['Customers']
-            else:
-                db['Customers'] = customers_dict
-        except:
-            print("Error in retrieving Customers from customer.db.")
-
-
-        username= session['user']
-        consultation = Customer.Customer(create_customer_form.first_name.data, create_customer_form.last_name.data,
-                                     create_customer_form.gender.data,
-                                     create_customer_form.remarks.data, create_customer_form.email.data,
-                                     create_customer_form.date_joined.data,
-                                     create_customer_form.doc.data, username
-
-
-
-
-                                         )
-        customers_dict[consultation.get_customer_id()] = consultation
-        db['Customers'] = customers_dict
-
-        db.close()
-
-        return redirect(url_for('retrieve_consultation'))
-    return render_template('user/guest/xuzhi/createConsultation.html', form=create_customer_form)
-
-"""
 
 @app.route('/createConsultation', methods=['GET', 'POST'])
 def create_consultation():

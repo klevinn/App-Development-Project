@@ -1,5 +1,11 @@
-
-{% extends "default_base.html" %} 
+{% if staffsession %}
+{% extends "admin_base.html" %}
+{% elif usersession %}
+{% extends "user_base.html" %}
+{% else %}
+{% extends "default_base.html" %}
+{% endif %}
+{% block title %}DoctorOnTheGo - CovidData {% endblock %}
 {% block content %}
 <style>
 

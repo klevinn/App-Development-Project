@@ -1,6 +1,6 @@
 {% extends "admin_base.html" %}
 {% block head %}
-<link rel="stylesheet" href="static/CSS/staff.css"> {% endblock %}
+<link rel="stylesheet" href="{{ url_for('static',filename='CSS/staff.css') }}"> {% endblock %}
 {% block title %}Staff - Appointments | DoctorOnTheGo{% endblock %}
 
 {% block content %}
@@ -72,6 +72,7 @@
         <div class="row">
           <h3>Appointments Made</h3>
           <div id="Appointments">
+            {% if empty == False %}
             {% for con in customers_list %}
             <div class="row table-responsive">
               <table class="table table-striped">
@@ -170,6 +171,48 @@
             </div>
             <hr>
             {% endfor %}
+            <nav aria-label="Page navigation example" style="margin-top:10px;">
+              <ul class="pagination justify-content-center">
+                 {% if page == 1 %}
+                 <li class="page-item disabled">
+                    <a class="page-link" href="#" aria-label="Previous">
+                       <span aria-hidden="true">&laquo;</span>
+                    </a>
+                 </li>
+                 {% else %}
+                 <li class="page-item">
+                    <a class="page-link" href="{{ url_for('staffapp', page=page-1) }}" aria-label="Previous">
+                       <span aria-hidden="true">&laquo;</span>
+                    </a>
+                 </li>
+                 {% endif %}
+                 {% for key in display_dict %}
+                 {% if page == key %}
+                 <li class="page-item active"><a class="page-link" href="{{ url_for('staffapp', page=key) }}">{{
+                       key }}</a></li>
+                 {% else %}
+                 <li class="page-item"><a class="page-link" href="{{ url_for('staffapp', page=key) }}">{{ key
+                       }}</a></li>
+                 {% endif %}
+                 {% endfor %}
+                 {% if page == max_value %}
+                 <li class="page-item disabled">
+                    <a class="page-link" href="#" aria-label="Next">
+                       <span aria-hidden="true">&raquo;</span>
+                    </a>
+                 </li>
+                 {% else %}
+                 <li class="page-item">
+                    <a class="page-link" href="{{ url_for('staffapp', page=page+1) }}" aria-label="Next">
+                       <span aria-hidden="true">&raquo;</span>
+                    </a>
+                 </li>
+                 {% endif %}
+              </ul>
+           </nav>
+           {% else %}
+           <h3 style="text-align:center">NO APPOINTMENTS MADE</h3>
+           {% endif %}
             </div>
           </div>
         </div>

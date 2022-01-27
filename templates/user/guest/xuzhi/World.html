@@ -1,5 +1,11 @@
+{% if staffsession %}
+{% extends "admin_base.html" %}
+{% elif usersession %}
+{% extends "user_base.html" %}
+{% else %}
 {% extends "default_base.html" %}
-{% block title %}World {% endblock %}
+{% endif %}
+{% block title %}DoctorOnTheGo - World {% endblock %}
 
 {% block content %}
 <style>

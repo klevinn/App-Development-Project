@@ -1,5 +1,11 @@
+{% if staffsession %}
+{% extends "admin_base.html" %}
+{% elif usersession %}
+{% extends "user_base.html" %}
+{% else %}
 {% extends "default_base.html" %}
-{% block title %}MOH News{% endblock %}
+{% endif %}
+{% block title %}DoctorOnTheGo - MOH News{% endblock %}
 
 {% block content %}
 <style>
