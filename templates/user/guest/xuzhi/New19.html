@@ -9,53 +9,67 @@
 
 {% block content %}
 <style>
-    .Container{
+        .container {
 
 
-    margin-left: auto;
-    margin-right: auto;
-    width: 50em;
+                margin-left: auto;
+                margin-right: auto;
+                width: 50em;
 
-    }
+        }
 
-p{
-padding:10px;
-}
+        p {
+                padding: 10px;
+        }
 </style>
-<div class="Container">
+
+<div class="container">
+        <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/News">News</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Omni</li>
+                </ol>
+        </nav>
+        <p class="text1">
+                SINGAPORE: Singapore reported 811 new COVID-19 cases as of noon on Saturday (Jan 8), including 544
+                imported infections.
+
+                There were no fatalities, with the death toll from coronavirus complications remaining at 837, according
+                to the latest infection statistics on the Ministry of Health's (MOH) website.
+        </p>
+
+        <img src="{{url_for('static', filename='images/xuzhi/merlin_187916850_c5d3b558-8b52-42d5-8865-658a9463d86f-superJumbo.jpg')}}"
+                width="750" height="500">
+
+        <p class="text2">
+                Saturday’s case count was up from the 777 infections reported on Friday.
+
+                Among the new cases reported on Saturday, 267 were locally transmitted, comprising 253 in the community
+                and 14 in migrant worker's dormitories.
+
+                A total of 404 new Omicron infections were also confirmed on Saturday, comprising 243 imported cases and
+                161 local cases.
+
+                The daily COVID-19 cases and new confirmed Omicron cases are presented as two separate sets of data on
+                MOH's website.
+        </p>
 
 
-<p class="text1">
-SINGAPORE: Singapore reported 811 new COVID-19 cases as of noon on Saturday (Jan 8), including 544 imported infections.
-
-There were no fatalities, with the death toll from coronavirus complications remaining at 837, according to the latest infection statistics on the Ministry of Health's (MOH) website.
-</p>
-
- <img src="{{url_for('static', filename='images/xuzhi/merlin_187916850_c5d3b558-8b52-42d5-8865-658a9463d86f-superJumbo.jpg')}}" width="750" height="500">
-
-<p class="text2">
-Saturday’s case count was up from the 777 infections reported on Friday.
-
-Among the new cases reported on Saturday, 267 were locally transmitted, comprising 253 in the community and 14 in migrant worker's dormitories.
-
-A total of 404 new Omicron infections were also confirmed on Saturday, comprising 243 imported cases and 161 local cases.
-
-The daily COVID-19 cases and new confirmed Omicron cases are presented as two separate sets of data on MOH's website.
-</p>
-
-
-
-    <p class="text3">
-
-
-        The weekly infection growth rate on Saturday was 1.73, up from Friday's 1.69. The statistic - viewed by authorities as a key indicator in calibrating COVID-19 measures - refers to the ratio of community cases for the past week over the week before.
-</p>
 
         <p class="text3">
 
-A rate of more than 1 means that the number of new weekly cases is rising. The weekly infection growth rate surpassed 1 for the first time since Nov 12 on Tuesday.
 
-As of Saturday, Singapore has recorded 284,802 COVID-19 cases since the start of the pandemic.
+                The weekly infection growth rate on Saturday was 1.73, up from Friday's 1.69. The statistic - viewed by
+                authorities as a key indicator in calibrating COVID-19 measures - refers to the ratio of community cases
+                for the past week over the week before.
+        </p>
+
+        <p class="text3">
+
+                A rate of more than 1 means that the number of new weekly cases is rising. The weekly infection growth
+                rate surpassed 1 for the first time since Nov 12 on Tuesday.
+
+                As of Saturday, Singapore has recorded 284,802 COVID-19 cases since the start of the pandemic.
         </p>
 </div>
 

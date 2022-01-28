@@ -18,6 +18,8 @@ import urllib.request
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 #Dicebear for temporary profile picture
 from src import Avatar
+#For simulation
+import random
 
 #For joshua
 from flask_sqlalchemy import SQLAlchemy
@@ -1569,10 +1571,21 @@ def staffprod():
     if "staff" in session:
         StaffName = session["staff"]
         valid_session, name = validate_session_open_file_admin(StaffName)
+        data = []
         if valid_session:
+            products = Product.query.all()
+            for product in products:
+                sales = random.randint(1,10)
+                new = (product.name, product.stock-sales)
+                data.append(new)
+            
+            labels = [row[0] for row in data]
+            values = [row[1] for row in data]
+            current = datetime.now()
+            current = current.strftime("%d/%m/%Y %H:%M:%S")
             #https://www.youtube.com/watch?v=E2hytuQvLlE&ab_channel=teclado
             #in cart, must set it so that the inventory minuses  and just take that code and append
-            return render_template('user/staff/staffproduct.html' , staff = name)
+            return render_template('user/staff/staffproduct.html' , staff = name, labels = labels, values= values, current = current)
         else:
             session.clear()
             return redirect(url_for('home'))

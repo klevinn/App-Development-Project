@@ -133,6 +133,14 @@
   .display-4 {
     text-align: center;
   }
+  @media screen and (max-width:616px){
+      #responsive{
+          height:100%;
+          width:100%;
+      }
+    }
+
+
 </style>
 <div class="upper_container">
   <h1 class="display-4">News</h1>
@@ -223,14 +231,14 @@
     <a target="nav-link" href="/MOHnews">
       <img
         src="{{url_for('static', filename='images/xuzhi/2022-01-05t223545z_1_lynxmpei040x9_rtroptp_3_health-coronavirus-usa-children.jpg')}}"
-        width="600" height="400">
+        width="600" height="400" id="responsive">
     </a>
     <div class="desc">COVID-19 booster shot needed to maintain fully vaccinated status from Feb 14.</div>
   </div>
 
   <div class="col">
     <a target="nav-link" href="/Omni">
-      <img src="{{url_for('static', filename='images/xuzhi/dsc_8144.jpg')}}" width="600" height="400">
+      <img src="{{url_for('static', filename='images/xuzhi/dsc_8144.jpg')}}" width="600" height="400" id="responsive">
     </a>
     <div class="desc">Omicron Variant: What You Need to Know .</div>
   </div>
@@ -241,7 +249,7 @@
 <h1 style="margin-top:100px; text-align:center;">All Articles</h1>
 <div class="row" style="margin:0 10px 0 10px; background:white; padding:25px; border-radius:15px;">
   <div class="col-md">
-    <img src="{{url_for('static', filename='images/xuzhi/2022-01-05t223545z_1_lynxmpei040x9_rtroptp_3_health-coronavirus-usa-children.jpg')}}" alt="" width="500" height="275">
+    <img src="{{url_for('static', filename='images/xuzhi/2022-01-05t223545z_1_lynxmpei040x9_rtroptp_3_health-coronavirus-usa-children.jpg')}}" alt="" width="500" height="275" id="responsive">
   </div>
   <div class="col-md">
     <h2>Covid 19 Article</h2>
@@ -257,13 +265,13 @@
   <a href="/Omni" class="btn btn-primary">Go To Article</a>
   </div>
   <div class="col-md">
-    <img src="{{url_for('static', filename='images/xuzhi/dsc_8144.jpg')}}" alt="" width="500" height="275">
+    <img src="{{url_for('static', filename='images/xuzhi/dsc_8144.jpg')}}" alt="" width="500" height="275" id="responsive">
   </div>
 </div>
 
 <div class="row" style="margin:100px 10px 0 10px; background:white; padding:25px; border-radius:15px;">
   <div class="col-md">
-    <img src="{{url_for('static', filename='images/xuzhi/vaccination_1.jpg')}}" alt="" width="500" height="275">
+    <img src="{{url_for('static', filename='images/xuzhi/vaccination_1.jpg')}}" alt="" width="500" height="275" id="responsive">
   </div>
   <div class="col-md">
     <h2>Covid 19 Article</h2>
@@ -279,7 +287,7 @@
   <a href="/World" class="btn btn-primary">Go To Article</a>
   </div>
   <div class="col-md">
-    <img src="{{url_for('static', filename='images/xuzhi/france-coronavirus_4.jpg')}}" alt="" width="500" height="275">
+    <img src="{{url_for('static', filename='images/xuzhi/france-coronavirus_4.jpg')}}" alt="" width="500" height="275" id="responsive">
   </div>
 </div>
 {% endblock %}

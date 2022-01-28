@@ -74,17 +74,17 @@
           <h3>Inventory Management</h3>
           <div id="Appointments">
             <canvas id="barChart"></canvas>
-            <h4 style="text-align:center">Last Updated : </h2>
+            <h4 style="text-align:center">Last Updated : {{ current }}</h2>
             <script>
               var ctx = document.getElementById("barChart").getContext("2d");
               var barChart = new Chart(ctx, {
                 type: 'bar',
                 data:{
-                  labels:["product", "product1", "product2", "product3", "product4", "product5"],
+                  labels:{{ labels | safe }},
                   datasets: [
                     {
                       label: "Number of Products sold",
-                      data : [0, 10, 5, 12, 2, 20],
+                      data : {{ values | safe }},
                     }
                   ],
                 },
