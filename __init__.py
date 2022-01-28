@@ -50,6 +50,7 @@ bcrypt = Bcrypt(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///products.db'
 j_db = SQLAlchemy(app)
 
+#Mail done by calvin
 #For sending of emails
 app.config['MAIL_SERVER']='smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
@@ -61,6 +62,7 @@ app.config['MAIL_USE_SSL'] = True
 
 mail = Mail(app)
 
+#Session Integration done by Calvin (if "user" in session & {% if usersession %} in html et ctr)
 #Secret Key Required for sessions
 app.secret_key = "session_key"
 #Time Token Creator = 600 seconds
@@ -99,6 +101,7 @@ def retriveuser(dic):
     a_subset = {key: dic[key] for key in extracts}
 #End of by Xuzhi
 
+"""HOME PAGE BY CALVIN"""
 @app.route('/' , methods=["GET","POST"])
 def home():
     session.pop("Customer", None)
@@ -2103,7 +2106,7 @@ def error503(error):
 
 
 # joshua's work (store, all guest for now, i plan to make products crud for admin, figuring out images related stuff)
-
+#Integrated by Calvin
 # app routes for store (for both user and logged in)
 @app.route('/store', methods=["GET","POST"])
 def store():
@@ -2476,7 +2479,7 @@ def edit_product():
 
 
 #XuZhi Code
-#Semi integrated
+#Integrated by Calvin
 
 @app.route("/Omni")
 def Omni():
@@ -2810,7 +2813,8 @@ def consultatioPg1():
             return render_template('user/guest/xuzhi/consultatioPg1.html', consultactive = True)
 
 
-
+#Code logic by xuzhi
+#Shortened by Calvin, made more optimal
 @app.route('/createConsultation', methods=['GET', 'POST'])
 def create_consultation():
     if 'user' in session:
@@ -2844,6 +2848,7 @@ def create_consultation():
                         db['Customers'] = customers_dict
                 except:
                     print("Error in retrieving Customers from customer.db.")
+
 
                 customers_list = []
                 appointment = True
@@ -3583,6 +3588,7 @@ def News():
         values = [row[1] for row in data]
         return render_template('user/guest/xuzhi/News.html', labels=labels, values=values, newsactive = True)
 
+#Reset db if needed
 @app.route('/resetdb')
 def resetdb():
     customer_dict = {}
