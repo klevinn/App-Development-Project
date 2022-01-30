@@ -18,6 +18,8 @@ import urllib.request
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 #Dicebear for temporary profile picture
 from src import Avatar
+#for search function
+#from db_setup import init_db, db_session
 #For simulation
 import random
 
@@ -1896,6 +1898,10 @@ def staffaccountlist(page=1):
         db.close()
 
         if valid_session:
+            search = Forms.UserSearchForm(request.form)
+            if request.method == 'POST':
+                return user_search(search)
+            
             display_dict = {}
             page_num = 1
         #Displaying the appending data into the stafflist so that it can be used to display data on the site
@@ -1922,12 +1928,16 @@ def staffaccountlist(page=1):
                 max_value = max(all_keys)
                 empty = False
 
-            return render_template('user/staff/staffaccountlist.html', count=len(user_list), user_list=user_list , display_dict = display_dict, staff = name,  page=page, max_value = max_value, empty = empty)
+            return render_template('user/staff/staffaccountlist.html', count=len(user_list), user_list=user_list , display_dict = display_dict, staff = name,  page=page, max_value = max_value, empty = empty, form =search)
         else:
             session.clear()
             return redirect(url_for('home'))
     else:
         return redirect(url_for('login'))
+
+@app.route('/searchresults')
+def user_search(search):
+    print("hello world")
 
 @app.route('/banUser/<id>' , methods=["GET","POST"])
 #@app.route('/banUser/<int:id>' , methods=["GET","POST"])

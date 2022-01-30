@@ -4,6 +4,7 @@
 {% block title %}Account - List | DoctorOnTheGo{% endblock %}
 
 {% block content %}
+{% from "includes/_formHelper.html" import render_field %}
 <div class="row" id="dashboard">
   <div class="col-lg-3 merge-boxes pe-0">
     <div class="d-flex flex-column flex-shrink-0 p-3" id="sidebar">
@@ -71,6 +72,10 @@
       <div class="container">
         <div class="row">
           <h3>Member Account List</h3>
+          <form action="" method="post" class="d-flex" style="margin-bottom:15px">
+            {{ render_field(form.search, class="form-control me-2", placeholder="Search...") }}
+            <button class="btn btn-info" type="submit">Search</button>
+          </form>
           <div id="Appointments">
             {% if empty == False %}
             {% for user in user_list %}

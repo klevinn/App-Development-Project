@@ -73,6 +73,8 @@ class CreateNewPasswordForm(Form):
     password = PasswordField("New Password:", [validators.Length(min=6, max=20)])
     password_confirm = PasswordField("Confirm Password:", [validators.Length(min=6, max=20)])
 
+class UserSearchForm(Form):
+    search = StringField("")
 
 #Done By Joshua 
 #Done By Joshua
