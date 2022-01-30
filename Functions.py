@@ -1,5 +1,6 @@
 #DOne by Calvin
 import uuid
+import shortuuid
 import random
 from random import randint
 import string
@@ -110,7 +111,9 @@ def generate_staff_id():
     uid = str(uuid.uuid4())
     return uid
 
-
+def generate_user_id():
+    uid = shortuuid.uuid()
+    return uid
 
 """
 def generate_staff_id():

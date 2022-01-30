@@ -39,7 +39,7 @@ import User, Staff, Feedback, Customer
 #Validation Functions
 from Security_Validation import validate_card_number, Sanitise, validate_expiry_date, validate_session, validate_session_open_file_admin, validate_session_admin
 #Functions to shorten code
-from Functions import duplicate_email, duplicate_username, get_user_name, check_banned, fix_unit_number, fix_expiry_year, allowed_file, generate_random_password, generate_staff_id, generate_feedback_id, get_file_extension
+from Functions import duplicate_email, duplicate_username, get_user_name, check_banned, fix_unit_number, fix_expiry_year, allowed_file, generate_random_password, generate_staff_id, generate_feedback_id, get_file_extension, generate_user_id
 
 #Start Of Web Dev
 app = Flask(__name__)
@@ -331,17 +331,22 @@ def signup():
                 user.set_email(emailInput)
                 user.set_password(pw_hash)
                 print(user.get_user_id())
+                user_id = generate_user_id()
                 for key in userDict:
                     useridshelve = userDict[key].get_user_id()
                     print("Running")
+                    if user_id == useridshelve:
+                        user_id = generate_user_id
+                    """
                     if user.get_user_id() != useridshelve and user.get_user_id() < useridshelve:
                         user.set_user_id(user.get_user_id())
                     if user.get_user_id() == useridshelve or user.get_user_id() < useridshelve:
                         user.set_user_id(user.get_user_id() + 1)
+                    """
                         #For Testing
                         #print(str(user.get_user_id()), str(userDict[key].get_user_id()))
                         #print(str(user.get_user_id()) + "Hello1")
-
+                user.set_user_id(user_id)
                 print(user.get_user_id(),  "was the next available user id.")
                 av = Avatar(type="pixel-art-neutral", seed=usernameInput)
                 user.set_profile_pic(av)
@@ -752,7 +757,7 @@ def uploadPic():
                     if file and allowed_file(filename):
                         extension = get_file_extension(filename)
                         print(extension)
-                        filename = ("%d.%s" %(idNumber, extension))
+                        filename = ("%s.%s" %(idNumber, extension))
                         print(filename)
                         print("hello")
                         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
@@ -810,8 +815,8 @@ def resetPfp():
             return redirect(url_for('login'))
     else:
         return redirect(url_for('home'))
-
-@app.route('/deleteAccount/<int:id>', methods=["GET", "POST"])
+@app.route('/deleteAccount/<id>', methods=["GET", "POST"])
+#@app.route('/deleteAccount/<int:id>', methods=["GET", "POST"])
 def delAccount(id):
     if "user" in session:
         idNumber = session["user"]
@@ -1922,7 +1927,8 @@ def staffaccountlist(page=1):
     else:
         return redirect(url_for('login'))
 
-@app.route('/banUser/<int:id>' , methods=["GET","POST"])
+@app.route('/banUser/<id>' , methods=["GET","POST"])
+#@app.route('/banUser/<int:id>' , methods=["GET","POST"])
 def banUser(id):
     if "staff" in session:
         StaffName = session["staff"]
@@ -1963,7 +1969,8 @@ def banUser(id):
     else:
         return redirect(url_for('login'))
 
-@app.route('/unbanUser/<int:id>' , methods=["GET","POST"])
+@app.route('/unbanUser/<id>' , methods=["GET","POST"])
+#@app.route('/unbanUser/<int:id>' , methods=["GET","POST"])
 def unbanUser(id):
     if "staff" in session:
         StaffName = session["staff"]
@@ -2003,7 +2010,8 @@ def unbanUser(id):
     else:
         return redirect(url_for('login'))
 
-@app.route('/resetPasswordUser/<int:id>', methods=["GET", "POST"])
+@app.route('/resetPasswordUser/<id>', methods=["GET", "POST"])
+#@app.route('/resetPasswordUser/<int:id>', methods=["GET", "POST"])
 def resetPassUser(id):
     if "staff" in session:
         StaffName = session["staff"]
@@ -2043,7 +2051,8 @@ def resetPassUser(id):
     else:
         return redirect(url_for('login'))
 
-@app.route('/verifyEmail/<int:id>', methods = ["GET", "POST"])
+@app.route('/verifyEmail/<id>', methods = ["GET", "POST"])
+#@app.route('/verifyEmail/<int:id>', methods = ["GET", "POST"])
 def verifyEmail(id):
     user_dict = {}
     db = shelve.open('user', 'c')
@@ -3086,6 +3095,7 @@ def retrieve_consultation():
         #should redirect back to the consultation page and state that you need to login to create an appointment
         return redirect(url_for('consultatioPg1'))
 
+#@app.route('/updateConsultation/<id>/', methods=['GET', 'POST'])
 @app.route('/updateConsultation/<int:id>/', methods=['GET', 'POST'])
 def update_consultation(id):
     if "user" in session:
@@ -3125,27 +3135,29 @@ def update_consultation(id):
                 samedate = False
                 samedoc = False
                 for key in customer_dict:
-                    customer = customer_dict.get(key)
-                    customers_list.append(customer)
-                    print("form data is "+ str(update_customer_form.date_joined.data))
-                    for customer in customers_list:
-                        if update_customer_form.date_joined.data == customer.get_date():
-                            print("Same Date")
-                            samedate = True
-                            if update_customer_form.time.data == customer.get_time():
-                                print("Same Time")
-                                sametime = True
-                                if update_customer_form.doc.data == customer.get_doc():
-                                    print("Conflicting Appointment")
-                                    samedoc = True
-                                    appointment = False
-                                    break
+                    if customer_dict[key].get_us() != idNumber:
+                        customer = customer_dict.get(key)
+                        customers_list.append(customer)
+                        print("form data is "+ str(update_customer_form.date_joined.data))
+                        for customer in customers_list:
+                            if update_customer_form.date_joined.data == customer.get_date():
+                                print("Same Date")
+                                samedate = True
+                                if update_customer_form.time.data == customer.get_time():
+                                    print("Same Time")
+                                    sametime = True
+                                    if update_customer_form.doc.data == customer.get_doc():
+                                        print("Conflicting Appointment")
+                                        samedoc = True
+                                        appointment = False
+                                        break
+                                    else:
+                                        appointment = True
                                 else:
                                     appointment = True
                             else:
                                 appointment = True
-                        else:
-                            appointment = True
+                
                 if appointment == True:
                     customer = customer_dict.get(id)
                     customer.set_doc(update_customer_form.doc.data)
@@ -3154,10 +3166,10 @@ def update_consultation(id):
                     customer.set_gender(update_customer_form.gender.data)
                     customer.set_remarks(update_customer_form.remarks.data)
                     customer.set_date(update_customer_form.date_joined.data)
-                    customer.set_time(update_customer_form.time.date)
+                    customer.set_time(update_customer_form.time.data)
                     customer.set_email(update_customer_form.email.data)
 
-
+                    #send email telling them details
                     db['Customers'] = customer_dict
                     db.close()
 
@@ -3265,7 +3277,7 @@ def update_consultation(id):
         return redirect(url_for('login'))
 
 
-
+#@app.route('/deleteConsultation/<id>', methods=['POST'])
 @app.route('/deleteConsultation/<int:id>', methods=['POST'])
 def delete_consultation(id):
     if "user" in session:
@@ -3664,8 +3676,8 @@ def News():
 @app.route('/resetdb')
 def resetdb():
     customer_dict = {}
-    db = shelve.open('staff', 'c')
-    db['Users'] = customer_dict
+    db = shelve.open('user', 'c')
+    db['Feedback'] = customer_dict
     return redirect(url_for('home'))
 
 if __name__ == '__main__':
