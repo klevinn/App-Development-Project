@@ -762,6 +762,7 @@ def uploadPic():
                         users_dict[idNumber].set_profile_pic(filepath)
                         db['Users'] = users_dict
                         db.close()
+                        session['change'] = 'Profile Pic'
                         return redirect(url_for('user'))
                     else:
                         db.close()
@@ -810,6 +811,36 @@ def resetPfp():
     else:
         return redirect(url_for('home'))
 
+@app.route('/deleteAccount/<int:id>', methods=["GET", "POST"])
+def delAccount(id):
+    if "user" in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
+
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+
+        
+        valid_session = validate_session(idNumber, users_dict)
+        if valid_session:
+            users_dict.pop(id)
+
+            db['Users'] = users_dict
+            db.close()
+            session.pop("user", None)
+            return redirect(url_for("home"))
+        else:
+            session.clear()
+            return redirect(url_for("home"))
+    else:
+        return redirect(url_for("home"))
+    
 @app.route('/infoedit' , methods=["GET","POST"])
 def userinfo():
     if "user" in session:

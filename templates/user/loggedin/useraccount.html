@@ -37,7 +37,7 @@
                {% if name.get_verified() == True %}
                <button type="button" class="btn btn-success">Verified</button>
                {% else %}
-               <form action="{{ url_for('verifyEmail', id = name.get_user_id() ) }}" method="POST">
+               <form action="{{ url_for('verifyEmail', id = name.get_user_id() ) }}" method="POST" style="float:left;">
                   <button type="Submit" class="btn btn-danger" data-bs-toggle="modal"
                      data-bs-target="#myModal_Verify">Unverified</button>
                   <div class="modal" id="myModal_Verify">
@@ -93,6 +93,36 @@
                      </div>
                   </div>
                </div>
+               <form action="{{ url_for('delAccount', id = name.get_user_id() ) }}" method="POST" style="float:right;">
+                  <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                     data-bs-target="#myModal_Delete">Delete Account</button>
+                  <div class="modal" id="myModal_Delete">
+                     <div class="modal-dialog">
+                        <div class="modal-content">
+
+                           <!-- Modal Header -->
+                           <div class="modal-header">
+                              <h4 class="modal-title">Account Deletion Confirmation</h4>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                           </div>
+
+                           <!-- Modal body -->
+                           <div class="modal-body">
+                              Are you sure you want to delete your account?
+                           </div>
+
+                           <!-- Modal footer -->
+                           <div class="modal-footer">
+                              <input type="submit" value="Delete" class="btn btn-danger">
+                              <button type="button" class="btn btn-secondary"
+                                 data-bs-dismiss="modal">Cancel</button>
+                           </div>
+
+                        </div>
+                     </div>
+                  </div>
+               </form>
+               <br style="clear:both;">
                <div class="d-flex flex-column align-items-center text-center">
                   <img src="{{ av }}" alt="Admin" class="rounded-circle" width="150" height="150">
                   <div class="mt-3">
