@@ -714,7 +714,9 @@ def user():
             db['Users'] = users_dict
             db.close()
 
-            return render_template('user/loggedin/useraccount.html' , user = name, count=len(user_list), user_list=user_list, changed = changed, change = change, av=av)
+            #for testing
+            purchases = 10
+            return render_template('user/loggedin/useraccount.html' , user = name, count=len(user_list), user_list=user_list, changed = changed, change = change, av=av, purchases = purchases)
         else:
             session.clear()
             return redirect(url_for("home"))

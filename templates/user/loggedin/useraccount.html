@@ -32,7 +32,7 @@
    <div class="row gutters-sm">
       <div class="col-md-4 mb-3">
          {% for name in user_list %}
-         <div class="card">
+         <div class="card mb-3">
             <div class="card-body">
                {% if name.get_verified() == True %}
                <button type="button" class="btn btn-success">Verified</button>
@@ -154,6 +154,48 @@
                         </div>
                      </div>
                   </form>
+               </div>
+            </div>
+         </div>
+         <div class="card mb-3">
+            <div class="card-body">
+               <div class="row"><h2 class="text-center">Current Loyalty Pass</h2></div>
+               <div class="row"><h1 class="display-1 text-center">{{purchases}}</h1></div>
+               <div class="row">
+                  <div class="progress">
+                     
+                     {% if purchases == 5 %}
+                     <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" style="width:25%">
+                        5 purchases
+                     </div>
+                     {% elif purchases == 10 %}
+                     <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" style="width:50%">
+                        10 purchases
+                     </div>
+                     {% elif purchases == 15 %}
+                     <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" style="width:75%">
+                        15 purchases
+                     </div>
+                     {% elif purchases ==20 %}
+                     <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" style="width:100%">
+                        20 purchases
+                     </div>
+                     {% endif %}
+            
+                  </div>
+               </div>
+               <div class="row">
+                  
+                  {% if purchases == 5 %}
+                  <h1 class="display-4 text-center">10% discount</h1>
+                  {% elif purchases == 10 %}
+                  <h1 class="display-4 text-center">20% discount</h1>
+                  {% elif purchases == 15 %}
+                  <h1 class="display-4 text-center">30% discount</h1>
+                  {% elif purchases ==20 %}
+                  <h1 class="display-4 text-center">50% discount</h1>
+                  {% endif %}
+      
                </div>
             </div>
          </div>
