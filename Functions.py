@@ -90,6 +90,12 @@ def allowed_file(filename):
     except:
         print("Invalid File")
 
+def get_file_extension(filename):
+    try:
+        return '.' in filename and filename.rsplit('.', 1)[1].lower()
+    except:
+        print("Invalid File")
+
 def generate_random_password():
     source = string.ascii_letters + string.digits
     result_str = ''.join((random.choice(source) for i in range(10)))

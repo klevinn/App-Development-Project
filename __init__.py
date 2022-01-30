@@ -25,7 +25,6 @@ import random
 from flask_sqlalchemy import SQLAlchemy
 
 #XuZhi
-from wtforms import Form, StringField, RadioField, SelectField, TextAreaField, validators, DateField, IntegerField, PasswordField
 from datetime import datetime, timedelta
 import dash
 from dash import dcc
@@ -40,7 +39,7 @@ import User, Staff, Feedback, Customer
 #Validation Functions
 from Security_Validation import validate_card_number, Sanitise, validate_expiry_date, validate_session, validate_session_open_file_admin, validate_session_admin
 #Functions to shorten code
-from Functions import duplicate_email, duplicate_username, get_user_name, check_banned, fix_unit_number, fix_expiry_year, allowed_file, generate_random_password, generate_staff_id, generate_feedback_id
+from Functions import duplicate_email, duplicate_username, get_user_name, check_banned, fix_unit_number, fix_expiry_year, allowed_file, generate_random_password, generate_staff_id, generate_feedback_id, get_file_extension
 
 #Start Of Web Dev
 app = Flask(__name__)
@@ -713,7 +712,7 @@ def user():
     else:
         return redirect(url_for("login"))
 
-"""
+
 #https://tutorial101.blogspot.com/2021/04/python-flask-upload-and-display-image.html
 #https://flask.palletsprojects.com/en/2.0.x/patterns/fileuploads/
 @app.route('/uploadProfilePic' , methods=["GET","POST"])
@@ -729,12 +728,10 @@ def uploadPic():
             else:
                 db["Users"] = users_dict
         except:
-            print("Error in retrieving User from staff.db")
+            print("Error in retrieving User from User.db")
 
-        UserName =  get_user_name(idNumber, users_dict)
         
         valid_session = validate_session(idNumber, users_dict)
-        
 
         #db.close()
         if valid_session:
@@ -745,25 +742,27 @@ def uploadPic():
                 
                 file = request.files['profilePic']
                 filename = file.filename
+                print(filename)
+
                 #split to extension
                 #Rename file to userid
-
                 #Find way to manage filesize
 
                 if filename != '':
                     if file and allowed_file(filename):
-                        #filename = secure_filename(filename)
+                        extension = get_file_extension(filename)
+                        print(extension)
+                        filename = ("%d.%s" %(idNumber, extension))
+                        print(filename)
+                        print("hello")
                         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                        #create filepath
-                        #Need to make a unique identifier for each profile pic, UserId?
-                        #need rename file -- either just rename /  split extension and add it to the new name
-                        #Create a new file path with the new name
+                        file.save(filepath)
+                        print(filepath)
 
-                        #how to display profile image?, use a getter method to get the path and display?
-                        #meaning need to store in dict(getter n setter methods already created)
-
-                        #overwrite == just by setting and getting?
-                        #Too tired rn try tmr
+                        users_dict[idNumber].set_profile_pic(filepath)
+                        db['Users'] = users_dict
+                        db.close()
+                        return redirect(url_for('user'))
                     else:
                         db.close()
                         print("Image not correct format")
@@ -775,14 +774,41 @@ def uploadPic():
                         
             else:
                 db.close()
-                return render_template('user/loggedin/useraccount.html', user = UserName)
+                return redirect(url_for('user'))
         else:
             db.close()
             session.clear()
             return redirect(url_for("home"))
     else:
         return redirect(url_for('login'))
-"""
+
+@app.route('/resetProfilePic', methods=["GET","POST"])
+def resetPfp():
+    if "user" in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
+
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from User.db")
+
+        UserName =  get_user_name(idNumber, users_dict)
+        valid_session = validate_session(idNumber, users_dict)
+        if valid_session:
+            users_dict[idNumber].set_profile_pic(Avatar(type="pixel-art-neutral", seed=UserName))
+            db["Users"] = users_dict
+            db.close()
+            return redirect(url_for('user'))
+        else:
+            session.clear()
+            return redirect(url_for('login'))
+    else:
+        return redirect(url_for('home'))
 
 @app.route('/infoedit' , methods=["GET","POST"])
 def userinfo():
