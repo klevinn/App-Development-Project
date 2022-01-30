@@ -74,7 +74,9 @@ PROFILEPIC_UPLOAD_PATH = 'static/images/profilepic'
 app.config['UPLOAD_FOLDER'] = PROFILEPIC_UPLOAD_PATH
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
-
+#For product
+PRODUCTPIC_UPLOAD_PATH = 'static/images/store'
+app.config['UPLOAD_FOLDER_PRODUCT'] = PRODUCTPIC_UPLOAD_PATH
 #Limiter for login security
 limiter = Limiter(app, key_func=get_remote_address)
 
@@ -2426,23 +2428,24 @@ def view_product():
         return redirect(url_for("login"))
 
 """
-
+"""
 # function to save picture (does not work)
 def save_picture(form_picture):
-    PRODUCTPIC_UPLOAD_PATH = './static/images/productpics'
-    app.config['UPLOAD_FOLDER'] = PRODUCTPIC_UPLOAD_PATH
+    PRODUCTPIC_UPLOAD_PATH = '/static/images/store'
+    app.config['UPLOAD_FOLDER_PRODUCT'] = PRODUCTPIC_UPLOAD_PATH
 
     form_picture = request.files['picture']
     picture_filename = form_picture.filename
     #picture_path = os.path.join(app.root_path, 'static/images/productpics', picture_filename)
     #form_picture.save(picture_path)
 
-    form_picture.save(os.path.join(app.config['UPLOAD_FOLDER'], picture_filename))
+    form_picture.save(os.path.join(app.config['UPLOAD_FOLDER_PRODUCT'], picture_filename))
 
     return picture_filename
-
+"""
 
 # crud for products (with authentication)
+#fixed joshuas save picture function
 @app.route('/create_product', methods=["GET", "POST"])
 def create_product():
     if "staff" in session:
@@ -2464,8 +2467,26 @@ def create_product():
         if valid_session:
             create_product_form = Forms.CreateProduct(request.form)
             if request.method == 'POST' and create_product_form.validate():
-                # save_picture(create_product_form.picture.data)
-                product = Product(img_file_name = create_product_form.img_file_name.data, name = create_product_form.name.data, price = create_product_form.price.data, category = create_product_form.category.data, short_description = create_product_form.short_description.data, long_description = create_product_form.long_description.data)
+                if "productPic" not in request.files:
+                    print("No File Sent")
+                    return redirect(url_for("user"))
+                
+                file = request.files['productPic']
+                filename = file.filename
+                filename = secure_filename(filename)
+                print(filename)
+                if filename != '':
+                    if file and allowed_file(filename):
+                        filepath = os.path.join(app.config['UPLOAD_FOLDER_PRODUCT'], filename)
+                        file.save(filepath)
+                    else:
+                        print("Image not correct format")
+                        return redirect(url_for('retrieve_products'))
+                else:
+                    print("No file inputted")
+                    return redirect(url_for('retrieve_products'))
+                product = Product(img_file_name = filename, name = create_product_form.name.data, price = create_product_form.price.data, category = create_product_form.category.data, short_description = create_product_form.short_description.data, long_description = create_product_form.long_description.data)
+                product.stock = create_product_form.stock.data
                 j_db.session.add(product)
                 j_db.session.commit()
 
@@ -2525,7 +2546,7 @@ def edit_product():
                 # if create_product_form.picture.data:
                     # picture_file = save_picture(create_product_form.picture.data)
                     # product.img_file_name = picture_file
-                product.img_file_name = create_product_form.img_file_name.data    
+                #product.img_file_name = create_product_form.img_file_name.data    
                 product.name = create_product_form.name.data
                 product.price = create_product_form.price.data
                 product.category = create_product_form.category.data
@@ -2537,7 +2558,7 @@ def edit_product():
 
             # filling form with current product's data
             elif request.method =='GET':
-                create_product_form.img_file_name.data = product.img_file_name
+                #create_product_form.img_file_name.data = product.img_file_name
                 create_product_form.name.data = product.name
                 create_product_form.price.data = product.price
                 create_product_form.category.data = product.category
