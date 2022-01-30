@@ -745,14 +745,16 @@ def uploadPic():
                 
                 file = request.files['profilePic']
                 filename = file.filename
+                #split to extension
+                #Rename file to userid
 
                 #Find way to manage filesize
 
                 if filename != '':
                     if file and allowed_file(filename):
-                        filename = secure_filename(filename)
+                        #filename = secure_filename(filename)
                         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-
+                        #create filepath
                         #Need to make a unique identifier for each profile pic, UserId?
                         #need rename file -- either just rename /  split extension and add it to the new name
                         #Create a new file path with the new name

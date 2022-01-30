@@ -85,7 +85,10 @@ def fix_expiry_year(number):
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    try:
+        return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    except:
+        print("Invalid File")
 
 def generate_random_password():
     source = string.ascii_letters + string.digits
