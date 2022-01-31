@@ -73,6 +73,8 @@ class CreateNewPasswordForm(Form):
     password = PasswordField("New Password:", [validators.Length(min=6, max=20)])
     password_confirm = PasswordField("Confirm Password:", [validators.Length(min=6, max=20)])
 
+class UserSearchForm(Form):
+    search = StringField("")
 
 #Done By Joshua 
 #Done By Joshua
@@ -82,14 +84,14 @@ class CreateProduct(Form):
     categories = [('Medicine', 'Medicine'), ('Test Kit', 'Test Kit'), ('Supplement', 'Supplement'), ('First Aid', 'First Aid')]
     category = SelectField(u'Product Category', choices = categories)
 
-    img_file_name = StringField("Filename:", [validators.DataRequired()])
+    #img_file_name = StringField("Filename:", [validators.DataRequired()])
     name = StringField("Product Name:", [validators.DataRequired()])
     price = FloatField("Product Price($):", [validators.DataRequired()])
     # category = StringField("Product Category:", [validators.DataRequired()])
     short_description = StringField("Short Description:", [validators.DataRequired()])
     long_description = TextAreaField("Long Description:", [validators.DataRequired()])
     stock = IntegerField("Stock:", [validators.DataRequired()])
-    picture = FileField('Upload Product Picture', validators=[FileAllowed(['jpg', 'jpeg', 'png'])])
+    #picture = FileField('Upload Product Picture', validators=[FileAllowed(['jpg', 'jpeg', 'png'])])
 
 class CategoryFilter_AndSorting(Form):
     Medicine_category = BooleanField("Medicine")

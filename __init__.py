@@ -18,6 +18,8 @@ import urllib.request
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 #Dicebear for temporary profile picture
 from src import Avatar
+#for search function
+#from db_setup import init_db, db_session
 #For simulation
 import random
 
@@ -25,7 +27,6 @@ import random
 from flask_sqlalchemy import SQLAlchemy
 
 #XuZhi
-from wtforms import Form, StringField, RadioField, SelectField, TextAreaField, validators, DateField, IntegerField, PasswordField
 from datetime import datetime, timedelta
 import dash
 from dash import dcc
@@ -40,7 +41,7 @@ import User, Staff, Feedback, Customer
 #Validation Functions
 from Security_Validation import validate_card_number, Sanitise, validate_expiry_date, validate_session, validate_session_open_file_admin, validate_session_admin
 #Functions to shorten code
-from Functions import duplicate_email, duplicate_username, get_user_name, check_banned, fix_unit_number, fix_expiry_year, allowed_file, generate_random_password, generate_staff_id, generate_feedback_id
+from Functions import duplicate_email, duplicate_username, get_user_name, check_banned, fix_unit_number, fix_expiry_year, allowed_file, generate_random_password, generate_staff_id, generate_feedback_id, get_file_extension, generate_user_id
 
 #Start Of Web Dev
 app = Flask(__name__)
@@ -75,7 +76,9 @@ PROFILEPIC_UPLOAD_PATH = 'static/images/profilepic'
 app.config['UPLOAD_FOLDER'] = PROFILEPIC_UPLOAD_PATH
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
-
+#For product
+PRODUCTPIC_UPLOAD_PATH = 'static/images/store'
+app.config['UPLOAD_FOLDER_PRODUCT'] = PRODUCTPIC_UPLOAD_PATH
 #Limiter for login security
 limiter = Limiter(app, key_func=get_remote_address)
 
@@ -332,17 +335,22 @@ def signup():
                 user.set_email(emailInput)
                 user.set_password(pw_hash)
                 print(user.get_user_id())
+                user_id = generate_user_id()
                 for key in userDict:
                     useridshelve = userDict[key].get_user_id()
                     print("Running")
+                    if user_id == useridshelve:
+                        user_id = generate_user_id
+                    """
                     if user.get_user_id() != useridshelve and user.get_user_id() < useridshelve:
                         user.set_user_id(user.get_user_id())
                     if user.get_user_id() == useridshelve or user.get_user_id() < useridshelve:
                         user.set_user_id(user.get_user_id() + 1)
+                    """
                         #For Testing
                         #print(str(user.get_user_id()), str(userDict[key].get_user_id()))
                         #print(str(user.get_user_id()) + "Hello1")
-
+                user.set_user_id(user_id)
                 print(user.get_user_id(),  "was the next available user id.")
                 av = Avatar(type="pixel-art-neutral", seed=usernameInput)
                 user.set_profile_pic(av)
@@ -706,14 +714,16 @@ def user():
             db['Users'] = users_dict
             db.close()
 
-            return render_template('user/loggedin/useraccount.html' , user = name, count=len(user_list), user_list=user_list, changed = changed, change = change, av=av)
+            #for testing
+            purchases = 10
+            return render_template('user/loggedin/useraccount.html' , user = name, count=len(user_list), user_list=user_list, changed = changed, change = change, av=av, purchases = purchases)
         else:
             session.clear()
             return redirect(url_for("home"))
     else:
         return redirect(url_for("login"))
 
-"""
+
 #https://tutorial101.blogspot.com/2021/04/python-flask-upload-and-display-image.html
 #https://flask.palletsprojects.com/en/2.0.x/patterns/fileuploads/
 @app.route('/uploadProfilePic' , methods=["GET","POST"])
@@ -729,12 +739,10 @@ def uploadPic():
             else:
                 db["Users"] = users_dict
         except:
-            print("Error in retrieving User from staff.db")
+            print("Error in retrieving User from User.db")
 
-        UserName =  get_user_name(idNumber, users_dict)
         
         valid_session = validate_session(idNumber, users_dict)
-        
 
         #db.close()
         if valid_session:
@@ -745,23 +753,28 @@ def uploadPic():
                 
                 file = request.files['profilePic']
                 filename = file.filename
+                print(filename)
 
+                #split to extension
+                #Rename file to userid
                 #Find way to manage filesize
 
                 if filename != '':
                     if file and allowed_file(filename):
-                        filename = secure_filename(filename)
+                        extension = get_file_extension(filename)
+                        print(extension)
+                        filename = ("%s.%s" %(idNumber, extension))
+                        print(filename)
+                        print("hello")
                         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                        file.save(filepath)
+                        print(filepath)
 
-                        #Need to make a unique identifier for each profile pic, UserId?
-                        #need rename file -- either just rename /  split extension and add it to the new name
-                        #Create a new file path with the new name
-
-                        #how to display profile image?, use a getter method to get the path and display?
-                        #meaning need to store in dict(getter n setter methods already created)
-
-                        #overwrite == just by setting and getting?
-                        #Too tired rn try tmr
+                        users_dict[idNumber].set_profile_pic(filepath)
+                        db['Users'] = users_dict
+                        db.close()
+                        session['change'] = 'Profile Pic'
+                        return redirect(url_for('user'))
                     else:
                         db.close()
                         print("Image not correct format")
@@ -773,15 +786,72 @@ def uploadPic():
                         
             else:
                 db.close()
-                return render_template('user/loggedin/useraccount.html', user = UserName)
+                return redirect(url_for('user'))
         else:
             db.close()
             session.clear()
             return redirect(url_for("home"))
     else:
         return redirect(url_for('login'))
-"""
 
+@app.route('/resetProfilePic', methods=["GET","POST"])
+def resetPfp():
+    if "user" in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
+
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from User.db")
+
+        UserName =  get_user_name(idNumber, users_dict)
+        valid_session = validate_session(idNumber, users_dict)
+        if valid_session:
+            users_dict[idNumber].set_profile_pic(Avatar(type="pixel-art-neutral", seed=UserName))
+            db["Users"] = users_dict
+            db.close()
+            return redirect(url_for('user'))
+        else:
+            session.clear()
+            return redirect(url_for('login'))
+    else:
+        return redirect(url_for('home'))
+@app.route('/deleteAccount/<id>', methods=["GET", "POST"])
+#@app.route('/deleteAccount/<int:id>', methods=["GET", "POST"])
+def delAccount(id):
+    if "user" in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
+
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+
+        
+        valid_session = validate_session(idNumber, users_dict)
+        if valid_session:
+            users_dict.pop(id)
+
+            db['Users'] = users_dict
+            db.close()
+            session.pop("user", None)
+            return redirect(url_for("home"))
+        else:
+            session.clear()
+            return redirect(url_for("home"))
+    else:
+        return redirect(url_for("home"))
+    
 @app.route('/infoedit' , methods=["GET","POST"])
 def userinfo():
     if "user" in session:
@@ -1830,6 +1900,10 @@ def staffaccountlist(page=1):
         db.close()
 
         if valid_session:
+            search = Forms.UserSearchForm(request.form)
+            if request.method == 'POST':
+                return user_search(search)
+            
             display_dict = {}
             page_num = 1
         #Displaying the appending data into the stafflist so that it can be used to display data on the site
@@ -1856,14 +1930,19 @@ def staffaccountlist(page=1):
                 max_value = max(all_keys)
                 empty = False
 
-            return render_template('user/staff/staffaccountlist.html', count=len(user_list), user_list=user_list , display_dict = display_dict, staff = name,  page=page, max_value = max_value, empty = empty)
+            return render_template('user/staff/staffaccountlist.html', count=len(user_list), user_list=user_list , display_dict = display_dict, staff = name,  page=page, max_value = max_value, empty = empty, form =search)
         else:
             session.clear()
             return redirect(url_for('home'))
     else:
         return redirect(url_for('login'))
 
-@app.route('/banUser/<int:id>' , methods=["GET","POST"])
+@app.route('/searchresults')
+def user_search(search):
+    print("hello world")
+
+@app.route('/banUser/<id>' , methods=["GET","POST"])
+#@app.route('/banUser/<int:id>' , methods=["GET","POST"])
 def banUser(id):
     if "staff" in session:
         StaffName = session["staff"]
@@ -1904,7 +1983,8 @@ def banUser(id):
     else:
         return redirect(url_for('login'))
 
-@app.route('/unbanUser/<int:id>' , methods=["GET","POST"])
+@app.route('/unbanUser/<id>' , methods=["GET","POST"])
+#@app.route('/unbanUser/<int:id>' , methods=["GET","POST"])
 def unbanUser(id):
     if "staff" in session:
         StaffName = session["staff"]
@@ -1944,7 +2024,8 @@ def unbanUser(id):
     else:
         return redirect(url_for('login'))
 
-@app.route('/resetPasswordUser/<int:id>', methods=["GET", "POST"])
+@app.route('/resetPasswordUser/<id>', methods=["GET", "POST"])
+#@app.route('/resetPasswordUser/<int:id>', methods=["GET", "POST"])
 def resetPassUser(id):
     if "staff" in session:
         StaffName = session["staff"]
@@ -1984,7 +2065,8 @@ def resetPassUser(id):
     else:
         return redirect(url_for('login'))
 
-@app.route('/verifyEmail/<int:id>', methods = ["GET", "POST"])
+@app.route('/verifyEmail/<id>', methods = ["GET", "POST"])
+#@app.route('/verifyEmail/<int:id>', methods = ["GET", "POST"])
 def verifyEmail(id):
     user_dict = {}
     db = shelve.open('user', 'c')
@@ -2358,23 +2440,24 @@ def view_product():
         return redirect(url_for("login"))
 
 """
-
+"""
 # function to save picture (does not work)
 def save_picture(form_picture):
-    PRODUCTPIC_UPLOAD_PATH = './static/images/productpics'
-    app.config['UPLOAD_FOLDER'] = PRODUCTPIC_UPLOAD_PATH
+    PRODUCTPIC_UPLOAD_PATH = '/static/images/store'
+    app.config['UPLOAD_FOLDER_PRODUCT'] = PRODUCTPIC_UPLOAD_PATH
 
     form_picture = request.files['picture']
     picture_filename = form_picture.filename
     #picture_path = os.path.join(app.root_path, 'static/images/productpics', picture_filename)
     #form_picture.save(picture_path)
 
-    form_picture.save(os.path.join(app.config['UPLOAD_FOLDER'], picture_filename))
+    form_picture.save(os.path.join(app.config['UPLOAD_FOLDER_PRODUCT'], picture_filename))
 
     return picture_filename
-
+"""
 
 # crud for products (with authentication)
+#fixed joshuas save picture function
 @app.route('/create_product', methods=["GET", "POST"])
 def create_product():
     if "staff" in session:
@@ -2396,8 +2479,26 @@ def create_product():
         if valid_session:
             create_product_form = Forms.CreateProduct(request.form)
             if request.method == 'POST' and create_product_form.validate():
-                # save_picture(create_product_form.picture.data)
-                product = Product(img_file_name = create_product_form.img_file_name.data, name = create_product_form.name.data, price = create_product_form.price.data, category = create_product_form.category.data, short_description = create_product_form.short_description.data, long_description = create_product_form.long_description.data)
+                if "productPic" not in request.files:
+                    print("No File Sent")
+                    return redirect(url_for("user"))
+                
+                file = request.files['productPic']
+                filename = file.filename
+                filename = secure_filename(filename)
+                print(filename)
+                if filename != '':
+                    if file and allowed_file(filename):
+                        filepath = os.path.join(app.config['UPLOAD_FOLDER_PRODUCT'], filename)
+                        file.save(filepath)
+                    else:
+                        print("Image not correct format")
+                        return redirect(url_for('retrieve_products'))
+                else:
+                    print("No file inputted")
+                    return redirect(url_for('retrieve_products'))
+                product = Product(img_file_name = filename, name = create_product_form.name.data, price = create_product_form.price.data, category = create_product_form.category.data, short_description = create_product_form.short_description.data, long_description = create_product_form.long_description.data)
+                product.stock = create_product_form.stock.data
                 j_db.session.add(product)
                 j_db.session.commit()
 
@@ -2457,7 +2558,7 @@ def edit_product():
                 # if create_product_form.picture.data:
                     # picture_file = save_picture(create_product_form.picture.data)
                     # product.img_file_name = picture_file
-                product.img_file_name = create_product_form.img_file_name.data    
+                #product.img_file_name = create_product_form.img_file_name.data    
                 product.name = create_product_form.name.data
                 product.price = create_product_form.price.data
                 product.category = create_product_form.category.data
@@ -2469,7 +2570,7 @@ def edit_product():
 
             # filling form with current product's data
             elif request.method =='GET':
-                create_product_form.img_file_name.data = product.img_file_name
+                #create_product_form.img_file_name.data = product.img_file_name
                 create_product_form.name.data = product.name
                 create_product_form.price.data = product.price
                 create_product_form.category.data = product.category
@@ -3027,6 +3128,7 @@ def retrieve_consultation():
         #should redirect back to the consultation page and state that you need to login to create an appointment
         return redirect(url_for('consultatioPg1'))
 
+#@app.route('/updateConsultation/<id>/', methods=['GET', 'POST'])
 @app.route('/updateConsultation/<int:id>/', methods=['GET', 'POST'])
 def update_consultation(id):
     if "user" in session:
@@ -3066,27 +3168,29 @@ def update_consultation(id):
                 samedate = False
                 samedoc = False
                 for key in customer_dict:
-                    customer = customer_dict.get(key)
-                    customers_list.append(customer)
-                    print("form data is "+ str(update_customer_form.date_joined.data))
-                    for customer in customers_list:
-                        if update_customer_form.date_joined.data == customer.get_date():
-                            print("Same Date")
-                            samedate = True
-                            if update_customer_form.time.data == customer.get_time():
-                                print("Same Time")
-                                sametime = True
-                                if update_customer_form.doc.data == customer.get_doc():
-                                    print("Conflicting Appointment")
-                                    samedoc = True
-                                    appointment = False
-                                    break
+                    if customer_dict[key].get_us() != idNumber:
+                        customer = customer_dict.get(key)
+                        customers_list.append(customer)
+                        print("form data is "+ str(update_customer_form.date_joined.data))
+                        for customer in customers_list:
+                            if update_customer_form.date_joined.data == customer.get_date():
+                                print("Same Date")
+                                samedate = True
+                                if update_customer_form.time.data == customer.get_time():
+                                    print("Same Time")
+                                    sametime = True
+                                    if update_customer_form.doc.data == customer.get_doc():
+                                        print("Conflicting Appointment")
+                                        samedoc = True
+                                        appointment = False
+                                        break
+                                    else:
+                                        appointment = True
                                 else:
                                     appointment = True
                             else:
                                 appointment = True
-                        else:
-                            appointment = True
+                
                 if appointment == True:
                     customer = customer_dict.get(id)
                     customer.set_doc(update_customer_form.doc.data)
@@ -3095,10 +3199,10 @@ def update_consultation(id):
                     customer.set_gender(update_customer_form.gender.data)
                     customer.set_remarks(update_customer_form.remarks.data)
                     customer.set_date(update_customer_form.date_joined.data)
-                    customer.set_time(update_customer_form.time.date)
+                    customer.set_time(update_customer_form.time.data)
                     customer.set_email(update_customer_form.email.data)
 
-
+                    #send email telling them details
                     db['Customers'] = customer_dict
                     db.close()
 
@@ -3206,7 +3310,7 @@ def update_consultation(id):
         return redirect(url_for('login'))
 
 
-
+#@app.route('/deleteConsultation/<id>', methods=['POST'])
 @app.route('/deleteConsultation/<int:id>', methods=['POST'])
 def delete_consultation(id):
     if "user" in session:
@@ -3605,8 +3709,8 @@ def News():
 @app.route('/resetdb')
 def resetdb():
     customer_dict = {}
-    db = shelve.open('staff', 'c')
-    db['Users'] = customer_dict
+    db = shelve.open('user', 'c')
+    db['Feedback'] = customer_dict
     return redirect(url_for('home'))
 
 if __name__ == '__main__':

@@ -6,3 +6,7 @@ body{
     padding: 30px 5px;
     background-color: #FF9693;
 }
+
+#myFile {
+    width:60%;
+}

@@ -8,100 +8,194 @@
 <div class="main-body">
    <div class="modal" id="myModal">
       <div class="modal-dialog">
-        <div class="modal-content">
+         <div class="modal-content">
 
-          <!-- Modal Header -->
-          <div class="modal-header">
-            <h4 class="modal-title">Edit Notification</h4>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-          </div>
+            <!-- Modal Header -->
+            <div class="modal-header">
+               <h4 class="modal-title">Edit Notification</h4>
+               <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
 
-          <!-- Modal body -->
-          <div class="modal-body">
-            Your {{ change }} has been editted!
-          </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+               Your {{ change }} has been editted!
+            </div>
 
-          <!-- Modal footer -->
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Noted</button>
-          </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Noted</button>
+            </div>
 
-        </div>
+         </div>
       </div>
-    </div>
+   </div>
    <div class="row gutters-sm">
       <div class="col-md-4 mb-3">
          {% for name in user_list %}
-         <div class="card">
+         <div class="card mb-3">
             <div class="card-body">
                {% if name.get_verified() == True %}
                <button type="button" class="btn btn-success">Verified</button>
                {% else %}
-               <form action="{{ url_for('verifyEmail', id = name.get_user_id() ) }}" method="POST">
+               <form action="{{ url_for('verifyEmail', id = name.get_user_id() ) }}" method="POST" style="float:left;">
                   <button type="Submit" class="btn btn-danger" data-bs-toggle="modal"
-                  data-bs-target="#myModal_Verify">Unverified</button>
+                     data-bs-target="#myModal_Verify">Unverified</button>
                   <div class="modal" id="myModal_Verify">
                      <div class="modal-dialog">
-                       <div class="modal-content">
-   
-                         <!-- Modal Header -->
-                         <div class="modal-header">
-                           <h4 class="modal-title">Verification Email Notification</h4>
-                           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                         </div>
-   
-                         <!-- Modal body -->
-                         <div class="modal-body">
-                           Verification Email will be sent to registered email! Please wait for a few seconds!
-                         </div>
-   
-                         <!-- Modal footer -->
-                         <div class="modal-footer">
-                           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Noted</button>
-                         </div>
-   
-                       </div>
+                        <div class="modal-content">
+
+                           <!-- Modal Header -->
+                           <div class="modal-header">
+                              <h4 class="modal-title">Verification Email Notification</h4>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                           </div>
+
+                           <!-- Modal body -->
+                           <div class="modal-body">
+                              Verification Email will be sent to registered email! Please wait for a few seconds!
+                           </div>
+
+                           <!-- Modal footer -->
+                           <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Noted</button>
+                           </div>
+
+                        </div>
                      </div>
-                   </div>
+                  </div>
                </form>
                {% endif %}
                {% if changed == True %}
-               <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                                data-bs-target="#myModal" id="btn" style="display:none;">
+               <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#myModal" id="btn"
+                  style="display:none;">
                </button>
                {% endif %}
                <div class="modal" id="myModal">
                   <div class="modal-dialog">
-                    <div class="modal-content">
+                     <div class="modal-content">
 
-                      <!-- Modal Header -->
-                      <div class="modal-header">
-                        <h4 class="modal-title">Edit Notification</h4>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                      </div>
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                           <h4 class="modal-title">Edit Notification</h4>
+                           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
 
-                      <!-- Modal body -->
-                      <div class="modal-body">
-                        Your {{ change }} has been editted!
-                      </div>
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                           Your {{ change }} has been editted!
+                        </div>
 
-                      <!-- Modal footer -->
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Noted</button>
-                      </div>
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Noted</button>
+                        </div>
 
-                    </div>
+                     </div>
                   </div>
-                </div>
+               </div>
+               <form action="{{ url_for('delAccount', id = name.get_user_id() ) }}" method="POST" style="float:right;">
+                  <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                     data-bs-target="#myModal_Delete">Delete Account</button>
+                  <div class="modal" id="myModal_Delete">
+                     <div class="modal-dialog">
+                        <div class="modal-content">
+
+                           <!-- Modal Header -->
+                           <div class="modal-header">
+                              <h4 class="modal-title">Account Deletion Confirmation</h4>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                           </div>
+
+                           <!-- Modal body -->
+                           <div class="modal-body">
+                              Are you sure you want to delete your account?
+                           </div>
+
+                           <!-- Modal footer -->
+                           <div class="modal-footer">
+                              <input type="submit" value="Delete" class="btn btn-danger">
+                              <button type="button" class="btn btn-secondary"
+                                 data-bs-dismiss="modal">Cancel</button>
+                           </div>
+
+                        </div>
+                     </div>
+                  </div>
+               </form>
+               <br style="clear:both;">
                <div class="d-flex flex-column align-items-center text-center">
-                  <img src="{{ av }}" alt="Admin" class="rounded-circle" width="150">
+                  <img src="{{ av }}" alt="Admin" class="rounded-circle" width="150" height="150">
                   <div class="mt-3">
                      <h4>{{ name.get_username() }}</h4>
                   </div>
                   <form action="/uploadProfilePic" method="POST" enctype="multipart/form-data">
-                     <input type="file" id="myFile" name="filename">
-                     <input type="submit" value="Apply">
+                     <input type="file" id="myFile" name="profilePic">
+                     <input class="btn btn-success" type="submit" value="Apply">
+                     <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        Reset
+                     </button>
+                     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                           <div class="modal-content">
+                              <div class="modal-header">
+                                 <h5 class="modal-title" id="exampleModalLabel">Reset Image Confirmation</h5>
+                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                              </div>
+                              <div class="modal-body">
+                                 Are you sure you want to reset this profile picture
+                              </div>
+                              <div class="modal-footer">
+                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                 <a class="btn btn-danger" href="/resetProfilePic">Confirm</a>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
                   </form>
+               </div>
+            </div>
+         </div>
+         <div class="card mb-3">
+            <div class="card-body">
+               <div class="row"><h2 class="text-center">Current Loyalty Pass</h2></div>
+               <div class="row"><h1 class="display-1 text-center">{{purchases}}</h1></div>
+               <div class="row">
+                  <div class="progress">
+                     
+                     {% if purchases == 5 %}
+                     <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" style="width:25%">
+                        5 purchases
+                     </div>
+                     {% elif purchases == 10 %}
+                     <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" style="width:50%">
+                        10 purchases
+                     </div>
+                     {% elif purchases == 15 %}
+                     <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" style="width:75%">
+                        15 purchases
+                     </div>
+                     {% elif purchases ==20 %}
+                     <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" style="width:100%">
+                        20 purchases
+                     </div>
+                     {% endif %}
+            
+                  </div>
+               </div>
+               <div class="row">
+                  
+                  {% if purchases == 5 %}
+                  <h1 class="display-4 text-center">10% discount</h1>
+                  {% elif purchases == 10 %}
+                  <h1 class="display-4 text-center">20% discount</h1>
+                  {% elif purchases == 15 %}
+                  <h1 class="display-4 text-center">30% discount</h1>
+                  {% elif purchases ==20 %}
+                  <h1 class="display-4 text-center">50% discount</h1>
+                  {% endif %}
+      
                </div>
             </div>
          </div>
@@ -194,40 +288,41 @@
                            <a class="btn btn-info " href="/useraddress">Edit</a>
                            <form action="/deleteaddress" method="POST">
                               <!--input type="submit" value="Delete" class="btn btn-danger"-->
-            
+
                               <!-- w3 schools modal button-->
                               <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                                data-bs-target="#myModal_address">
-                                Delete
+                                 data-bs-target="#myModal_address">
+                                 Delete
                               </button>
-            
+
                               <!-- The Modal -->
                               <div class="modal" id="myModal_address">
-                                <div class="modal-dialog">
-                                  <div class="modal-content">
-            
-                                    <!-- Modal Header -->
-                                    <div class="modal-header">
-                                      <h4 class="modal-title">Deletion Confirmation</h4>
-                                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                 <div class="modal-dialog">
+                                    <div class="modal-content">
+
+                                       <!-- Modal Header -->
+                                       <div class="modal-header">
+                                          <h4 class="modal-title">Deletion Confirmation</h4>
+                                          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                       </div>
+
+                                       <!-- Modal body -->
+                                       <div class="modal-body">
+                                          Are you sure you want to delete your saved address ?
+                                       </div>
+
+                                       <!-- Modal footer -->
+                                       <div class="modal-footer">
+                                          <input type="submit" value="Delete" class="btn btn-danger">
+                                          <button type="button" class="btn btn-secondary"
+                                             data-bs-dismiss="modal">Cancel</button>
+                                       </div>
+
                                     </div>
-            
-                                    <!-- Modal body -->
-                                    <div class="modal-body">
-                                      Are you sure you want to delete your saved address ?
-                                    </div>
-            
-                                    <!-- Modal footer -->
-                                    <div class="modal-footer">
-                                      <input type="submit" value="Delete" class="btn btn-danger">
-                                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                    </div>
-            
-                                  </div>
-                                </div>
+                                 </div>
                               </div>
-            
-                            </form>
+
+                           </form>
                         </div>
                      </div>
                   </div>
@@ -268,40 +363,41 @@
                            <a class="btn btn-info " href="/usercard">Edit</a>
                            <form action="/deletecard" method="POST">
                               <!--input type="submit" value="Delete" class="btn btn-danger"-->
-            
+
                               <!-- w3 schools modal button-->
                               <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                                data-bs-target="#myModal_card">
-                                Delete
+                                 data-bs-target="#myModal_card">
+                                 Delete
                               </button>
-            
+
                               <!-- The Modal -->
                               <div class="modal" id="myModal_card">
-                                <div class="modal-dialog">
-                                  <div class="modal-content">
-            
-                                    <!-- Modal Header -->
-                                    <div class="modal-header">
-                                      <h4 class="modal-title">Deletion Confirmation</h4>
-                                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                 <div class="modal-dialog">
+                                    <div class="modal-content">
+
+                                       <!-- Modal Header -->
+                                       <div class="modal-header">
+                                          <h4 class="modal-title">Deletion Confirmation</h4>
+                                          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                       </div>
+
+                                       <!-- Modal body -->
+                                       <div class="modal-body">
+                                          Are you sure you want to delete your saved credit card ?
+                                       </div>
+
+                                       <!-- Modal footer -->
+                                       <div class="modal-footer">
+                                          <input type="submit" value="Delete" class="btn btn-danger">
+                                          <button type="button" class="btn btn-secondary"
+                                             data-bs-dismiss="modal">Cancel</button>
+                                       </div>
+
                                     </div>
-            
-                                    <!-- Modal body -->
-                                    <div class="modal-body">
-                                      Are you sure you want to delete your saved credit card ?
-                                    </div>
-            
-                                    <!-- Modal footer -->
-                                    <div class="modal-footer">
-                                      <input type="submit" value="Delete" class="btn btn-danger">
-                                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                    </div>
-            
-                                  </div>
-                                </div>
+                                 </div>
                               </div>
-            
-                            </form>
+
+                           </form>
                         </div>
                      </div>
                   </div>
@@ -315,13 +411,13 @@
 {% endblock %}
 {% block scripts %}
 <script>
-   window.onload = function(){
-   document.getElementById('btn').click();
+   window.onload = function () {
+      document.getElementById('btn').click();
    };
 </script>
 <!-- Popper 2.10.2, Bootstrap 5.1.2 JavaScript -->
 <script crossorigin="anonymous" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB"
-src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+   src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
 <script crossorigin="anonymous" integrity="sha384-PsUw7Xwds7x08Ew3exXhqzbhuEYmA2xnwc8BuD6SEr+UmEHlX8/MCltYEodzWA4u"
-src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.min.js"></script>
+   src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.min.js"></script>
 {% endblock %}
