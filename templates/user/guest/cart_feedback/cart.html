@@ -1,0 +1,94 @@
+{% if staffsession %}
+{% extends "admin_base.html" %}
+{% elif usersession %}
+{% extends "user_base.html" %}
+{% else %}
+{% extends "default_base.html" %}
+{% endif %}
+{% block head %}
+<link rel="stylesheet" href="static/CSS/cart.css"> {% endblock %}
+{% block title %}Shopping Cart | DoctorOnTheGo{% endblock %}
+
+{% block content %}
+{% from "includes/_formHelper.html" import render_field %}
+<div style="margin:50px 0;height:50%">
+    {% if empty %}
+    <div class="card">
+        <div class="row text-center">
+            <h2>Shopping Cart</h2>
+            <div class="card-body cart">
+                <div class="col-sm-12 empty-cart-cls text-center"> <img src="static/images/store/cart/emptycart.png"
+                        width="130" height="130" class="img-fluid mb-4 mr-3">
+                    <h3><strong>Your Cart is Empty</strong></h3>
+                    <h4>Add something to make me happy :)</h4> <a href="/store"
+                        class="btn btn-primary cart-btn-transform m-3" data-abc="true">Continue Shopping</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="card">
+        <div class="row">
+            <div class="col-md-8 cart">
+                <div class="title">
+                    <div class="row">
+                        <div class="col">
+                            <h4><b>Shopping Cart</b></h4>
+                        </div>
+                        <div class="col align-self-center text-right text-muted">3 items</div>
+                    </div>
+                </div>
+                {% for item in cart %}
+                {% for product in products %}
+                {% if product.name == item %}
+                <div class="row border-top border-bottom">
+                    <div class="row main align-items-center">
+                        <div class="col-2"><img class="img-fluid" src="static/images/store/{{product.img_file_name}}">
+                        </div>
+                        <div class="col">
+                            <div class="row text-muted">{{product.category}}</div>
+                            <div class="row">{{item}}</div>
+                        </div>
+                        <div class="col"> <a href="/removeprod">-</a><span class="border">{{cart.get(item)}}</span><a
+                                href="/addprod">+</a> </div>
+
+                        <div class="col">${{product.price * cart.get(item)}}<a href=""><span
+                                    class="close">&#10005;</span></a></div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+                <div class="back-to-shop"><a href="/store">&leftarrow;<span class="text-muted">Back to shop</span></a></div>
+            </div>
+            <div class="col-md-4 summary">
+                <div>
+                    <h5><b>Summary</b></h5>
+                </div>
+                <hr>
+                {% for item in cart %}
+                {% for product in products %}
+                {% if product.name == item %}
+                <div class="row">
+                    <div class="col" style="padding-left:0;">{{item}}({{cart.get(item)}})</div>
+                    <div class="col text-right">${{product.price * cart.get(item)}}</div>
+                </div>
+                {% endif %}
+                {% endfor %}
+                {% endfor %}
+                <form>
+                    <p>SHIPPING</p>
+                    <select>
+                        <option class="text-muted">Standard-Delivery- $5.00</option>
+                    </select>
+                </form>
+                <div class="row" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;">
+                    <div class="col">TOTAL PRICE</div>
+                    <div class="col text-right">${{total + 5}}</div>
+                </div> <button class="btn">CHECKOUT</button>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

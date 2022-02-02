@@ -3705,6 +3705,78 @@ def News():
         values = [row[1] for row in data]
         return render_template('user/guest/xuzhi/News.html', labels=labels, values=values, newsactive = True)
 
+@app.route('/cart')
+def cart():
+    if "user" in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
+
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+
+
+        UserName =  get_user_name(idNumber, users_dict)
+        av = users_dict[idNumber].get_profile_pic()
+        valid_session = validate_session(idNumber, users_dict)
+        db.close()
+        if "cart" in session:
+            if valid_session:
+                total = 0
+                cart = session["cart"]
+                products = Product.query.all()
+                for item in cart:
+                    for product in products:
+                        if item == product.name:
+                            total += cart.get(item) * product.price
+                return render_template('user/guest/cart_feedback/cart.html', usersession = True, user= UserName, av=av, cart = cart, products = products, total = total)
+            else:
+                return redirect(url_for('home'))
+        else:
+            if valid_session:
+                empty = True
+                return render_template('user/guest/cart_feedback/cart.html', usersession = True, user= UserName, av=av, empty = empty)
+            else:
+                return redirect(url_for('home'))
+
+    elif "staff" in session:
+        StaffName = session["staff"]
+        valid_session, name = validate_session_open_file_admin(StaffName)
+        if "cart" in session:
+            if valid_session:
+                total = 0
+                cart = session["cart"]
+                cart = {"Plaster":10, "Panadol":5}
+                products = Product.query.all()
+                for item in cart:
+                    for product in products:
+                        if item == product.name:
+                            total += cart.get(item) * product.price
+                return render_template('user/guest/cart_feedback/cart.html', staff = name, staffsession = True, cart = cart, products = products, total = total)
+            else:
+                return redirect(url_for('home'))
+        else:
+            if valid_session:
+                empty = True
+                return render_template('user/guest/cart_feedback/cart.html',empty = empty, staff = name, staffsession = True)
+            else:
+                return redirect(url_for('home'))
+    else:
+        if "cart" in session:
+            total = 0
+            cart = session["cart"]
+            products = Product.query.all()
+            return render_template('user/guest/cart_feedback/cart.html', cart = cart, products = products, total = total)
+        else:
+            empty = True
+            return render_template('user/guest/cart_feedback/cart.html',empty = empty)
+
+
 #Reset db if needed
 @app.route('/resetdb')
 def resetdb():
