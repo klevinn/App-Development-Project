@@ -49,17 +49,58 @@
                             <div class="row text-muted">{{product.category}}</div>
                             <div class="row">{{item}}</div>
                         </div>
-                        <div class="col"> <a href="/removeprod">-</a><span class="border">{{cart.get(item)}}</span><a
-                                href="/addprod">+</a> </div>
+                        <div class="col"> <a href="{{ url_for('minusprod', id = product.name) }}">-</a><span
+                                class="border">{{cart.get(item)}}</span><a
+                                href="{{ url_for('addprod', id = product.name) }}">+</a> </div>
 
-                        <div class="col">${{product.price * cart.get(item)}}<a href=""><span
-                                    class="close">&#10005;</span></a></div>
+                        <div class="col">${{product.price * cart.get(item)}}</div>
+                        <div class="col">
+                            <form action="{{ url_for('removeprod', id = product.name) }}" method="POST">
+                                <!--input type="submit" value="Delete" class="btn btn-danger"-->
+
+                                <!-- w3 schools modal button-->
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                    data-bs-target="#myModal_remove">
+                                    <span class="close">&#10005;</span>
+                                </button>
+
+                                <!-- The Modal -->
+                                <div class="modal" id="myModal_remove">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+
+                                            <!-- Modal Header -->
+                                            <div class="modal-header">
+                                                <h4 class="modal-title">Removal Confirmation</h4>
+                                                <button type="button" class="btn-close"
+                                                    data-bs-dismiss="modal"></button>
+                                            </div>
+
+                                            <!-- Modal body -->
+                                            <div class="modal-body">
+                                                Are you sure you want to remove this item?
+                                            </div>
+
+                                            <!-- Modal footer -->
+                                            <div class="modal-footer">
+                                                <input type="submit" value="Remove" class="btn btn-danger">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">Cancel</button>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
                         {% endif %}
                         {% endfor %}
                     </div>
                 </div>
                 {% endfor %}
-                <div class="back-to-shop"><a href="/store">&leftarrow;<span class="text-muted">Back to shop</span></a></div>
+                <div class="back-to-shop"><a href="/store">&leftarrow;<span class="text-muted">Back to shop</span></a>
+                </div>
             </div>
             <div class="col-md-4 summary">
                 <div>
@@ -85,7 +126,7 @@
                 <div class="row" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;">
                     <div class="col">TOTAL PRICE</div>
                     <div class="col text-right">${{total + 5}}</div>
-                </div> <button class="btn">CHECKOUT</button>
+                </div> <button class="btn">aCHECKOUT</button>
             </div>
         </div>
     </div>

@@ -14,7 +14,7 @@
 {% block title %} Product | DoctorOnTheGo{% endblock %}
 
 {% block content %}
-
+{% from "includes/_formHelper.html" import render_field %}
 <form method="GET" class="search-bar" action="search">
     <input type="search" placeholder="Search" name="query">
     <button type="submit">Search</button>
@@ -69,13 +69,14 @@
                   </p>
 
                   <div class="m-bot15"> <strong>Price: $</strong> <span>{{ product.price }}</span></div>
-                  <div class="form-group">
-                      <label>Quantity</label>
-                      <input type="number" placeholder="1" class="form-control quantity">
-                  </div>
-                  <p>
-                      <button class="btn btn-round btn-danger" type="button"><i class="fa fa-shopping-cart"></i> Add to Cart</button>
-                  </p>
+                  <form action="" method="POST">
+                    <div class="form-group">
+                        {{ render_field(form.quantity, class="form-control") }}
+                    </div>
+                    <p>
+                        <button class="btn btn-round btn-danger" type="submit"><i class="fa fa-shopping-cart"></i> Add to Cart</button>
+                    </p>
+                </form>
               </div>
           </div>
       </section>

@@ -76,6 +76,9 @@ class CreateNewPasswordForm(Form):
 class UserSearchForm(Form):
     search = StringField("")
 
+class Quantity(Form):
+    quantity = IntegerField("Quantity:", [validators.DataRequired()])
+
 #Done By Joshua 
 #Done By Joshua
 class CreateProduct(Form):

@@ -2359,8 +2359,24 @@ def view_product():
         if valid_session:
             id = request.args.get('id')
             products = Product.query.filter(Product.id.contains(id))
-
-            return render_template('user/guest/joshua/GuestStore/view_product.html', products=products, user = UserName, av=av, usersession = True, storeactive = True)
+            quantity_form = Forms.Quantity(request.form)
+            if request.method == "POST" and quantity_form.validate():
+                if"cart" in session:
+                    cart = session["cart"]
+                    for s in products:
+                        for i in cart:
+                            if i == s:
+                                cart[i] = cart[i] + quantity_form.quantity.data
+                    session["cart"] = cart
+                else:
+                    cart = {}
+                    for i in products:
+                        cart[i.name] = quantity_form.quantity.data
+                    session["cart"] = cart
+                
+                return render_template('user/guest/joshua/GuestStore/view_product.html', products=products, user = UserName, av=av, usersession = True, storeactive = True, form = quantity_form)
+            else:
+                return render_template('user/guest/joshua/GuestStore/view_product.html', products=products, user = UserName, av=av, usersession = True, storeactive = True, form = quantity_form)
         else:
             session.clear()
             return redirect(url_for("login"))
@@ -2370,16 +2386,51 @@ def view_product():
         if valid_session:
             id = request.args.get('id')
             products = Product.query.filter(Product.id.contains(id))
+            quantity_form = Forms.Quantity(request.form)
+            if request.method == "POST" and quantity_form.validate():
+                if"cart" in session:
+                    cart = session["cart"]
+                    for s in products:
+                        for i in cart:
+                            if i == s:
+                                cart[i] = cart[i] + quantity_form.quantity.data
+                    session["cart"] = cart
+                else:
+                    cart = {}
+                    for i in products:
+                        cart[i.name] = quantity_form.quantity.data
+                    session["cart"] = cart
+                
+                return render_template('user/guest/joshua/GuestStore/view_product.html', products=products, staff = name, staffsession = True, storeactive = True, form = quantity_form)
+            else:
+                return render_template('user/guest/joshua/GuestStore/view_product.html', products=products, staff = name, staffsession = True, storeactive = True, form = quantity_form)
 
-            return render_template('user/guest/joshua/GuestStore/view_product.html', products=products, staff = name, staffsession = True, storeactive = True)
         else:
             session.clear()
             return redirect(url_for('login'))
     else:
         id = request.args.get('id')
         products = Product.query.filter(Product.id.contains(id))
-
-        return render_template('user/guest/joshua/GuestStore/view_product.html', products=products, storeactive = True)
+        quantity_form = Forms.Quantity(request.form)
+        if request.method == "POST" and quantity_form.validate():
+            if"cart" in session:
+                cart = session["cart"]
+                print(cart)
+                for s in products:
+                    for i in cart:
+                        if i == s:
+                            cart[i] = cart[i] + quantity_form.quantity.data
+                session["cart"] = cart
+            else:
+                cart = {}
+                for i in products:
+                    cart[i.name] = quantity_form.quantity.data
+                session["cart"] = cart
+            
+            return render_template('user/guest/joshua/GuestStore/view_product.html', products=products, storeactive = True, form = quantity_form)
+        else:
+            return render_template('user/guest/joshua/GuestStore/view_product.html', products=products, storeactive = True, form = quantity_form)
+        
 
 """
 
@@ -3441,7 +3492,7 @@ def Graphform():
 
 
 
-@app.route("/News")
+@app.route("/News",methods=['GET', 'POST'])
 def News():
     if "user" in session:
         idNumber = session["user"]
@@ -3705,7 +3756,7 @@ def News():
         values = [row[1] for row in data]
         return render_template('user/guest/xuzhi/News.html', labels=labels, values=values, newsactive = True)
 
-@app.route('/cart')
+@app.route('/cart',methods=['GET', 'POST'])
 def cart():
     if "user" in session:
         idNumber = session["user"]
@@ -3734,6 +3785,7 @@ def cart():
                     for product in products:
                         if item == product.name:
                             total += cart.get(item) * product.price
+                session["total"] = total
                 return render_template('user/guest/cart_feedback/cart.html', usersession = True, user= UserName, av=av, cart = cart, products = products, total = total)
             else:
                 return redirect(url_for('home'))
@@ -3751,12 +3803,12 @@ def cart():
             if valid_session:
                 total = 0
                 cart = session["cart"]
-                cart = {"Plaster":10, "Panadol":5}
                 products = Product.query.all()
                 for item in cart:
                     for product in products:
                         if item == product.name:
                             total += cart.get(item) * product.price
+                session["total"] = total
                 return render_template('user/guest/cart_feedback/cart.html', staff = name, staffsession = True, cart = cart, products = products, total = total)
             else:
                 return redirect(url_for('home'))
@@ -3771,11 +3823,165 @@ def cart():
             total = 0
             cart = session["cart"]
             products = Product.query.all()
+            for item in cart:
+                for product in products:
+                    if item == product.name:
+                        total += cart.get(item) * product.price
+            session["total"] = total
             return render_template('user/guest/cart_feedback/cart.html', cart = cart, products = products, total = total)
         else:
             empty = True
             return render_template('user/guest/cart_feedback/cart.html',empty = empty)
 
+@app.route('/removeprod/<id>',methods=['GET', 'POST'])
+def removeprod(id):
+    if "user" in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
+
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+
+
+        valid_session = validate_session(idNumber, users_dict)
+        if valid_session:
+            cart = session["cart"]
+            cart.pop(id)
+            if len(cart) == 0:
+                session.pop("cart", None)
+            else:
+                session["cart"] = cart
+            return redirect(url_for('cart'))
+        else:
+            session.clear()
+            return redirect(url_for("home"))
+    elif "staff" in session:
+        StaffName = session["staff"]
+        valid_session, name = validate_session_open_file_admin(StaffName)
+        if valid_session:
+            cart = session["cart"]
+            cart.pop(id)
+            if len(cart) == 0:
+                session.pop("cart", None)
+            else:
+                session["cart"] = cart
+            return redirect(url_for('cart'))
+        else:
+            return redirect(url_for('home'))
+
+    else:
+        cart = session["cart"]
+        cart.pop(id)
+        if len(cart) == 0:
+            session.pop("cart", None)
+        else:
+            session["cart"] = cart
+        return redirect(url_for('cart'))
+
+@app.route('/addprod/<id>', methods = ["GET","POST"])
+def addprod(id):
+    if "user" in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
+
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+
+
+        valid_session = validate_session(idNumber, users_dict)
+        if valid_session:
+            cart = session["cart"]
+            cart[id] += 1
+            session["cart"] = cart
+            return redirect(url_for('cart'))
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+    elif "staff" in session:
+        StaffName = session["staff"]
+        valid_session, name = validate_session_open_file_admin(StaffName)
+        if valid_session:
+            cart = session["cart"]
+            cart[id] += 1
+            session["cart"] = cart
+            return redirect(url_for('cart'))
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+    else:
+        cart = session["cart"]
+        cart[id] += 1
+        session["cart"] = cart
+        return redirect(url_for('cart'))
+
+@app.route('/minusprod/<id>', methods = ["GET","POST"])
+def minusprod(id):
+    if "user" in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
+
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+
+
+        valid_session = validate_session(idNumber, users_dict)
+        if valid_session:
+            cart = session["cart"]
+            cart[id] -= 1
+            if cart[id] == 0:
+                cart.pop(id)
+            if len(cart) == 0:
+                session.pop("cart", None)
+            else:
+                session["cart"] = cart
+            return redirect(url_for('cart'))
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+    elif "staff" in session:
+        StaffName = session["staff"]
+        valid_session, name = validate_session_open_file_admin(StaffName)
+        if valid_session:
+            cart = session["cart"]
+            cart[id] -= 1
+            if cart[id] == 0:
+                cart.pop(id)
+            if len(cart) == 0:
+                session.pop("cart", None)
+            else:
+                session["cart"] = cart
+            return redirect(url_for('cart'))
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+    else:
+        cart = session["cart"]
+        cart[id] -= 1
+        if cart[id] == 0:
+            cart.pop(id)
+        if len(cart) == 0:
+            session.pop("cart", None)
+        else:
+            session["cart"] = cart
+        return redirect(url_for('cart'))
 
 #Reset db if needed
 @app.route('/resetdb')
