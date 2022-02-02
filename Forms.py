@@ -93,11 +93,15 @@ class CreateProduct(Form):
     stock = IntegerField("Stock:", [validators.DataRequired()])
     #picture = FileField('Upload Product Picture', validators=[FileAllowed(['jpg', 'jpeg', 'png'])])
 
-class CategoryFilter(Form):
+class CategoryFilter_AndSorting(Form):
     Medicine_category = BooleanField("Medicine")
     TestKit_category = BooleanField("Test Kit")
     Supplement_category = BooleanField("Supplement")
     FirstAid_category = BooleanField("First Aid")
+
+    sorting_methods = [('Price (Descending)', 'Price (Descending)'), ('Price (Ascending)', 'Price (Ascending)'), ('Name (A to Z)')]
+    sort_by = SelectField(u'Sort By', choices = sorting_methods)
+
     apply_filters = SubmitField("Apply Filters")
 
 class PriceFilter(Form):

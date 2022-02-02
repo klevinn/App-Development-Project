@@ -2303,7 +2303,7 @@ def search():
             return redirect(url_for('login'))
     else:
         query = request.args.get('query')
-        form = Forms.CategoryFilter(request.form)
+        form = Forms.CategoryFilter_AndSorting(request.form)
         form2 = Forms.PriceFilter(request.form)
 
         if query:
