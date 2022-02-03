@@ -29,6 +29,7 @@ class User(Person):
         #XuZhi
         self.__membership = ''
         self.__remarks = ''
+        self.__purchases = 0
 
     def set_card_name(self, card_name):
         self.__card_name = card_name
@@ -56,6 +57,9 @@ class User(Person):
     def set_previous_password(self, prev_password):
         self.__previous_password = prev_password
     
+    def set_purchases(self,purchases):
+        self.__purchases = purchases
+
     def get_account_status(self):
         return self.__account_status
     def get_user_id(self):
@@ -82,6 +86,9 @@ class User(Person):
         return self.__phone_number
     def get_previous_password(self):
         return self.__previous_password
+
+    def get_purchases(self):
+        return self.__purchases
 
     def set_profile_pic(self, profilepicture):
         self.__profile_picture = profilepicture

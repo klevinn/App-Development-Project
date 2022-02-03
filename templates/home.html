@@ -85,12 +85,13 @@
 
   {% if usersession %}
 <div class="row" style="margin:100px 10px 0 10px; background:white; padding:25px; border-radius:15px;">
-  <div class="col-md">
-    <img src="" alt="">
+  <div class="col-md text-center">
+    <h3>Loyalty pass</h3>
+    <h2 class="display-4">{{purchases}}</h2>
   </div>
   <div class="col-md">
     <h2>Welcome Back {{ user }}!</h2>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+    <p>Keep shopping to get your loyalty pass up! Or just have a look around!</p>
   <a href="/user" class="btn btn-primary">Head to account!</a>
   </div>
 </div>
@@ -102,7 +103,7 @@
   </div>
   <div class="col-md">
     <h2>Hello {{ staff }}!</h2>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+    <p>Welcome back to the website! Look around or get to work !</p>
   <a href="/staffapp" class="btn btn-primary">Head to staff dashboard</a>
   </div>
 </div>
@@ -113,7 +114,7 @@
   </div>
   <div class="col-md">
     <h2>Become A Member!</h2>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+    <p>Join us to get added benefits from a loyalty pass!</p>
   <a href="/signup" class="btn btn-primary">Become a Member Today!</a>
   </div>
 </div>

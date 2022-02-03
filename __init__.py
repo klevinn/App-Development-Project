@@ -128,11 +128,11 @@ def home():
         UserName = get_user_name(idNumber, users_dict)
         av = users_dict[idNumber].get_profile_pic()
         valid_session = validate_session(idNumber, users_dict)
-
+        purchases = users_dict[idNumber].get_purchases()
         db.close()
         if valid_session:
             print("%s is entering and his session is Valid" %(UserName))
-            return render_template('home.html' , user = UserName, av=av, usersession = usersession)
+            return render_template('home.html' , user = UserName, av=av, usersession = usersession, purchases = purchases)
         else:
             session.clear()
             print("Invalid Session")
@@ -715,7 +715,7 @@ def user():
             db.close()
 
             #for testing
-            purchases = 10
+            purchases = users_dict[userid].get_purchases()
             return render_template('user/loggedin/useraccount.html' , user = name, count=len(user_list), user_list=user_list, changed = changed, change = change, av=av, purchases = purchases)
         else:
             session.clear()
@@ -4229,9 +4229,22 @@ def orderShippingAddress():
                 form.name.data = UserName
                 form.email.data = users_dict[idNumber].get_email()
                 form.shipping_address.data = users_dict[idNumber].get_shipping_address()
-                form.unit_number1.data = users_dict[idNumber].get_unit_number1()
-                form.unit_number2.data = users_dict[idNumber].get_unit_number2()
-                form.postal_code.data = users_dict[idNumber].get_postal_code()
+                unitnum1 = users_dict[idNumber].get_unit_number1()
+                unitnum2 = users_dict[idNumber].get_unit_number2()
+                if len(unitnum1) == 0 or len(unitnum2) == 0:
+                    form.unit_number1.data = unitnum1
+                    form.unit_number2.data = unitnum2
+                else:
+                    form.unit_number1.data = int(unitnum1)
+                    form.unit_number2.data = int(unitnum2)
+
+                shortened_postal = users_dict[idNumber].get_postal_code()[3:]
+                print(shortened_postal)
+                if len(shortened_postal) == 0 or shortened_postal == 'None':
+                    form.postal_code.data =shortened_postal
+                else:
+                    form.postal_code.data = int(shortened_postal)
+                
                 form.phone_no.data = users_dict[idNumber].get_phone_number()
                 return render_template('user/guest/alisa/user/guest/alisa/guest_shippingAddress.html', form=form, user = UserName, av=av, usersession = True)
 
@@ -4437,13 +4450,15 @@ def shoppingComplete():
         UserName =  get_user_name(idNumber, users_dict)
         av = users_dict[idNumber].get_profile_pic()
         valid_session = validate_session(idNumber, users_dict)
-        db.close()
         if valid_session:
             if "cart" in session and "total" in session:
+                users_dict[idNumber].set_purchases(users_dict[idNumber].get_purchases() + 1)
+                db["Users"] = users_dict
                 cart = session["cart"]
                 total = session["total"]
                 session.pop('cart', None)
                 session.pop('total', None)
+                db.close()
                 return render_template('user/guest/alisa/shoppingComplete.html', user = UserName, av=av, usersession = True,cart = cart, total = total)
             else:
                 return redirect(url_for('home'))
@@ -4479,12 +4494,13 @@ def shoppingComplete():
 def test():
     form = Forms.CreateOrderShippingAddressForm(request.form)
     return render_template('user/guest/alisa/shoppingComplete.html', form=form, total = 0)
+
 #Reset db if needed
 @app.route('/resetdb')
 def resetdb():
     customer_dict = {}
     db = shelve.open('user', 'c')
-    db['Feedback'] = customer_dict
+    db['Users'] = customer_dict
     return redirect(url_for('home'))
 
 if __name__ == '__main__':
