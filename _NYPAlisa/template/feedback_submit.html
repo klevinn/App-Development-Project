@@ -1,0 +1,12 @@
+{% extends "default_base.html" %}
+{% block head %}
+<link rel="stylesheet" href="../static/CSS/feedback.css">
+{% endblock %}
+{% block title %}Feedback Submit | DoctorOnTheGo{% endblock %}
+
+
+{% block content %}
+<h1>Shopping Complete!</h1>
+<p>Proceed back?</p>
+<a href="{{ url_for('home') }}"><button type="button" class="btn btn-primary btn-lg btn-block">Home</button></a>
+{% endblock %}

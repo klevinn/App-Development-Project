@@ -1,0 +1,85 @@
+{% extends "default_base.html" %}
+{% block head %}
+<link rel="stylesheet" href="../static/static/CSS/guest_SA.css">
+
+{% endblock %}
+{% block title %}Shipping Address | DoctorOnTheGo{% endblock %}
+
+{% block content %}
+{% from "includes/_formHelper.html" import render_field %}
+<div class="container">
+    <ul class="progressbar">
+        <li>Confirm Order</li>
+        <li class="active">Shipping Address</li>
+        <li>Make payment</li>
+    </ul>
+</div>
+<div class="intro">
+    <div class="intro-text">
+        <h1>Shipping Address</h1>
+        <p>Please input your shipping address</p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="login-form bg-colour mt-8" id="shippingForm">
+            <form action="" method="POST" class="row g-3">
+                <div class="col-12">
+                    <label for="">Name:</label>
+                    <div class="input-group mb-3">
+                        {{ render_field(form.name, class="form-control") }}
+                    </div>
+                </div>
+                <div class="col-12">
+                    <label for="">Email:</label>
+                    <div class="input-group mb-3">
+                        {{ render_field(form.email, class="form-control") }}
+                    </div>
+                </div>
+                <div class="col-12">
+                    <label for="">Shipping Address:</label>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">Blk</span>
+                        {{ render_field(form.shipping_address, class="form-control", placeholder="123A Singapore Street") }}
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="">Unit Number:</label>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">#</span>
+                        {{ render_field(form.unit_number1, class="form-control", placeholder="01") }}
+                        <span class="input-group-text">-</span>
+                        {{ render_field(form.unit_number2, class="form-control", placeholder="02") }}
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="">Postal Code</label>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">(S)</span>
+                        {{ render_field(form.postal_code, class="form-control", placeholder="123321") }}
+                    </div>
+                </div>
+                <div class="col-12">
+                    <label for="">Phone Number</label>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">+65</span>
+                        {{ render_field(form.phone_no, class="form-control", placeholder="12344321") }}
+                    </div>
+                </div>
+            </form>
+            <hr class="mt-4">
+            <div class="col-12">
+                <p class="text-center mb-0"><span><a href="/signup">Sign Up</a></span> for Rewards !</p>
+            </div>
+        </div>
+    </div>
+    <br>
+<div class="buttons">
+    <div class="return-btn">
+        <a href="{{ url_for('confirmOrder') }}"><button type="button" class="btn btn-primary btn-lg btn-block" id="return"><span style="color: white;">Return</span></button></a>
+    </div>
+    <div class="confirm-btn">
+        <a href="{{ url_for('paymentDetail') }}"><button type="button" class="btn btn-primary btn-lg btn-block" id="confirm"><span style="color: white;">Confirm</span></button></a>
+    </div>
+</div>
+{% endblock %}

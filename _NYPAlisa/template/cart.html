@@ -1,0 +1,65 @@
+{% extends "default_base.html" %}
+{% block head %}
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+{% endblock %}
+{% block title %}Cart | DoctorOnTheGo{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="../static/static/CSS/cart.css">
+<div class="container mt-4">
+
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-sm">
+                <thead>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Subtotal</th>
+                    <th>Update</th>
+                    <th>Delete</th>
+                </thead>
+                <tbody>
+                    {% for key, product in session['Shoppingcart'].items() %}
+                    <tr>
+                        <td><img src="static/images/{{ product.img_file_name }}" alt="" width="50" height="45"></td>
+                        <td>{{ product.name }}</td>
+                        <form action="{{url_for('updatecart', code=key)}}" method="post">
+                            <td>${{ product.price }}</td>
+                            <td><input type="number" name="quantity" min="1" value="{{ product.quantity }}"></td>
+                            {% set subtotal = product.quantity|int * product.price|float %}
+                            <td>${{ subtotal }}</td>
+                            <td><button type="submit" class="btn btn-sm btn-info">Update</button></td>
+                        </form>
+                        <td><a href="{{url_for('deleteitem', id=key)}}" class="btn btn-sm btn-danger">Delete</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <table>
+                <tr>
+                    <td><a href="{{url_for('store')}}" class="btn btn-success">Continue Shopping</a></td>
+                    <td width="50%"></td>
+                    <td> <h5>Tax: ${{tax}}</h5></td>
+                    <td> <h3>Grand total: ${{grandtotal}}</h3> </td>
+                    <td> <a href="{{url_for('clearcart')}}" class="btn btn-danger btn-sm float-right mr-4"> Clear cart</a></td>
+                    <td><a href="{{url_for('confirmOrder')}}" class="btn btn-success">Order Now</a></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<!--<div class="buttons">-->
+<!--	<div class="return-btn">-->
+<!--		<a href="{{ url_for('store') }}"><button type="button" class="btn btn-primary btn-lg btn-block" id="return">Back to Shop</button></a>-->
+<!--	</div>-->
+<!--	<div class="confirm-btn">-->
+<!--		<a href="{{ url_for('confirmOrder') }}"><button type="button" class="btn btn-primary btn-lg btn-block" id="confirm">Confirm</button></a>-->
+<!--	</div>-->
+<!--</div>-->
+{% endblock %}

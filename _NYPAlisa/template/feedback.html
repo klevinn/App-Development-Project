@@ -1,0 +1,42 @@
+{% extends "user_base.html" %}
+{% block head %}
+<link rel="stylesheet" href="../static/CSS/feedback.css">
+{% endblock %}
+{% block title %}Feedback Form | DoctorOnTheGo{% endblock %}
+
+{% block content %}
+{% from "includes/_formHelper.html" import render_field %}
+<div class="intro">
+    <div class="intro-text">
+        <h1>Feedback Form</h1>
+        <p>Here is the feedback form</p>
+    </div>
+</div>
+<div class="form">
+    <div class="row">
+        <div class="col-md-10">
+            <div class="login-form bg-colour mt-6 p-4" id="feedbackForm">
+                <form action="" method="POST" class="row g-3">
+                    <div class="col-12">
+                        {{ render_field(form.name, class="form-control", placeholder="John Lim") }}
+                    </div>
+                    <div class="col-12">
+                        {{ render_field(form.email, class="form-control", placeholder="john@example.com") }}
+                    </div>
+                    <div class="col-12">
+                        {{ render_field(form.subject, class="form-control") }}
+                    </div>
+                    <div class="form-group">
+                        {{ render_field(form.description, class="form-control") }}
+                    </div>
+                    <br>
+                    <div class="form-group col-md-12 pl-3 pr-3">
+                        <input type="submit" value="Submit" class="btn btn-primary"/>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

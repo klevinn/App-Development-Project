@@ -1,0 +1,36 @@
+.intro {
+ margin: auto;
+ height: 200px;
+}
+
+.intro-text{
+    text-align: center;
+    padding-top: 35px;
+}
+
+.content {
+  margin: auto;
+  width: 550px;
+}
+.feedback {
+  padding-top: 100px;
+  width: 200px;
+  float: left;
+}
+.chat-bot {
+  padding-top: 30px;
+  width: 200px;
+  float: right;
+}
+
+.feedback-form {
+  border: 1px;
+  color: black;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}

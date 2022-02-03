@@ -1,0 +1,42 @@
+h1 {
+    padding-top: 50px;
+    margin: auto;
+    height: 150px;
+    text-align: center;
+}
+p {
+    text-align: center;
+}
+
+.buttons {
+    width:100%;
+    text-align: center;
+    display: inline-block;
+    padding-top: 20px;
+    padding-bottom: 60px;
+}
+
+#home {
+    width: 150px;
+    border: 1px;
+    background-color: #FFC0BE;
+}
+
+.home-btn {
+    padding-right: 30px;
+}
+.news-btn {
+    padding-right: 30px;
+}
+#news {
+    width: 150px;
+    border: 1px;
+    background-color: #FFC0BE;
+}
+
+#consultation {
+    width: 150px;
+    border: 1px;
+    background-color: #FFC0BE;
+}
+
