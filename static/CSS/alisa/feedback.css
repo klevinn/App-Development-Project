@@ -1,11 +1,7 @@
 .intro {
  margin: auto;
- height: 200px;
 }
 .intro-text {
     text-align: center;
     padding-top: 35px;
-}
-form {
-    padding-left: 300px;
 }

@@ -1,3 +1,6 @@
+#i dont think we need to make a guest account
+#so idk what this is for
+
 class Guest:
     def __init__(self, email):
         guest_id = 0

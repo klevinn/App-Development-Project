@@ -1,6 +1,12 @@
+{% if staffsession %}
+{% extends "admin_base.html" %}
+{% elif usersession %}
 {% extends "user_base.html" %}
+{% else %}
+{% extends "default_base.html" %}
+{% endif %}
 {% block head %}
-<link rel="stylesheet" href="../static/CSS/feedback.css">
+<link rel="stylesheet" href="static/CSS/alisa/feedback.css">
 {% endblock %}
 {% block title %}Feedback Form | DoctorOnTheGo{% endblock %}
 
@@ -9,12 +15,12 @@
 <div class="intro">
     <div class="intro-text">
         <h1>Feedback Form</h1>
-        <p>Here is the feedback form</p>
+        <p>Use this form to send Feedback to us about any thing your displeased with</p>
+        <p>Click <a href="/help">Here</a> to return to the previous page. Click <a href="/help">here</a> to view the FAQs</p>
     </div>
 </div>
 <div class="form">
-    <div class="row">
-        <div class="col-md-10">
+        <div class="col">
             <div class="login-form bg-colour mt-6 p-4" id="feedbackForm">
                 <form action="" method="POST" class="row g-3">
                     <div class="col-12">
@@ -36,7 +42,7 @@
                 </form>
             </div>
         </div>
-    </div>
+
 </div>
 
 {% endblock %}

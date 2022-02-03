@@ -10,12 +10,11 @@
 
 .content {
   margin: auto;
-  width: 550px;
+  width: 75%;
 }
 .feedback {
   padding-top: 100px;
   width: 200px;
-  float: left;
 }
 .chat-bot {
   padding-top: 30px;
@@ -33,4 +32,13 @@
   font-size: 16px;
   margin: 4px 2px;
   cursor: pointer;
+}
+
+.synopsis{
+  margin-top:20px;
+  padding:10px;
+}
+
+#list{
+  list-style:circle;
 }

@@ -1,0 +1,30 @@
+{% if staffsession %}
+{% extends "admin_base.html" %}
+{% elif usersession %}
+{% extends "user_base.html" %}
+{% else %}
+{% extends "default_base.html" %}
+{% endif %}
+{% block head %}
+<link rel="stylesheet" href="static/CSS/alisa/feedback.css">
+{% endblock %}
+{% block title %}Feedback Submit | DoctorOnTheGo{% endblock %}
+
+
+{% block content %}
+<div>
+    <div class="row">
+        <div class="col text-center">
+            <h1>Feedback Submitted!</h1>
+            <p>Proceed back?</p>
+            <a href="{{ url_for('home') }}"><button type="button" class="btn btn-primary btn-lg btn-block">Home</button></a>
+            <a href="{{ url_for('help') }}"><button type="button" class="btn btn-primary btn-lg btn-block">Back to help page</button></a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <img class="rounded mx-auto d-block img-fluid" src="https://c.tenor.com/7Ypq9_9najcAAAAC/thumbs-up-double-thumbs-up.gif" alt="">
+        </div>
+    </div>
+</div>
+{% endblock %}

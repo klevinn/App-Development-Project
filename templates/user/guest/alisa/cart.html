@@ -25,20 +25,17 @@
                     <th>Delete</th>
                 </thead>
                 <tbody>
-                    {% for key, product in session['Shoppingcart'].items() %}
                     <tr>
-                        <td><img src="static/images/{{ product.img_file_name }}" alt="" width="50" height="45"></td>
-                        <td>{{ product.name }}</td>
-                        <form action="{{url_for('updatecart', code=key)}}" method="post">
-                            <td>${{ product.price }}</td>
-                            <td><input type="number" name="quantity" min="1" value="{{ product.quantity }}"></td>
-                            {% set subtotal = product.quantity|int * product.price|float %}
-                            <td>${{ subtotal }}</td>
+                        <td><img src="static/images/{# product.img_file_name #}" alt="" width="50" height="45"></td>
+                        <td>{# product.name #}</td>
+                        <form action="{#url_for('updatecart', code=key)#}" method="post">
+                            <td>${#product.price #}</td>
+                            <td><input type="number" name="quantity" min="1" value="{# product.quantity #}"></td>
+                            <td>${# subtotal #}</td>
                             <td><button type="submit" class="btn btn-sm btn-info">Update</button></td>
                         </form>
-                        <td><a href="{{url_for('deleteitem', id=key)}}" class="btn btn-sm btn-danger">Delete</a></td>
+                        <td><a href="{#url_for('deleteitem', id=key)#}" class="btn btn-sm btn-danger">Delete</a></td>
                     </tr>
-                    {% endfor %}
                 </tbody>
             </table>
             <table>
@@ -47,8 +44,8 @@
                     <td width="50%"></td>
                     <td> <h5>Tax: ${{tax}}</h5></td>
                     <td> <h3>Grand total: ${{grandtotal}}</h3> </td>
-                    <td> <a href="{{url_for('clearcart')}}" class="btn btn-danger btn-sm float-right mr-4"> Clear cart</a></td>
-                    <td><a href="{{url_for('confirmOrder')}}" class="btn btn-success">Order Now</a></td>
+                    <td> <a href="{#url_for('clearcart')#}" class="btn btn-danger btn-sm float-right mr-4"> Clear cart</a></td>
+                    <td><a href="{#url_for('confirmOrder')#}" class="btn btn-success">Order Now</a></td>
                 </tr>
             </table>
         </div>
@@ -59,7 +56,7 @@
 <!--		<a href="{{ url_for('store') }}"><button type="button" class="btn btn-primary btn-lg btn-block" id="return">Back to Shop</button></a>-->
 <!--	</div>-->
 <!--	<div class="confirm-btn">-->
-<!--		<a href="{{ url_for('confirmOrder') }}"><button type="button" class="btn btn-primary btn-lg btn-block" id="confirm">Confirm</button></a>-->
+<!--		<a href="{# url_for('confirmOrder') #}"><button type="button" class="btn btn-primary btn-lg btn-block" id="confirm">Confirm</button></a>-->
 <!--	</div>-->
 <!--</div>-->
 {% endblock %}

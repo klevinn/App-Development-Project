@@ -3983,6 +3983,158 @@ def minusprod(id):
             session["cart"] = cart
         return redirect(url_for('cart'))
 
+@app.route('/help', methods=["GET","POST"])
+def help():
+    if "user" in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
+
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+
+
+        UserName =  get_user_name(idNumber, users_dict)
+        av = users_dict[idNumber].get_profile_pic()
+        valid_session = validate_session(idNumber, users_dict)
+        db.close()
+        if valid_session:
+            return render_template('user/guest/alisa/help.html', usersession = True, user= UserName, av=av,  contactactive = True)
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+    elif "staff" in session:
+        StaffName = session["staff"]
+        valid_session, name = validate_session_open_file_admin(StaffName)
+        if valid_session:
+            return render_template('user/guest/alisa/help.html', staff=name, staffsession = True,  contactactive = True)
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+    else:
+        return render_template('user/guest/alisa/help.html',  contactactive = True)
+
+@app.route('/feedback', methods=["GET", "POST"])
+def feedback():
+    if "user" in session:
+        idNumber = session["user"]
+        users_dict ={}
+        feedback_dict = {}
+        db = shelve.open('user', 'c')
+
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+
+        try:
+            if 'Feedback' in db:
+                feedback_dict = db['Feedback']
+            else:
+                db['Feedback'] = feedback_dict
+        except:
+            print("Error in retrieving Feedback from user.db")
+
+
+        UserName =  get_user_name(idNumber, users_dict)
+        av = users_dict[idNumber].get_profile_pic()
+        valid_session = validate_session(idNumber, users_dict)
+        if valid_session:
+            feedback_form = Forms.Feedback(request.form)
+            if request.method == "POST" and feedback_form.validate():
+                id_num = generate_feedback_id()
+                feed = Feedback.Feedback()
+                feed.set_fb_name(feedback_form.name.data)
+                feed.set_fb_email(feedback_form.email.data)
+                feed.set_fb_subject(feedback.form.subject.data)
+                feed.set_fb_desc(feedback.form.description.data)
+                feed.set_fb_id(id_num)
+
+                feedback_dict[id_num] = feed
+                db['Feedback'] = feedback_dict
+                db.close()
+
+                return redirect(url_for('fb_submit'))
+            else:
+                return render_template('user/guest/alisa/feedback.html', usersession = True, user= UserName, av=av, form = feedback_form,  contactactive = True)
+    elif "staff" in session:
+        StaffName = session["staff"]
+        valid_session, name = validate_session_open_file_admin(StaffName)
+        if valid_session:
+            return redirect(url_for('stafffeed'))
+    else:
+        feedback_dict = {}
+        db = shelve.open('user', 'c')
+        try:
+            if 'Feedback' in db:
+                feedback_dict = db['Feedback']
+            else:
+                db['Feedback'] = feedback_dict
+        except:
+            print("Error in retrieving Feedback from user.db")
+        feedback_form = Forms.Feedback(request.form)
+        if request.method == "POST" and feedback_form.validate():
+            id_num = generate_feedback_id()
+            feed = Feedback.Feedback()
+            feed.set_fb_name(feedback_form.name.data)
+            feed.set_fb_email(feedback_form.email.data)
+            feed.set_fb_subject(feedback_form.subject.data)
+            feed.set_fb_desc(feedback_form.description.data)
+            feed.set_fb_id(id_num)
+
+            feedback_dict[id_num] = feed
+            db['Feedback'] = feedback_dict
+            db.close()
+
+            return redirect(url_for('fb_submit'))
+        else:
+            return render_template('user/guest/alisa/feedback.html', form = feedback_form,  contactactive = True)
+
+
+@app.route('/feedback_submit', methods=["GET","POST"])
+def fb_submit():
+    if "user" in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
+
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+
+
+        UserName =  get_user_name(idNumber, users_dict)
+        av = users_dict[idNumber].get_profile_pic()
+        valid_session = validate_session(idNumber, users_dict)
+
+        db.close()
+        if valid_session:
+            return render_template('user/guest/alisa/feedback_submit.html', usersession = True, user= UserName, av=av, contactactive = True)
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+    elif "staff" in session:
+        StaffName = session["staff"]
+        valid_session, name = validate_session_open_file_admin(StaffName)
+        if valid_session:
+            return render_template('user/guest/alisa/feedback_submit.html', staff=name, staffsession = True,  contactactive = True)
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+    else:
+        return render_template('user/guest/alisa/feedback_submit.html',  contactactive = True)
 #Reset db if needed
 @app.route('/resetdb')
 def resetdb():

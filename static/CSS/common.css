@@ -154,4 +154,8 @@ ul {
 	font-weight: bold;
 }
 
-
+.chat-bot {
+	padding-top: 30px;
+	width: 200px;
+	float: right;
+  }

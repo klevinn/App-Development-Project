@@ -136,5 +136,10 @@ class Graph(Form):
     COVID5 = DecimalField('DATE5 Cases:', [validators.Length(min=1), validators.DataRequired(), ])
 
 
-
+#Alisa
+class Feedback(Form):
+    name = StringField("Name:", [validators.DataRequired()])
+    email = EmailField('Email', [validators.Email(), validators.DataRequired()])
+    subject = SelectField('Subject', [validators.DataRequired()], choices=[('Website Design','Website Design'),('Website Functions','Website Functions'),('General','General'),('Content','Content'),('Copyright','Copyright'),('Others','Others')], default = 'General')
+    description = TextAreaField()
 

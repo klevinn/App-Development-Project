@@ -1,0 +1,39 @@
+{% if staffsession %}
+{% extends "admin_base.html" %}
+{% elif usersession %}
+{% extends "user_base.html" %}
+{% else %}
+{% extends "default_base.html" %}
+{% endif %}
+{% block head %}
+<link rel="stylesheet" href="static/CSS/alisa/help.css">
+{% endblock %}
+
+{% block title %}Help | DoctorOnTheGo{% endblock %}
+
+{% block content %}
+    <div class="intro">
+        <div class="intro-text">
+            <h1>Help</h1>
+            <p>Encountered a problem ? <br> Do check out our chatbot for help, or leave feedback for us to address your needs better !</p>
+        </div>
+    </div>
+    <div class="content">
+        <div class="row">
+            <div class="col text-center">
+                <a href="{{ url_for('feedback') }}"><button class="feedback-form btn btn-secondary">Feedback Form</button></a>
+            </div>
+          </div>
+          <div class="row">
+            <div class="synopsis">
+                <h2 style="text-align:center">FAQs</h2>
+                <ul id="list">
+                  <li>Why does the page look weird? Not properly organised <br />
+                    My apologies, I have tried to make it responsive but I was unable to. I suggest you using a laptop to view the site, if anything is not proper. As I used a Macbook to make the site, I am positive the dimensions are based of that
+                  </li>
+                </ul>
+              </div>
+          </div>
+    </div>
+
+{% endblock %}
