@@ -1,6 +1,7 @@
 {% extends "default_base.html" %}
 {% block head %}
-<link rel="stylesheet" href="../static/static/CSS/checkItems.css">
+<link rel="stylesheet" href="static/CSS/alisa/checkItems.css">
+<link rel="stylesheet" href="static/CSS/cart.css">
 {% endblock %}
 {% block title %}Confirm Order | DoctorOnTheGo{% endblock %}
 
@@ -17,15 +18,84 @@
         <h1>Confirm Order</h1>
     </div>
 </div>
+<div class="card">
+    <div class="row">
+        <div class="col cart">
+            <div class="title">
+                <div class="row">
+                    <div class="col">
+                        <h4><b>Items</b></h4>
+                    </div>
+                    <div class="col align-self-center text-right text-muted">{{ num }} item(s)</div>
+                </div>
+            </div>
+            {% for item in cart %}
+            {% for product in products %}
+            {% if product.name == item %}
+            <div class="row border-top border-bottom">
+                <div class="row main align-items-center">
+                    <div class="col-2"><img class="img-fluid" src="static/images/store/{{product.img_file_name}}">
+                    </div>
+                    <div class="col">
+                        <div class="row text-muted">{{product.category}}</div>
+                        <div class="row">{{item}}</div>
+                    </div>
+                    <div class="col"><span
+                            class="border">{{cart.get(item)}}</span> </div>
 
-<div class="buttons">
-    <div class="return-btn">
-        <a href="{{ url_for('cart') }}"><button type="button" class="btn btn-primary btn-lg btn-block" id="return">Return</button></a>
-    </div>
-    <div class="confirm-btn">
-        <a href="{{ url_for('shippingAddress') }}"><button type="button" class="btn btn-primary btn-lg btn-block" id="confirm">Confirm</button></a>
+                    <div class="col">${{product.price * cart.get(item)}}</div>
+                    <div class="col">
+                        <form action="{{ url_for('removeprod', id = product.name) }}" method="POST">
+                            <!--input type="submit" value="Delete" class="btn btn-danger"-->
+
+                            <!-- w3 schools modal button-->
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                data-bs-target="#myModal_remove">
+                                <span class="close">&#10005;</span>
+                            </button>
+
+                            <!-- The Modal -->
+                            <div class="modal" id="myModal_remove">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+
+                                        <!-- Modal Header -->
+                                        <div class="modal-header">
+                                            <h4 class="modal-title">Removal Confirmation</h4>
+                                            <button type="button" class="btn-close"
+                                                data-bs-dismiss="modal"></button>
+                                        </div>
+
+                                        <!-- Modal body -->
+                                        <div class="modal-body">
+                                            Are you sure you want to remove this item?
+                                        </div>
+
+                                        <!-- Modal footer -->
+                                        <div class="modal-footer">
+                                            <input type="submit" value="Remove" class="btn btn-danger">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Cancel</button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+            <div class="back-to-shop"><a href="/cart">&leftarrow;<span class="text-muted">Back to cart</span></a>
+            </div>
+        </div>
+        <a href="/orderShippingAddress"><button class="btn">Confirm</button></a>
     </div>
 </div>
+
 
 {% endblock %}
 

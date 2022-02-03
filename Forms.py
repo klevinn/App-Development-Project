@@ -143,3 +143,11 @@ class Feedback(Form):
     subject = SelectField('Subject', [validators.DataRequired()], choices=[('Website Design','Website Design'),('Website Functions','Website Functions'),('General','General'),('Content','Content'),('Copyright','Copyright'),('Others','Others')], default = 'General')
     description = TextAreaField()
 
+class CreateOrderShippingAddressForm(Form):
+    name = StringField("", [validators.DataRequired()])
+    email = EmailField('', [validators.Email(), validators.DataRequired()])
+    shipping_address = StringField("")
+    postal_code = IntegerField("",[validators.NumberRange(min=0, max=999999)])
+    unit_number1 = IntegerField("",[validators.NumberRange(min=0, max=99)])
+    unit_number2 = IntegerField("",[validators.NumberRange(min=0, max=99)])
+    phone_no = IntegerField("",[validators.NumberRange(min=0, max=99999999)])

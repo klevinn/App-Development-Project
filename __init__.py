@@ -113,7 +113,7 @@ def home():
     if 'user' in session:
         idNumber = session["user"]
         usersession = True
-        print("%d entering page" %(idNumber))
+        print("%s entering page" %(idNumber))
         users_dict ={}
         db = shelve.open('user', 'c')
 
@@ -3786,7 +3786,8 @@ def cart():
                         if item == product.name:
                             total += cart.get(item) * product.price
                 session["total"] = total
-                return render_template('user/guest/cart_feedback/cart.html', usersession = True, user= UserName, av=av, cart = cart, products = products, total = total)
+                noitem = len(cart)
+                return render_template('user/guest/cart_feedback/cart.html', usersession = True, user= UserName, av=av, cart = cart, products = products, total = total, num = noitem)
             else:
                 return redirect(url_for('home'))
         else:
@@ -3809,7 +3810,8 @@ def cart():
                         if item == product.name:
                             total += cart.get(item) * product.price
                 session["total"] = total
-                return render_template('user/guest/cart_feedback/cart.html', staff = name, staffsession = True, cart = cart, products = products, total = total)
+                noitem = len(cart)
+                return render_template('user/guest/cart_feedback/cart.html', staff = name, staffsession = True, cart = cart, products = products, total = total, num = noitem)
             else:
                 return redirect(url_for('home'))
         else:
@@ -3828,7 +3830,8 @@ def cart():
                     if item == product.name:
                         total += cart.get(item) * product.price
             session["total"] = total
-            return render_template('user/guest/cart_feedback/cart.html', cart = cart, products = products, total = total)
+            noitem = len(cart)
+            return render_template('user/guest/cart_feedback/cart.html', cart = cart, products = products, total = total, num = noitem)
         else:
             empty = True
             return render_template('user/guest/cart_feedback/cart.html',empty = empty)
@@ -4099,7 +4102,7 @@ def feedback():
             return render_template('user/guest/alisa/feedback.html', form = feedback_form,  contactactive = True)
 
 
-@app.route('/feedback_submit', methods=["GET","POST"])
+@app.route('/feedback_submit', methods=["GET", "POST"])
 def fb_submit():
     if "user" in session:
         idNumber = session["user"]
@@ -4135,6 +4138,347 @@ def fb_submit():
             return redirect(url_for('home'))
     else:
         return render_template('user/guest/alisa/feedback_submit.html',  contactactive = True)
+
+@app.route('/checkItems', methods=["GET", "POST"])
+def checkItems():
+    if "user" in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
+
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+
+
+        UserName =  get_user_name(idNumber, users_dict)
+        av = users_dict[idNumber].get_profile_pic()
+        valid_session = validate_session(idNumber, users_dict)
+        db.close()
+        if "cart" in session:
+            if valid_session:
+                cart = session["cart"]
+                products = Product.query.all()
+                noitem = len(cart)
+                return render_template('user/guest/alisa/checkItems.html', usersession = True, user= UserName, av=av, cart = cart, products = products, num = noitem)
+            else:
+                return redirect(url_for('home'))
+        else:
+            if valid_session:
+                empty = True
+                return render_template('user/guest/cart_feedback/cart.html', usersession = True, user= UserName, av=av, empty = empty)
+            else:
+                return redirect(url_for('home'))
+
+    elif "staff" in session:
+        StaffName = session["staff"]
+        valid_session, name = validate_session_open_file_admin(StaffName)
+        if "cart" in session:
+            if valid_session:
+                cart = session["cart"]
+                products = Product.query.all()
+                noitem = len(cart)
+                return render_template('user/guest/alisa/checkItems.html', staff = name, staffsession = True, cart = cart, products = products, num = noitem)
+            else:
+                return redirect(url_for('home'))
+        else:
+            if valid_session:
+                empty = True
+                return render_template('user/guest/cart_feedback/cart.html',empty = empty, staff = name, staffsession = True)
+            else:
+                return redirect(url_for('home'))
+    else:
+        if "cart" in session:
+            cart = session["cart"]
+            products = Product.query.all()
+            noitem = len(cart)
+            return render_template('user/guest/alisa/checkItems.html', cart = cart, products = products, num = noitem)
+        else:
+            empty = True
+            return render_template('user/guest/cart_feedback/cart.html',empty = empty)
+
+@app.route('/orderShippingAddress', methods=["GET", "POST"])
+def orderShippingAddress():
+    form = Forms.CreateOrderShippingAddressForm(request.form)
+    if "user" in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
+
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+
+
+        UserName =  get_user_name(idNumber, users_dict)
+        av = users_dict[idNumber].get_profile_pic()
+        valid_session = validate_session(idNumber, users_dict)
+        db.close()
+        if valid_session:
+            if request.method == 'POST' and form.validate():
+                return redirect(url_for('orderPaymentDetails'))
+            else:
+                form.name.data = UserName
+                form.email.data = users_dict[idNumber].get_email()
+                form.shipping_address.data = users_dict[idNumber].get_shipping_address()
+                form.unit_number1.data = users_dict[idNumber].get_unit_number1()
+                form.unit_number2.data = users_dict[idNumber].get_unit_number2()
+                form.postal_code.data = users_dict[idNumber].get_postal_code()
+                form.phone_no.data = users_dict[idNumber].get_phone_number()
+                return render_template('user/guest/alisa/user/guest/alisa/guest_shippingAddress.html', form=form, user = UserName, av=av, usersession = True)
+
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+    elif "staff" in session:
+        StaffName = session["staff"]
+        valid_session, name = validate_session_open_file_admin(StaffName)
+        if valid_session:
+            if request.method == "POST" and form.validate():
+                return redirect(url_for('orderPaymentDetails')) 
+            else:
+                return render_template('user/guest/alisa/user/guest/alisa/guest_shippingAddress.html', form=form, staff = name, staffsession = True)
+        else:
+            session.clear()
+            return redirect(url_for('home'))  
+    else:
+        if request.method == "POST" and form.validate():
+            return redirect(url_for('orderPaymentDetails')) 
+        else:
+            return render_template('user/guest/alisa/user/guest/alisa/guest_shippingAddress.html', form=form)
+
+@app.route('/orderPaymentDetails', methods=["GET","POST"])  
+def orderPaymentDetails():
+    form = Forms.CreateAddPaymentForm(request.form)
+    if "user" in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
+
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+
+
+        UserName =  get_user_name(idNumber, users_dict)
+        av = users_dict[idNumber].get_profile_pic()
+        valid_session = validate_session(idNumber, users_dict)
+        db.close()
+        if valid_session:
+            if request.method == "POST" and form.validate():
+                if users_dict[idNumber].get_card_cvv() != '':
+                    if form.card_CVV.data == users_dict[idNumber].get_card_cvv():
+                        card_name = Sanitise(form.card_name.data.upper())
+                        print(card_name)
+                        card_num = form.card_no.data
+                        print(card_num)
+                        valid_card_num = validate_card_number(card_num)
+                        card_expiry_month = fix_unit_number(form.card_expiry_month.data) 
+                        card_expiry_year = fix_expiry_year(form.card_expiry_year.data)
+                        print(card_expiry_year)
+                        if card_expiry_year != False:
+                            expiry_date = ('%s-%s-01' %(card_expiry_year, card_expiry_month))
+                            print(expiry_date)
+                            try:
+                                card_expiry_year = int(card_expiry_year)
+                            except:
+                                card_expiry_year = card_expiry_year
+                            valid_card_expiry = validate_expiry_date(card_expiry_year, form.card_expiry_month.data)
+                            card_cvv = form.card_CVV.data
+                            print(card_cvv)
+                            if valid_card_num & valid_card_expiry:
+                                return redirect(url_for('shoppingComplete'))
+                            else:
+                                print("Invalid Card Number")
+                                return render_template('user/guest/alisa/user/guest/alisa/guest_paymentDetail.html', form=form, usersession = True, user = UserName, av=av, valid_card_num = valid_card_num, valid_card_expiry = valid_card_expiry)
+
+                        else:
+                            print("Invalid Expiry Date")
+                            return render_template('user/guest/alisa/user/guest/alisa/guest_paymentDetail.html', form=form, usersession = True, user = UserName, av=av, valid_card_num = valid_card_num, card_expiry_year = card_expiry_year)
+                        
+                    else:
+                        print("Wrong CVV")
+                        return render_template('user/guest/alisa/user/guest/alisa/guest_paymentDetail.html', form=form, usersession = True, user = UserName, av=av, cvv_error = True)
+                else:
+                    card_name = Sanitise(form.card_name.data.upper())
+                    print(card_name)
+                    card_num = form.card_no.data
+                    print(card_num)
+                    valid_card_num = validate_card_number(card_num)
+                    card_expiry_month = fix_unit_number(form.card_expiry_month.data) 
+                    card_expiry_year = fix_expiry_year(form.card_expiry_year.data)
+                    print(card_expiry_year)
+                    if card_expiry_year != False:
+                        expiry_date = ('%s-%s-01' %(card_expiry_year, card_expiry_month))
+                        print(expiry_date)
+                        try:
+                            card_expiry_year = int(card_expiry_year)
+                        except:
+                            card_expiry_year = card_expiry_year
+                        valid_card_expiry = validate_expiry_date(card_expiry_year, form.card_expiry_month.data)
+                        card_cvv = form.card_CVV.data
+                        print(card_cvv)
+                        if valid_card_num & valid_card_expiry:
+                            return redirect(url_for('shoppingComplete'))
+                        else:
+                            print("Invalid Card Number")
+                            return render_template('user/guest/alisa/user/guest/alisa/guest_paymentDetail.html', form=form, usersession = True, user = UserName, av=av, valid_card_num = valid_card_num, valid_card_expiry = valid_card_expiry)
+
+                    else:
+                        print("Invalid Expiry Date")
+                        return render_template('user/guest/alisa/user/guest/alisa/guest_paymentDetail.html', form=form, usersession = True, user = UserName, av=av, valid_card_num = valid_card_num, card_expiry_year = card_expiry_year)
+            else:
+                form.card_name.data = users_dict[idNumber].get_card_name()
+                form.card_no.data = users_dict[idNumber].get_card_no()
+                form.card_expiry_year.data = users_dict[idNumber].get_card_expiry_year()
+                form.card_expiry_month.data = users_dict[idNumber].get_card_expiry_month()
+                return render_template('user/guest/alisa/user/guest/alisa/guest_paymentDetail.html', form=form, usersession = True, user = UserName, av=av)
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+    
+    elif "staff" in session:
+        StaffName = session["staff"]
+        valid_session, name = validate_session_open_file_admin(StaffName)
+        if valid_session:
+            if request.method == "POST" and form.validate():
+                card_name = Sanitise(form.card_name.data.upper())
+                print(card_name)
+                card_num = form.card_no.data
+                print(card_num)
+                valid_card_num = validate_card_number(card_num)
+                card_expiry_month = fix_unit_number(form.card_expiry_month.data) 
+                card_expiry_year = fix_expiry_year(form.card_expiry_year.data)
+                print(card_expiry_year)
+                if card_expiry_year != False:
+                    expiry_date = ('%s-%s-01' %(card_expiry_year, card_expiry_month))
+                    print(expiry_date)
+                    try:
+                        card_expiry_year = int(card_expiry_year)
+                    except:
+                        card_expiry_year = card_expiry_year
+                    valid_card_expiry = validate_expiry_date(card_expiry_year, form.card_expiry_month.data)
+                    card_cvv = form.card_CVV.data
+                    print(card_cvv)
+                    if valid_card_num & valid_card_expiry:
+                        return redirect(url_for('shoppingComplete'))
+                    else:
+                        print("Invalid Card Number")
+                        return render_template('user/guest/alisa/user/guest/alisa/guest_paymentDetail.html', form=form, staffsession = True, staff = name, valid_card_num = valid_card_num, valid_card_expiry = valid_card_expiry)
+
+                else:
+                    print("Invalid Expiry Date")
+                    return render_template('user/guest/alisa/user/guest/alisa/guest_paymentDetail.html', form=form, staffsession = True, staff = name, valid_card_num = valid_card_num, card_expiry_year = card_expiry_year)            
+            else:
+                return render_template('user/guest/alisa/user/guest/alisa/guest_paymentDetail.html', form=form, staffsession = True, staff = name)
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+    else:
+        if request.method == "POST" and form.validate():
+            card_name = Sanitise(form.card_name.data.upper())
+            print(card_name)
+            card_num = form.card_no.data
+            print(card_num)
+            valid_card_num = validate_card_number(card_num)
+            card_expiry_month = fix_unit_number(form.card_expiry_month.data) 
+            card_expiry_year = fix_expiry_year(form.card_expiry_year.data)
+            print(card_expiry_year)
+            if card_expiry_year != False:
+                expiry_date = ('%s-%s-01' %(card_expiry_year, card_expiry_month))
+                print(expiry_date)
+                try:
+                    card_expiry_year = int(card_expiry_year)
+                except:
+                    card_expiry_year = card_expiry_year
+                valid_card_expiry = validate_expiry_date(card_expiry_year, form.card_expiry_month.data)
+                card_cvv = form.card_CVV.data
+                print(card_cvv)
+                if valid_card_num & valid_card_expiry:
+                    return redirect(url_for('shoppingComplete'))
+                else:
+                    print("Invalid Card Number")
+                    return render_template('user/guest/alisa/user/guest/alisa/guest_paymentDetail.html', form=form, valid_card_num = valid_card_num, valid_card_expiry = valid_card_expiry)
+
+            else:
+                print("Invalid Expiry Date")
+                return render_template('user/guest/alisa/user/guest/alisa/guest_paymentDetail.html', form=form, valid_card_num = valid_card_num, card_expiry_year = card_expiry_year)            
+        else:
+            return render_template('user/guest/alisa/user/guest/alisa/guest_paymentDetail.html', form=form,)
+
+@app.route('/shoppingComplete', methods=["GET","POST"])
+def shoppingComplete():
+    if "user" in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
+
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+
+
+        UserName =  get_user_name(idNumber, users_dict)
+        av = users_dict[idNumber].get_profile_pic()
+        valid_session = validate_session(idNumber, users_dict)
+        db.close()
+        if valid_session:
+            if "cart" in session and "total" in session:
+                cart = session["cart"]
+                total = session["total"]
+                session.pop('cart', None)
+                session.pop('total', None)
+                return render_template('user/guest/alisa/shoppingComplete.html', user = UserName, av=av, usersession = True,cart = cart, total = total)
+            else:
+                return redirect(url_for('home'))
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+    elif "staff" in session:
+        StaffName = session["staff"]
+        valid_session, name = validate_session_open_file_admin(StaffName)
+        if valid_session:
+            if "cart" in session and "total" in session:
+                cart = session["cart"]
+                total = session["total"]
+                session.pop('cart', None)
+                session.pop('total', None)
+                return render_template('user/guest/alisa/shoppingComplete.html', staffsession = True, staff = name, cart = cart, total = total)
+            else:
+                return redirect(url_for('home'))
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+    else:
+        if "cart" in session and "total" in session:
+            cart = session["cart"]
+            total = session["total"]
+            session.pop('cart', None)
+            session.pop('total', None)
+            return render_template('user/guest/alisa/shoppingComplete.html',cart = cart, total = total)
+        else:
+            return redirect(url_for('home'))
+
+@app.route('/test')
+def test():
+    form = Forms.CreateOrderShippingAddressForm(request.form)
+    return render_template('user/guest/alisa/shoppingComplete.html', form=form, total = 0)
 #Reset db if needed
 @app.route('/resetdb')
 def resetdb():

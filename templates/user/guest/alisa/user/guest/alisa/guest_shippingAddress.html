@@ -1,6 +1,12 @@
+{% if staffsession %}
+{% extends "admin_base.html" %}
+{% elif usersession %}
+{% extends "user_base.html" %}
+{% else %}
 {% extends "default_base.html" %}
+{% endif %}
 {% block head %}
-<link rel="stylesheet" href="../static/static/CSS/guest_SA.css">
+<link rel="stylesheet" href="static/CSS/alisa/guest_SA.css">
 
 {% endblock %}
 {% block title %}Shipping Address | DoctorOnTheGo{% endblock %}
@@ -14,16 +20,13 @@
         <li>Make payment</li>
     </ul>
 </div>
-<div class="intro">
-    <div class="intro-text">
-        <h1>Shipping Address</h1>
-        <p>Please input your shipping address</p>
-    </div>
-</div>
+
 <div class="row">
-    <div class="col-md-8 offset-md-2">
-        <div class="login-form bg-colour mt-8" id="shippingForm">
+    <div class="col">
+        <div class="login-form bg-colour mt-6 p-4" id="payment_form">
             <form action="" method="POST" class="row g-3">
+                <h4 class="text-black">Shipping Address!</h4>
+                <p>Please input your shipping address</p>
                 <div class="col-12">
                     <label for="">Name:</label>
                     <div class="input-group mb-3">
@@ -40,7 +43,8 @@
                     <label for="">Shipping Address:</label>
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="basic-addon1">Blk</span>
-                        {{ render_field(form.shipping_address, class="form-control", placeholder="123A Singapore Street") }}
+                        {{ render_field(form.shipping_address, class="form-control", placeholder="123A Singapore
+                        Street") }}
                     </div>
                 </div>
                 <div class="form-group col-md-6">
@@ -66,20 +70,12 @@
                         {{ render_field(form.phone_no, class="form-control", placeholder="12344321") }}
                     </div>
                 </div>
+                <div class="form-group col-md-12 pl-3 pr-3">
+                    <button type="submit" class="btn btn-dark float-end">Confirm</button>
+                    <a href="{##}"><button type="button" class="btn btn-dark float-end" style="margin-right:3px;">Return</button></a>
+                </div>
             </form>
-            <hr class="mt-4">
-            <div class="col-12">
-                <p class="text-center mb-0"><span><a href="/signup">Sign Up</a></span> for Rewards !</p>
-            </div>
         </div>
     </div>
-    <br>
-<div class="buttons">
-    <div class="return-btn">
-        <a href="{{ url_for('confirmOrder') }}"><button type="button" class="btn btn-primary btn-lg btn-block" id="return"><span style="color: white;">Return</span></button></a>
-    </div>
-    <div class="confirm-btn">
-        <a href="{{ url_for('paymentDetail') }}"><button type="button" class="btn btn-primary btn-lg btn-block" id="confirm"><span style="color: white;">Confirm</span></button></a>
-    </div>
 </div>
-{% endblock %}
+    {% endblock %}

@@ -1,6 +1,12 @@
+{% if staffsession %}
+{% extends "admin_base.html" %}
+{% elif usersession %}
+{% extends "user_base.html" %}
+{% else %}
 {% extends "default_base.html" %}
+{% endif %}
 {% block head %}
-<link rel="stylesheet" href="../static/static/CSS/shoppingComplete.css">
+<link rel="stylesheet" href="static/CSS/alisa/shoppingComplete.css">
 {% endblock %}
 {% block title %}Shopping Complete | DoctorOnTheGo{% endblock %}
 
@@ -8,10 +14,32 @@
 {% block content %}
 <h1>Shopping Complete!</h1>
 <p>Proceed to other pages?</p>
-<div class="buttons">
-    <a href="{{ url_for('home') }}" class="home-btn"><button type="button" class="btn btn-primary btn-lg btn-block" id="home"><span style="color:white;">Home</span></button></a>
-    <a href="{{ url_for('News') }}" class="news-btn"><button type="button" class="btn btn-primary btn-lg btn-block" id="news"><span style="color:white;">News</span></button></a>
-    <a href="{{ url_for('consultatioPg1') }}" class="consultation-btn"><button type="button" class="btn btn-primary btn-lg btn-block" id="consultation"><span style="color:white;">Consultation</span></button></a>
+<div class="card">
+    <div class="row text-center">
+        <h2>Purchase Details</h2>
+        <div class="card-body cart">
+            <div>
+                {% for item in cart %}
+                <p>{{ item }}({{ cart[item] }})</p>
+                <hr>
+                {% endfor %}
+                <p>Total : ${{ total }}</p>
+            </div>
+        </div>
+    </div>
 </div>
+<div class="buttons">
+    <a href="{{ url_for('home') }}" class="home-btn"><button type="button"
+            class="btn btn-primary btn-lg btn-block" id="home"><span
+                style="color:black;">Home</span></button></a>
+    <a href="{{ url_for('News') }}" class="news-btn"><button type="button"
+            class="btn btn-primary btn-lg btn-block" id="news"><span
+                style="color:black;">News</span></button></a>
+    <a href="{{ url_for('consultatioPg1') }}" class="consultation-btn"><button type="button"
+            class="btn btn-primary btn-lg btn-block" id="consultation"><span
+                style="color:black;">Consultation</span></button></a>
+</div>
+
+
 
 {% endblock %}

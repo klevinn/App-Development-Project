@@ -5,6 +5,7 @@
 
 .card {
     margin: auto;
+    margin-bottom:10vh;
     max-width: 950px;
     width: 90%;
     box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.19);

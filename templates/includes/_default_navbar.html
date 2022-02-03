@@ -52,7 +52,7 @@
                     </ul>
                 </li>
                 <li class="nav-item main-nav-icons"><a class="nav-link text-black" href="/cart"><i
-                            class="fas fa-shopping-cart fa-lg"></i> Cart</a></li>
+                            class="fas fa-shopping-cart fa-lg"></i> Cart{% if "cart" in session %}<span class="badge">{{ session["cart"]|length }}</span>{% endif %}</a></li>
             </ul>
         </div>
     </div>

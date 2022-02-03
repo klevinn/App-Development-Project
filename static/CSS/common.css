@@ -159,3 +159,12 @@ ul {
 	width: 200px;
 	float: right;
   }
+
+
+.badge {
+	padding: 5px 10px;
+	border-radius: 50%;
+	background: red;
+	color: white;
+	margin-left:3px;
+  }

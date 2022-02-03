@@ -1,5 +1,5 @@
 body {
-    background-color: white;
+    background: #f3ccca;
 }
 /* progress bar */
 .container {
@@ -15,7 +15,7 @@ body {
     width: 33.33%;
     position: relative;
     text-align: center;
-    color: #D3D3D3;
+    color: black;
 }
 .progressbar li:before {
     content: counter(step);
@@ -23,7 +23,7 @@ body {
     width: 30px;
     height: 30px;
     line-height: 30px;
-    border: 1px solid #D3D3D3;
+    border: 1px solid black;
     display: block;
     text-align: center;
     margin: 0 auto 10px auto;
@@ -35,7 +35,7 @@ body {
     position: absolute;
     width: 100%;
     height: 1px;
-    background-color: #D3D3D3;
+    background-color: black;
     top: 15px;
     left: -50%;
     z-index: -1;
@@ -91,4 +91,15 @@ form {
 }
 .confirm-btn {
     padding-right: 200px;
+}
+
+#payment_form{
+    margin:auto;
+    width:50%;
+}
+
+@media(max-width:663px){
+    #payment_form{
+        width:100%;
+    }
 }
