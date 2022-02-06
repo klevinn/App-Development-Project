@@ -160,7 +160,7 @@ def home():
 @app.route('/login' , methods=["GET","POST"])
 @limiter.limit("2/second")
 def login():
-    if "user" not in session or "staff" not in session:
+    if "user" not in session and "staff" not in session:
         login_form = Forms.CreateLoginForm(request.form)
         if request.method == 'POST' and login_form.validate():
             #.lower() for email because capitalisation is not important in emails.
@@ -274,11 +274,10 @@ def login():
 
         else:
             return render_template('user/guest/login.html' , form=login_form)
-    else:
-        if "user" in session:
-            return redirect(url_for("user"))
-        else:
-            return redirect(url_for('staffapp', page =1))
+    elif "user" in session:
+        return redirect(url_for("user"))
+    elif "staff" in session:
+        return redirect(url_for('staffapp', page =1))
 
 @app.route('/logout')
 def logout():
@@ -580,10 +579,10 @@ def passwordforget():
                 email_key = userDict[key]
                 validemail = True #As previously mentioned, set to true if found in shelve
                 #Console Checking
+                email_key.set_previous_password(email_key.get_password())
                 print("Registered Email & Inputted Email: ", emailinshelve, email)
 
-        email_key.set_previous_password(email_key.get_password())
-
+    
         temp_pw = generate_random_password()
         pw_hash =  bcrypt.generate_password_hash(temp_pw)
         
@@ -4057,8 +4056,8 @@ def feedback():
                 feed = Feedback.Feedback()
                 feed.set_fb_name(feedback_form.name.data)
                 feed.set_fb_email(feedback_form.email.data)
-                feed.set_fb_subject(feedback.form.subject.data)
-                feed.set_fb_desc(feedback.form.description.data)
+                feed.set_fb_subject(feedback_form.subject.data)
+                feed.set_fb_desc(feedback_form.description.data)
                 feed.set_fb_id(id_num)
 
                 feedback_dict[id_num] = feed
