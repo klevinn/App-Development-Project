@@ -1,12 +1,27 @@
 #For Staff
-
+import shelve
 import matplotlib.pyplot as plt
 
 #manually update it
 
+prod_dict ={}
+db = shelve.open('user', 'c')
+
+try:
+    if 'ProductSales' in db:
+        prod_dict = db['ProductSales']
+    else:
+        db["ProductSales"] = prod_dict
+except:
+    print("Error in retrieving User from user.db")
+db.close()
+
 #data for plotting
-x = ["product", "product1", "product2", "product3", "product4", "product5"]
-y = [0, 10, 5, 12, 2, 20]
+x = []
+y = []
+for i in prod_dict:
+    x.append(i)
+    y.append(prod_dict[i])
 
 plt.bar(x, y)
 

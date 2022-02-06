@@ -107,6 +107,7 @@ def validate_session(session , dictionary):
 
 def validate_session_open_file_admin(session):
     staff_found = False
+    emptyStr = ""
     users_dict = {}
     db = shelve.open("staff", "r")
     try:

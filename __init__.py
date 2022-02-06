@@ -1,6 +1,8 @@
 #imported modules
 #Flask for creation of web app
 from re import T
+from tkinter import S
+from xml.dom.domreg import registered
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 #Shelve for Persistent Storage
 import shelve
@@ -241,8 +243,8 @@ def login():
                     break
                 else:
                     print("Invalid Staff Email.")
-                    
-                
+
+
             
             if validstaffemail == True:
                 print("Running: Checking Staff Password")
@@ -283,6 +285,9 @@ def login():
 def logout():
     session.pop("user", None)
     session.pop("staff", None)
+    session.pop("cart", None)
+    session.pop("total", None)
+    session.pop("Customer",None)
     return redirect(url_for("home"))
 
 @app.route('/signup' , methods=["GET","POST"])
@@ -1642,10 +1647,19 @@ def staffprod():
         valid_session, name = validate_session_open_file_admin(StaffName)
         data = []
         if valid_session:
-            products = Product.query.all()
-            for product in products:
-                sales = random.randint(1,10)
-                new = (product.name, product.stock-sales)
+            prod_dict ={}
+            db = shelve.open('user', 'c')
+
+            try:
+                if 'ProductSales' in db:
+                    prod_dict = db['ProductSales']
+                else:
+                    db["ProductSales"] = prod_dict
+            except:
+                print("Error in retrieving User from user.db")
+            db.close()
+            for i in prod_dict:
+                new = (i, prod_dict[i])
                 data.append(new)
             
             labels = [row[0] for row in data]
@@ -1778,7 +1792,7 @@ def staffadd():
                     user.set_staff_id(staff_id)
                     user.set_username(nameInput)
                     user.set_email(emailInput)
-                    user.set_password(staff_id)
+                    user.set_password("Staff1234")
 
                     """
                     for key in userDict:
@@ -1819,6 +1833,68 @@ def staffadd():
             return redirect(url_for('home'))
     else:
         return redirect(url_for('login'))
+
+@app.route('/changestaffpw/', methods = ["GET", "POST"])
+def changestaffpw():
+    if "staff" in session:
+        StaffName = session["staff"]
+        users_dict = {}
+        db = shelve.open('staff', 'c')
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving Users from staff.db")
+
+        valid_session, name = validate_session_admin(StaffName, users_dict)
+        user = users_dict.get(StaffName)
+        if valid_session:
+            update_password = Forms.CreateNewPasswordForm(request.form)
+            if request.method == "POST":
+                print("Successful Running")
+                matched_pw = True
+                old_pw = False
+                old_password = update_password.old_password.data 
+                password = update_password.password.data
+                password_cfm = update_password.password_confirm.data
+
+                if old_password == password:
+                    old_pw = True
+                    matched_pw = False
+                else:
+                    if password == password_cfm:
+                        matched_pw = False
+                        hashed_pw = password
+                    else:
+                        matched_pw = True
+                
+
+                registered_password = user.get_password()
+                print(registered_password)
+                if registered_password == old_password:
+                    same_pw = False
+                else:
+                    same_pw = True
+
+                if matched_pw == False and same_pw == False and old_pw == False:
+                    user.set_password(hashed_pw)
+                    db['Users'] = users_dict
+                    db.close()
+
+                    return redirect(url_for('stafflist', page=1, staff = name))
+                else:
+                    db.close()
+                    return render_template('user/staff/staffchangepw.html', form=update_password, matched_pw=matched_pw, same_pw = same_pw, old_password = old_pw, staff=name, staffsession = True) 
+            else:
+
+                return render_template('user/staff/staffchangepw.html', form=update_password, staff=name, staffsession = True)
+        else:
+            session.clear()
+            return redirect(url_for("home"))
+    else:
+        return redirect(url_for("login"))
 
 @app.route('/deleteUser/<id>', methods=["GET", 'POST'])
 #@app.route('/deleteUser/<string:id>', methods=["GET", 'POST'])
@@ -2338,6 +2414,7 @@ def search():
 
 @app.route('/view_product', methods=["GET", "POST"])
 def view_product():
+    not_enough = False
     if "user" in session:
         idNumber = session["user"]
         users_dict ={}
@@ -2363,19 +2440,24 @@ def view_product():
                 if"cart" in session:
                     cart = session["cart"]
                     for s in products:
-                        for i in cart:
-                            if i == s:
-                                cart[i] = cart[i] + quantity_form.quantity.data
+                        if quantity_form.quantity.data <= s.stock:
+                            for i in cart:
+                                if i == s:
+                                    if cart[i] + quantity_form.quantity.data <= s.stock:
+                                        cart[i] = cart[i] + quantity_form.quantity.data
+                        else:
+                            not_enough = True
                     session["cart"] = cart
                 else:
                     cart = {}
                     for i in products:
-                        cart[i.name] = quantity_form.quantity.data
-                    session["cart"] = cart
+                        if quantity_form.quantity.data <= i.stock:
+                            cart[i.name] = quantity_form.quantity.data
+                            session["cart"] = cart
                 
-                return render_template('user/guest/joshua/GuestStore/view_product.html', products=products, user = UserName, av=av, usersession = True, storeactive = True, form = quantity_form)
+                return render_template('user/guest/joshua/GuestStore/view_product.html', products=products, user = UserName, av=av, usersession = True, storeactive = True, form = quantity_form, not_enough = not_enough)
             else:
-                return render_template('user/guest/joshua/GuestStore/view_product.html', products=products, user = UserName, av=av, usersession = True, storeactive = True, form = quantity_form)
+                return render_template('user/guest/joshua/GuestStore/view_product.html', products=products, user = UserName, av=av, usersession = True, storeactive = True, form = quantity_form, not_enough = not_enough)
         else:
             session.clear()
             return redirect(url_for("login"))
@@ -2387,22 +2469,27 @@ def view_product():
             products = Product.query.filter(Product.id.contains(id))
             quantity_form = Forms.Quantity(request.form)
             if request.method == "POST" and quantity_form.validate():
-                if"cart" in session:
+                if "cart" in session:
                     cart = session["cart"]
                     for s in products:
-                        for i in cart:
-                            if i == s:
-                                cart[i] = cart[i] + quantity_form.quantity.data
+                        if quantity_form.quantity.data <= s.stock:
+                            for i in cart:
+                                if i == s:
+                                    if cart[i] + quantity_form.quantity.data <= s.stock:
+                                        cart[i] = cart[i] + quantity_form.quantity.data
+                        else:
+                            not_enough = True
                     session["cart"] = cart
                 else:
                     cart = {}
                     for i in products:
-                        cart[i.name] = quantity_form.quantity.data
-                    session["cart"] = cart
+                        if quantity_form.quantity.data <= i.stock:
+                            cart[i.name] = quantity_form.quantity.data
+                            session["cart"] = cart
                 
-                return render_template('user/guest/joshua/GuestStore/view_product.html', products=products, staff = name, staffsession = True, storeactive = True, form = quantity_form)
+                return render_template('user/guest/joshua/GuestStore/view_product.html', products=products, staff = name, staffsession = True, storeactive = True, form = quantity_form, not_enough = not_enough)
             else:
-                return render_template('user/guest/joshua/GuestStore/view_product.html', products=products, staff = name, staffsession = True, storeactive = True, form = quantity_form)
+                return render_template('user/guest/joshua/GuestStore/view_product.html', products=products, staff = name, staffsession = True, storeactive = True, form = quantity_form, not_enough = not_enough)
 
         else:
             session.clear()
@@ -2416,19 +2503,24 @@ def view_product():
                 cart = session["cart"]
                 print(cart)
                 for s in products:
-                    for i in cart:
-                        if i == s:
-                            cart[i] = cart[i] + quantity_form.quantity.data
+                    if quantity_form.quantity.data <= s.stock:
+                        for i in cart:
+                            if i == s:
+                                if cart[i] + quantity_form.quantity.data <= s.stock:
+                                    cart[i] = cart[i] + quantity_form.quantity.data
+                    else:
+                        not_enough = True
                 session["cart"] = cart
             else:
                 cart = {}
                 for i in products:
-                    cart[i.name] = quantity_form.quantity.data
-                session["cart"] = cart
+                    if quantity_form.quantity.data <= i.stock:
+                        cart[i.name] = quantity_form.quantity.data
+                        session["cart"] = cart
             
-            return render_template('user/guest/joshua/GuestStore/view_product.html', products=products, storeactive = True, form = quantity_form)
+            return render_template('user/guest/joshua/GuestStore/view_product.html', products=products, storeactive = True, form = quantity_form, not_enough = not_enough)
         else:
-            return render_template('user/guest/joshua/GuestStore/view_product.html', products=products, storeactive = True, form = quantity_form)
+            return render_template('user/guest/joshua/GuestStore/view_product.html', products=products, storeactive = True, form = quantity_form, not_enough = not_enough)
         
 
 """
@@ -4453,11 +4545,34 @@ def shoppingComplete():
             if "cart" in session and "total" in session:
                 users_dict[idNumber].set_purchases(users_dict[idNumber].get_purchases() + 1)
                 db["Users"] = users_dict
+                db.close()
+                prod_dict ={}
+                db = shelve.open('user', 'c')
+
+                try:
+                    if 'ProductSales' in db:
+                        prod_dict = db['ProductSales']
+                    else:
+                        db["ProductSales"] = prod_dict
+                except:
+                    print("Error in retrieving User from user.db")
                 cart = session["cart"]
                 total = session["total"]
+                products = Product.query.all()
+                for i in cart:
+                    for s in products:
+                        if i == s:
+                            s.stock = s.stock - cart[i]
+                for i in cart:
+                    if i not in prod_dict:
+                        prod_dict[i] = cart[i]
+                    else:
+                        prod_dict[i] = prod_dict[i] + cart[i]
+                print(prod_dict)
+                db["ProductSales"] = prod_dict
+                db.close()
                 session.pop('cart', None)
                 session.pop('total', None)
-                db.close()
                 return render_template('user/guest/alisa/shoppingComplete.html', user = UserName, av=av, usersession = True,cart = cart, total = total)
             else:
                 return redirect(url_for('home'))
@@ -4469,8 +4584,31 @@ def shoppingComplete():
         valid_session, name = validate_session_open_file_admin(StaffName)
         if valid_session:
             if "cart" in session and "total" in session:
+                prod_dict ={}
+                db = shelve.open('user', 'c')
+
+                try:
+                    if 'ProductSales' in db:
+                        prod_dict = db['ProductSales']
+                    else:
+                        db["ProductSales"] = prod_dict
+                except:
+                    print("Error in retrieving User from user.db")
                 cart = session["cart"]
                 total = session["total"]
+                products = Product.query.all()
+                for i in cart:
+                    for s in products:
+                        if i == s:
+                            s.stock = s.stock - cart[i]
+                for i in cart:
+                    if i not in prod_dict:
+                        prod_dict[i] = cart[i]
+                    else:
+                        prod_dict[i] = prod_dict[i] + cart[i]
+                print(prod_dict)
+                db["ProductSales"] = prod_dict
+                db.close()
                 session.pop('cart', None)
                 session.pop('total', None)
                 return render_template('user/guest/alisa/shoppingComplete.html', staffsession = True, staff = name, cart = cart, total = total)
@@ -4481,8 +4619,31 @@ def shoppingComplete():
             return redirect(url_for('home'))
     else:
         if "cart" in session and "total" in session:
+            prod_dict ={}
+            db = shelve.open('user', 'c')
+
+            try:
+                if 'ProductSales' in db:
+                    prod_dict = db['ProductSales']
+                else:
+                    db["ProductSales"] = prod_dict
+            except:
+                print("Error in retrieving User from user.db")
             cart = session["cart"]
             total = session["total"]
+            products = Product.query.all()
+            for i in cart:
+                for s in products:
+                    if i == s:
+                        s.stock = s.stock - cart[i]
+            for i in cart:
+                if i not in prod_dict:
+                    prod_dict[i] = cart[i]
+                else:
+                    prod_dict[i] = prod_dict[i] + cart[i]
+            print(prod_dict)
+            db["ProductSales"] = prod_dict
+            db.close()
             session.pop('cart', None)
             session.pop('total', None)
             return render_template('user/guest/alisa/shoppingComplete.html',cart = cart, total = total)
@@ -4498,7 +4659,7 @@ def test():
 @app.route('/resetdb')
 def resetdb():
     customer_dict = {}
-    db = shelve.open('user', 'c')
+    db = shelve.open('staff', 'c')
     db['Users'] = customer_dict
     return redirect(url_for('home'))
 

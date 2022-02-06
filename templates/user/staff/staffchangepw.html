@@ -1,0 +1,47 @@
+{% extends "admin_base.html" %}
+{% block head %}
+<link rel="stylesheet" href="/static/CSS/login_signup.css"> {% endblock %}
+{% block title %}Updating... | DoctorOnTheGo{% endblock %}
+
+{% block content %}
+{% from "includes/_formHelper.html" import render_field %}
+<div class="background-image">
+    <div class="row">
+        <div class="col-md-4 offset-md-4">
+            <div class="login-form bg-colour mt-6 p-4" id="loginForm">
+                <form action="" method="POST" class="row g-3">
+                    <h4 class="text-black">Update Your Account!</h4>
+                    <div class="col-12">
+                        {{ render_field(form.old_password, class="form-control") }}
+                        {% if same_pw %}<div class="text-danger"><span id="error">Wrong Password</span></div>{% endif %}
+                        <!--label>Old Password:</label>
+                        <input type="password" name="password" class="form-control" placeholder="Password"-->
+                    </div>
+
+                    <div class="col-12">
+                        {{ render_field(form.password, class="form-control") }}
+                        {% if old_password %}<div class="text-danger"><span id="error">Password cannot be previous
+                                password</span></div>{% endif %}
+                        <!--label>Password:</label>
+                        <input type="password" name="password" class="form-control" placeholder="Password"-->
+                    </div>
+                    <div class="col-12">
+                        {{ render_field(form.password_confirm, class="form-control") }}
+                        {% if matched_pw %}<div class="text-danger"><span id="error">Passwords Are Not The Same</span>
+                        </div>{% endif %}
+                        <!--label>Confirm Password:</label>
+                        <input type="password" name="password" class="form-control" placeholder=" Confirm Password"-->
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-dark float-end">Update</button>
+                    </div>
+                </form>
+                <hr class="mt-4">
+                <div class="col-12">
+                    <p class="text-center mb-0">Change Your Mind? <a href="/stafflist/1">Back To staff Page</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -115,6 +115,7 @@ def generate_user_id():
     uid = shortuuid.uuid()
     return uid
 
+
 """
 def generate_staff_id():
     staff_id = ''

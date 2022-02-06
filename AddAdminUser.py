@@ -43,7 +43,7 @@ if(duplicated_email == False) and (duplicated_username == False):
     user.set_staff_id(staff_id)
     user.set_username(nameInput)
     user.set_email(emailInput)
-    user.set_password(staff_id)
+    user.set_password("Staff1234")
 
     """
     print("Hello")

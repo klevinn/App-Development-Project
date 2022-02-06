@@ -73,6 +73,9 @@
                     <div class="form-group">
                         {{ render_field(form.quantity, class="form-control") }}
                     </div>
+                    {% if not_enough == False %}
+                        <div class="text-danger"><span id="error">Stock Not Enough</span></div>
+                    {% endif %}
                     <p>
                         <button class="btn btn-round btn-danger" type="submit"><i class="fa fa-shopping-cart"></i> Add to Cart</button>
                     </p>
