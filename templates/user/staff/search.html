@@ -1,0 +1,388 @@
+{% extends "admin_base.html" %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static',filename='CSS/staff.css') }}"> {% endblock %}
+{% block title %}Account - List | DoctorOnTheGo{% endblock %}
+
+{% block content %}
+{% from "includes/_formHelper.html" import render_field %}
+<div class="row" id="dashboard">
+  <div class="col-lg-3 merge-boxes pe-0">
+    <div class="d-flex flex-column flex-shrink-0 p-3" id="sidebar">
+      <h3 class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark">
+        <span class="fs-4">STAFF DASHBOARD</span>
+      </h3>
+      <hr>
+      <div class="accordion" id="accordionPanelsStayOpenExample">
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="false"
+              aria-controls="panelsStayOpen-collapseOne">
+              User Inputs
+            </button>
+          </h2>
+          <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse"
+            aria-labelledby="panelsStayOpen-headingOne">
+            <div class="accordion-body">
+              <a href="/staffapp/1">Appointments Made</a>
+              <hr style="color:black;">
+              <a href="/stafffeed/1">Feedback Forms</a>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false"
+              aria-controls="panelsStayOpen-collapseTwo">
+              Product Management
+            </button>
+          </h2>
+          <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse"
+            aria-labelledby="panelsStayOpen-headingTwo">
+            <div class="accordion-body">
+              <a href="/staffprod">Product Sales</a>
+              <hr style="color:black;">
+              <a href="/staffinvent">Inventory Management</a>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="panelsStayOpen-headingThree">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+              data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false"
+              aria-controls="panelsStayOpen-collapseThree">
+              Account Management
+            </button>
+          </h2>
+          <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse show"
+            aria-labelledby="panelsStayOpen-headingThree">
+            <div class="accordion-body">
+              <a href="/stafflist/1">Staff List</a>
+              <hr style="color:black;">
+              <a id="active" href="#">Account List</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-9 merge-boxes ps-0">
+    <div id="data">
+      <div class="container">
+        <div class="row">
+          <h3>Member Account List</h3>
+          <form action="" method="post" class="d-flex" style="margin-bottom:15px">
+            {{ render_field(form.search, class="form-control me-2", placeholder="Search...") }}
+            <button class="btn btn-info" type="submit">Search</button>
+            <a class="btn btn-info" href="/staffaccountlist/1">Reset</a>
+          </form>
+          <h4>Searched for: {{keywords}}</h4>
+          
+          <div id="Appointments">
+            {% if empty == False %}
+            {% for user in user_list %}
+            {% if user.get_ban_status() == True %}
+            <div class="row table-responsive">
+              <table class="table table-striped">
+                <thead class="table-danger">
+                  <td style="font-weight: bold;">Account ID</td>
+                  <td style="font-weight: bold;">Account Name</td>
+                  <td style="font-weight: bold;">Account Email</td>
+                </thead>
+                <tbody>
+                  <td style="font-weight: bold;">{{ user.get_user_id() }}</td>
+                  <td style="font-weight: bold;"> {{ user.get_username() }}</td>
+                  <td style="font-weight: bold;">{{ user.get_email() }}</td>
+                  <tr>
+                    <td colspan="4">
+                      <table class="table mb-0">
+                        <thead>
+                          <td>Credit Card Name</td>
+                          <td>Credit Number</td>
+                          <td>Expiry Date</td>
+                        </thead>
+                        <tbody>
+                          <td>{{ user.get_card_name() }}</td>
+                          <td>{{ user.get_card_no() }}</td>
+                          <td>{{ user.display_expiry_date() }}</td>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="4">
+                      <table class="table mb-0">
+                        <thead>
+                          <td>Shipping Address</td>
+                          <td>Postal Code</td>
+                          <td>Unit Number</td>
+                          <td>Phone Number</td>
+                        </thead>
+                        <tbody>
+                          <td>{{ user.get_shipping_address() }}</td>
+                          <td>{{ user.get_postal_code() }}</td>
+                          <td>{{ user.display_unit_number() }}</td>
+                          <td>{{ user.get_phone_number() }}</td>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="row">
+              <!--Update user settings -->
+              <!--div class='col'>
+
+                         </div-->
+              <div class="col">
+                <form action="{{ url_for('unbanUser', id=user.get_user_id()) }}" method="POST">
+                  <!--input type="submit" value="Delete" class="btn btn-danger"-->
+
+                  <!-- w3 schools modal button-->
+                  <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                    data-bs-target="#myModal_{{ user.get_user_id() }}">
+                    Unban
+                  </button>
+
+                  <!-- The Modal -->
+                  <div class="modal" id="myModal_{{ user.get_user_id() }}">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                          <h4 class="modal-title">Unban Confirmation</h4>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                          Are you sure you want to unban {{ user.get_username() }} ?
+                        </div>
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                          <input type="submit" value="Unban" class="btn btn-danger">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+
+                </form>
+              </div>
+            </div>
+            <hr>
+            {% else %}
+            <div class="row table-responsive">
+              <table class="table table-striped">
+                <!--thead class="table-dark"-->
+                {% if user.get_verified() %}
+                <thead class="table-success">
+                  {% else %}
+                  <thead class="table-dark">
+                  {% endif %}
+                  <td style="font-weight: bold;">Account ID</td>
+                  <td style="font-weight: bold;">Account Name</td>
+                  <td style="font-weight: bold;">Account Email</td>
+                </thead>
+                <tbody>
+                  <td style="font-weight: bold;">{{ user.get_user_id() }}</td>
+                  <td style="font-weight: bold;"> {{ user.get_username() }}</td>
+                  <td style="font-weight: bold;">{{ user.get_email() }}</td>
+                  <tr>
+                    <td colspan="4">
+                      <table class="table mb-0">
+                        <thead>
+                          <td>Credit Card Name</td>
+                          <td>Credit Number</td>
+                          <td>Expiry Date</td>
+                        </thead>
+                        <tbody>
+                          <td>{{ user.get_card_name() }}</td>
+                          <td>{{ user.get_card_no() }}</td>
+                          <td>{{ user.display_expiry_date() }}</td>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="4">
+                      <table class="table mb-0">
+                        <thead>
+                          <td>Shipping Address</td>
+                          <td>Postal Code</td>
+                          <td>Unit Number</td>
+                          <td>Phone Number</td>
+                        </thead>
+                        <tbody>
+                          <td>{{ user.get_shipping_address() }}</td>
+                          <td>{{ user.get_postal_code() }}</td>
+                          <td>{{ user.display_unit_number() }}</td>
+                          <td>{{ user.get_phone_number() }}</td>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="row">
+              <!--div class="col"-->
+                <form action="{{ url_for('banUser', id=user.get_user_id()) }}" method="POST" style="width:55px;">
+                  <!--input type="submit" value="Delete" class="btn btn-danger"-->
+
+                  <!-- w3 schools modal button-->
+                  <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                    data-bs-target="#myModal_{{ user.get_user_id() }}">
+                    Ban
+                  </button>
+
+                  <!-- The Modal -->
+                  <div class="modal" id="myModal_{{ user.get_user_id() }}">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                          <h4 class="modal-title">Ban Confirmation</h4>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                          Are you sure you want to ban {{ user.get_username() }} ?
+                        </div>
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                          <input type="submit" value="Ban" class="btn btn-danger">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+
+                </form>
+                
+                <form action="{{ url_for('resetPassUser', id=user.get_user_id()) }}" method="POST"style="width:200px;">
+                  <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                    data-bs-target="#myModal_password_{{ user.get_user_id() }}">
+                    Reset Password
+                  </button>
+                  <div class="modal" id="myModal_password_{{ user.get_user_id() }}">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                          <h4 class="modal-title">Reset Password Confirmation</h4>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                          Do you want to reset and send a Temporary password to {{ user.get_username() }}
+                        </div>
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                          <input type="submit" value="Reset" class="btn btn-danger">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+                </form>
+
+                {% if user.get_verified() == False %}
+                <form action="{{ url_for('verifyEmail', id=user.get_user_id()) }}" method="POST" style="width:400px;">
+                  <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                    data-bs-target="#myModal_verify_{{ user.get_user_id() }}">
+                    Send Verification Email
+                  </button>
+                  <div class="modal" id="myModal_verify_{{ user.get_user_id() }}">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                          <h4 class="modal-title">Email Verification Confirmation</h4>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                          Are you sure you want to send verification to {{ user.get_username() }}
+                        </div>
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                          <input type="submit" value="Send" class="btn btn-danger">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+                </form>
+                {% endif %}
+              <!--/div-->
+            </div>
+            <hr>
+            {% endif %}
+            {% endfor %}
+          </div>
+          <nav aria-label="Page navigation example" style="margin-top:10px;">
+            <ul class="pagination justify-content-center">
+              {% if page == 1 %}
+              <li class="page-item disabled">
+                <a class="page-link" href="#" aria-label="Previous">
+                  <span aria-hidden="true">&laquo;</span>
+                </a>
+              </li>
+              {% else %}
+              <li class="page-item">
+                <a class="page-link" href="{{ url_for('staffaccountlist', page=page-1) }}" aria-label="Previous">
+                  <span aria-hidden="true">&laquo;</span>
+                </a>
+              </li>
+              {% endif %}
+              {% for key in display_dict %}
+              {% if page == key %}
+              <li class="page-item active"><a class="page-link" href="{{ url_for('staffaccountlist', page=key) }}">{{
+                  key }}</a></li>
+              {% else %}
+              <li class="page-item"><a class="page-link" href="{{ url_for('staffaccountlist', page=key) }}">{{ key
+                  }}</a></li>
+              {% endif %}
+              {% endfor %}
+              {% if page == max_value %}
+              <li class="page-item disabled">
+                <a class="page-link" href="#" aria-label="Next">
+                  <span aria-hidden="true">&raquo;</span>
+                </a>
+              </li>
+              {% else %}
+              <li class="page-item">
+                <a class="page-link" href="{{ url_for('staffaccountlist', page=page+1) }}" aria-label="Next">
+                  <span aria-hidden="true">&raquo;</span>
+                </a>
+              </li>
+              {% endif %}
+            </ul>
+          </nav>
+          {% else %}
+            <h3 style="text-align:center">NO MEMBERS ADDED</h3>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

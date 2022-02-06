@@ -21,6 +21,7 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 #Dicebear for temporary profile picture
 from src import Avatar
 #for search function
+import difflib
 #from db_setup import init_db, db_session
 #For simulation
 import random
@@ -1977,44 +1978,73 @@ def staffaccountlist(page=1):
         if valid_session:
             search = Forms.UserSearchForm(request.form)
             if request.method == 'POST':
-                return user_search(search)
-            
-            display_dict = {}
-            page_num = 1
-        #Displaying the appending data into the stafflist so that it can be used to display data on the site
-            user_list = []
-            for key in user_dict:
-                if len(user_list) == 5:
-                    display_dict[page_num] = user_list
-                    page_num += 1
+                namelist = []
+                user_list = []
+                display_dict = {}
+                page_num = 1
+                for i in user_dict:
+                    namelist.append(user_dict.get(i).get_username())
+                nice = difflib.get_close_matches(search.search.data, namelist)
+                for i in nice:
+                    for s in user_dict:
+                        if user_dict.get(s).get_username() == i:
+                            if len(user_list) == 5:
+                                display_dict[page_num] = user_list
+                                page_num += 1
 
-                    user_list = []
-                    user = user_dict.get(key)
-                    user_list.append(user)
-                    display_dict[page_num] = user_list
-                else:
-                    user = user_dict.get(key)
-                    user_list.append(user)
-                    display_dict[page_num] = user_list
-            
-            max_value = 0
-            empty = True
-            if len(display_dict) != 0:
-                user_list = display_dict[page]
-                all_keys = display_dict.keys()
-                max_value = max(all_keys)
-                empty = False
+                                user_list = []
+                                user = user_dict.get(s)
+                                user_list.append(user)
+                                display_dict[page_num] = user_list
+                            else:
+                                user = user_dict.get(s)
+                                user_list.append(user)
+                                display_dict[page_num] = user_list
 
-            return render_template('user/staff/staffaccountlist.html', count=len(user_list), user_list=user_list , display_dict = display_dict, staff = name,  page=page, max_value = max_value, empty = empty, form =search)
+                max_value = 0
+                empty = True
+                if len(display_dict) != 0:
+                    user_list = display_dict[page]
+                    all_keys = display_dict.keys()
+                    max_value = max(all_keys)
+                    empty = False
+                
+                keywords = search.search.data
+                return render_template('user/staff/search.html', count=len(user_list), user_list=user_list , display_dict = display_dict, staff = name,  page=page, max_value = max_value, empty = empty, form =search, keywords = keywords)
+            else:
+                display_dict = {}
+                page_num = 1
+            #Displaying the appending data into the stafflist so that it can be used to display data on the site
+                user_list = []
+                for key in user_dict:
+                    if len(user_list) == 5:
+                        display_dict[page_num] = user_list
+                        page_num += 1
+
+                        user_list = []
+                        user = user_dict.get(key)
+                        user_list.append(user)
+                        display_dict[page_num] = user_list
+                    else:
+                        user = user_dict.get(key)
+                        user_list.append(user)
+                        display_dict[page_num] = user_list
+                
+                max_value = 0
+                empty = True
+                if len(display_dict) != 0:
+                    user_list = display_dict[page]
+                    all_keys = display_dict.keys()
+                    max_value = max(all_keys)
+                    empty = False
+
+                return render_template('user/staff/staffaccountlist.html', count=len(user_list), user_list=user_list , display_dict = display_dict, staff = name,  page=page, max_value = max_value, empty = empty, form =search)
         else:
             session.clear()
             return redirect(url_for('home'))
     else:
         return redirect(url_for('login'))
 
-@app.route('/searchresults')
-def user_search(search):
-    print("hello world")
 
 @app.route('/banUser/<id>' , methods=["GET","POST"])
 #@app.route('/banUser/<int:id>' , methods=["GET","POST"])
@@ -2343,6 +2373,8 @@ def search():
         db.close()
 
         if valid_session:
+            form = Forms.CategoryFilter_AndSorting(request.form)
+            form2 = Forms.PriceFilter(request.form)
             query = request.args.get('query')
 
             if query:
@@ -2353,7 +2385,7 @@ def search():
             else:
                 products = Product.query.all()
 
-            return render_template('user/guest/joshua/GuestStore/search.html', products=products, user = UserName, av=av, usersession = True, storeactive = True)
+            return render_template('user/guest/joshua/GuestStore/search.html', products=products, user = UserName, av=av, usersession = True, storeactive = True,  form = form, form2 = form2,)
         else:
             session.clear()
             return redirect(url_for('login'))
@@ -2362,6 +2394,8 @@ def search():
         StaffName = session["staff"]
         valid_session , name = validate_session_open_file_admin(StaffName)
         if valid_session:
+            form = Forms.CategoryFilter_AndSorting(request.form)
+            form2 = Forms.PriceFilter(request.form)
             query = request.args.get('query')
 
             if query:
@@ -2372,7 +2406,7 @@ def search():
             else:
                 products = Product.query.all()
 
-            return render_template('user/guest/joshua/GuestStore/search.html', products=products, staff = name, staffsession = True, storeactive = True)
+            return render_template('user/guest/joshua/GuestStore/search.html', products=products, staff = name, staffsession = True, storeactive = True, form = form, form2 = form2,)
         else:
             session.clear()
             return redirect(url_for('login'))
@@ -2442,7 +2476,7 @@ def view_product():
                     for s in products:
                         if quantity_form.quantity.data <= s.stock:
                             for i in cart:
-                                if i == s:
+                                if i == s.name:
                                     if cart[i] + quantity_form.quantity.data <= s.stock:
                                         cart[i] = cart[i] + quantity_form.quantity.data
                         else:
@@ -2474,7 +2508,7 @@ def view_product():
                     for s in products:
                         if quantity_form.quantity.data <= s.stock:
                             for i in cart:
-                                if i == s:
+                                if i == s.name:
                                     if cart[i] + quantity_form.quantity.data <= s.stock:
                                         cart[i] = cart[i] + quantity_form.quantity.data
                         else:
@@ -2505,7 +2539,7 @@ def view_product():
                 for s in products:
                     if quantity_form.quantity.data <= s.stock:
                         for i in cart:
-                            if i == s:
+                            if i == s.name:
                                 if cart[i] + quantity_form.quantity.data <= s.stock:
                                     cart[i] = cart[i] + quantity_form.quantity.data
                     else:
@@ -4561,8 +4595,9 @@ def shoppingComplete():
                 products = Product.query.all()
                 for i in cart:
                     for s in products:
-                        if i == s:
+                        if i == s.name:
                             s.stock = s.stock - cart[i]
+                            j_db.session.commit()
                 for i in cart:
                     if i not in prod_dict:
                         prod_dict[i] = cart[i]
@@ -4599,8 +4634,9 @@ def shoppingComplete():
                 products = Product.query.all()
                 for i in cart:
                     for s in products:
-                        if i == s:
+                        if i == s.name:
                             s.stock = s.stock - cart[i]
+                            j_db.session.commit()
                 for i in cart:
                     if i not in prod_dict:
                         prod_dict[i] = cart[i]
@@ -4634,8 +4670,9 @@ def shoppingComplete():
             products = Product.query.all()
             for i in cart:
                 for s in products:
-                    if i == s:
+                    if i == s.name:
                         s.stock = s.stock - cart[i]
+                        j_db.session.commit()
             for i in cart:
                 if i not in prod_dict:
                     prod_dict[i] = cart[i]
