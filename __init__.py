@@ -3447,7 +3447,6 @@ def retrieve_consultation():
                     db['Customers'] = customers_dict
             except:
                 print("Error in retrieving Customers from customer.db.")
-
             db.close()
             
             customers_list = []
@@ -3522,7 +3521,7 @@ def update_consultation(id):
                         print("form data is "+ str(update_customer_form.date_joined.data))
                         for customer in customers_list:
                             if update_customer_form.date_joined.data == customer.get_date():
-                                print("Same Date")
+                                print("Same Date as existing")
                                 samedate = True
                                 if update_customer_form.time.data == customer.get_time():
                                     print("Same Time")
