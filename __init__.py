@@ -147,8 +147,20 @@ def home():
         print("%s is entering the page" %(StaffName))
         valid_session, name = validate_session_open_file_admin(StaffName)
         if valid_session:
+            prod_dict ={}
+            db = shelve.open('user', 'c')
+
+            try:
+                if 'ProductSales' in db:
+                    prod_dict = db['ProductSales']
+                else:
+                    db["ProductSales"] = prod_dict
+            except:
+                print("Error in retrieving User from user.db")
+            db.close()
+
             print("%s is entering and his session is Valid" %(StaffName))
-            return render_template('home.html' , staff = name, staffsession = staffsession)
+            return render_template('home.html' , staff = name, staffsession = staffsession, prod_dict = prod_dict)
         else:
             session.clear()
             print("Invalid Session")
@@ -3623,7 +3635,7 @@ def Graphform():
                     if 'graph' in db:
                         graphdict = db['graph']
                     else:
-                        db['graph'] =graphdict
+                        db['graph'] = graphdict
                 except:
                     print("Error in retrieving Graph from graph.db.")
 
@@ -3736,11 +3748,11 @@ def News():
                         print("try3")
                         test= graph.get_COVID1
                         test2 = graph.get_DATE1
-                        date1= graph.get_DATE1()
-                        date2= graph.get_DATE2()
-                        date3= graph.get_DATE3()
-                        date4= graph.get_DATE4()
-                        date5= graph.get_DATE5()
+                        date1= str(graph.get_DATE1())
+                        date2= str(graph.get_DATE2())
+                        date3= str(graph.get_DATE3())
+                        date4= str(graph.get_DATE4())
+                        date5= str(graph.get_DATE5())
                         COVID1= graph.get_COVID1()
                         COVID2= graph.get_COVID2()
                         COVID3= graph.get_COVID3()
@@ -3820,11 +3832,11 @@ def News():
                         print("try3")
                         test= graph.get_COVID1
                         test2 = graph.get_DATE1
-                        date1= graph.get_DATE1()
-                        date2= graph.get_DATE2()
-                        date3= graph.get_DATE3()
-                        date4= graph.get_DATE4()
-                        date5= graph.get_DATE5()
+                        date1= str(graph.get_DATE1())
+                        date2= str(graph.get_DATE2())
+                        date3= str(graph.get_DATE3())
+                        date4= str(graph.get_DATE4())
+                        date5= str(graph.get_DATE5())
                         COVID1= graph.get_COVID1()
                         COVID2= graph.get_COVID2()
                         COVID3= graph.get_COVID3()
@@ -3901,11 +3913,11 @@ def News():
                     print("try3")
                     test= graph.get_COVID1
                     test2 = graph.get_DATE1
-                    date1= graph.get_DATE1()
-                    date2= graph.get_DATE2()
-                    date3= graph.get_DATE3()
-                    date4= graph.get_DATE4()
-                    date5= graph.get_DATE5()
+                    date1= str(graph.get_DATE1())
+                    date2= str(graph.get_DATE2())
+                    date3= str(graph.get_DATE3())
+                    date4= str(graph.get_DATE4())
+                    date5= str(graph.get_DATE5())
                     COVID1= graph.get_COVID1()
                     COVID2= graph.get_COVID2()
                     COVID3= graph.get_COVID3()
@@ -3961,6 +3973,7 @@ def cart():
         UserName =  get_user_name(idNumber, users_dict)
         av = users_dict[idNumber].get_profile_pic()
         valid_session = validate_session(idNumber, users_dict)
+        purchases = users_dict[idNumber].get_purchases()
         db.close()
         if "cart" in session:
             if valid_session:
@@ -3971,9 +3984,25 @@ def cart():
                     for product in products:
                         if item == product.name:
                             total += cart.get(item) * product.price
+
+                original_total = total
+                discount = False
+                if purchases == 5:
+                    discount = True
+                    total = total * 0.9
+                elif purchases == 10:
+                    discount = True
+                    total = total * 0.8
+                elif purchases == 15:
+                    discount = True
+                    total = total * 0.7
+                elif purchases == 20:
+                    discount = True
+                    total = total * 0.5
+
                 session["total"] = total
                 noitem = len(cart)
-                return render_template('user/guest/cart_feedback/cart.html', usersession = True, user= UserName, av=av, cart = cart, products = products, total = total, num = noitem)
+                return render_template('user/guest/cart_feedback/cart.html', usersession = True, user= UserName, av=av, cart = cart, products = products, total = total, num = noitem, discount = discount, original_total = original_total)
             else:
                 return redirect(url_for('home'))
         else:
@@ -4258,7 +4287,7 @@ def feedback():
         StaffName = session["staff"]
         valid_session, name = validate_session_open_file_admin(StaffName)
         if valid_session:
-            return redirect(url_for('stafffeed'))
+            return redirect(url_for('stafffeed', page=1))
     else:
         feedback_dict = {}
         db = shelve.open('user', 'c')
@@ -4757,8 +4786,8 @@ def test():
 @app.route('/resetdb')
 def resetdb():
     customer_dict = {}
-    db = shelve.open('staff', 'c')
-    db['Users'] = customer_dict
+    db = shelve.open('user', 'c')
+    db['graph'] = customer_dict
     return redirect(url_for('home'))
 
 if __name__ == '__main__':

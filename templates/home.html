@@ -99,18 +99,22 @@
   
 <div class="row" style="margin:100px 10px 0 10px; background:white; padding:25px; border-radius:15px;">
   <div class="col-md">
-    <img src="" alt="">
+    <h3>Product Sales</h3>
+    {% for i in prod_dict %}
+    <h5 class="display-6">{{i}} : {{prod_dict[i]}} sold</h5>
+    {% endfor %}
   </div>
   <div class="col-md">
     <h2>Hello {{ staff }}!</h2>
     <p>Welcome back to the website! Look around or get to work !</p>
-  <a href="/staffapp" class="btn btn-primary">Head to staff dashboard</a>
+  <a href="/staffapp/1" class="btn btn-primary">Head to staff dashboard</a>
   </div>
 </div>
   {% else %}
 <div class="row" style="margin:100px 10px 0 10px; background:white; padding:25px; border-radius:15px;">
   <div class="col-md">
-    <img src="" alt="">
+    <h3>Benefits:</h3>
+    <h5 class="display-6">Discounts!</h5>
   </div>
   <div class="col-md">
     <h2>Become A Member!</h2>
