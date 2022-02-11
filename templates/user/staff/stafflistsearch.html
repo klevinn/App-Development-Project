@@ -75,15 +75,9 @@
           <form action="" method="post" class="d-flex" style="margin-bottom:15px">
             {{ render_field(form.search, class="form-control me-2", placeholder="Search...") }}
             <button class="btn btn-info" type="submit">Search</button>
+            <a class="btn btn-info" href="/staffaccountlist/1">Reset</a>
           </form>
-          {% if staffpassword == False %}
-          <div class="text-danger"><span id="error">Staff Member Not Deleted : Incorrect Password</span></div>
-          {% elif staffpassword == True %}
-          <div class="text-danger"><span id="error">Staff Member Deleted</span></div>
-          {% endif %}
-          {% if staffgone == True %}
-          <div class="text-danger"><span id="error">Staff Member cannot be editted because he/she no longer exists in our database!</span></div>
-          {% endif %}
+          <h4>Searched for: {{keywords}}</h4>
           <div id="Appointments">
             {% if empty == False %}
             {% for staff in staff_list %}

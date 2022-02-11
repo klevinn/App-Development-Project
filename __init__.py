@@ -1598,43 +1598,92 @@ def stafflist(page=1):
 
         #Displaying the appending data into the stafflist so that it can be used to display data on the site
         if valid_session:
-            display_dict = {}
-            page_num = 1
-        #Displaying the appending data into the stafflist so that it can be used to display data on the site
-            staff_list = []
-            for key in staff_dict:
-                if len(staff_list) == 10:
-                    display_dict[page_num] = staff_list
-                    page_num += 1
+            search = Forms.UserSearchForm(request.form)
+            if request.method == 'POST':
+                namelist = []
+                emaillist = []
+                userid_list = []
+                user_list = []
+                display_dict = {}
+                page_num = 1
+                for i in staff_dict:
+                    namelist.append(staff_dict.get(i).get_username())
+                    emaillist.append(staff_dict.get(i).get_email())
+                    userid_list.append(staff_dict.get(i).get_staff_id())
+                nice = difflib.get_close_matches(search.search.data, namelist)
+                emails = difflib.get_close_matches(search.search.data, emaillist)
+                userid = difflib.get_close_matches(search.search.data, userid_list)
+                for e in emails:
+                    nice.append(e)
+                for u in userid:
+                    nice.append(u)
+                for i in nice:
+                    for s in staff_dict:
+                        if staff_dict.get(s).get_username() == i or staff_dict.get(s).get_email() == i or staff_dict.get(s).get_staff_id() == i:
+                            if len(user_list) == 5:
+                                display_dict[page_num] = user_list
+                                page_num += 1
 
-                    staff_list = []
-                    staff = staff_dict.get(key)
-                    staff_list.append(staff)
-                    display_dict[page_num] = staff_list
-                else:
-                    staff = staff_dict.get(key)
-                    staff_list.append(staff)
-                    display_dict[page_num] = staff_list
-                        
-            max_value = 0
-            empty = True
-            if len(display_dict) != 0:
-                staff_list = display_dict[page]
-                all_keys = display_dict.keys()
-                max_value = max(all_keys)
-                empty = False
+                                user_list = []
+                                user = staff_dict.get(s)
+                                if user not in user_list:
+                                    user_list.append(user)
+                                display_dict[page_num] = user_list
+                            else:
+                                user = staff_dict.get(s)
+                                if user not in user_list:
+                                    user_list.append(user)
+                                display_dict[page_num] = user_list
 
-            staffpassword = ''
-            if 'staffpw' in session:
-                staffpassword = session['staffpw']
-                session.pop('staffpw', None)
-            
-            staffgone = ''
-            if 'staffgone' in session:
-                staffgone = session['staffgone']
-                session.pop('staffgone', None)
+                max_value = 0
+                empty = True
+                if len(display_dict) != 0:
+                    user_list = display_dict[page]
+                    all_keys = display_dict.keys()
+                    max_value = max(all_keys)
+                    empty = False
+                
+                keywords = search.search.data
+                return render_template('user/staff/stafflistsearch.html', count=len(user_list), staff_list=user_list , staff = name, display_dict = display_dict, page=page, max_value=max_value, empty = empty, form = search, keywords = keywords)
 
-            return render_template('user/staff/stafflist.html', count=len(staff_list), staff_list=staff_list , staff = name, display_dict = display_dict, page=page, max_value=max_value, staffpassword = staffpassword, empty = empty, staffgone = staffgone)
+            else:
+                display_dict = {}
+                page_num = 1
+            #Displaying the appending data into the stafflist so that it can be used to display data on the site
+                staff_list = []
+                for key in staff_dict:
+                    if len(staff_list) == 10:
+                        display_dict[page_num] = staff_list
+                        page_num += 1
+
+                        staff_list = []
+                        staff = staff_dict.get(key)
+                        staff_list.append(staff)
+                        display_dict[page_num] = staff_list
+                    else:
+                        staff = staff_dict.get(key)
+                        staff_list.append(staff)
+                        display_dict[page_num] = staff_list
+                            
+                max_value = 0
+                empty = True
+                if len(display_dict) != 0:
+                    staff_list = display_dict[page]
+                    all_keys = display_dict.keys()
+                    max_value = max(all_keys)
+                    empty = False
+
+                staffpassword = ''
+                if 'staffpw' in session:
+                    staffpassword = session['staffpw']
+                    session.pop('staffpw', None)
+                
+                staffgone = ''
+                if 'staffgone' in session:
+                    staffgone = session['staffgone']
+                    session.pop('staffgone', None)
+
+                return render_template('user/staff/stafflist.html', count=len(staff_list), staff_list=staff_list , staff = name, display_dict = display_dict, page=page, max_value=max_value, staffpassword = staffpassword, empty = empty, staffgone = staffgone, form = search)
         else:
             session.clear()
             return redirect(url_for('home'))
@@ -1979,26 +2028,38 @@ def staffaccountlist(page=1):
             search = Forms.UserSearchForm(request.form)
             if request.method == 'POST':
                 namelist = []
+                emaillist = []
+                userid_list = []
                 user_list = []
                 display_dict = {}
                 page_num = 1
                 for i in user_dict:
                     namelist.append(user_dict.get(i).get_username())
+                    emaillist.append(user_dict.get(i).get_email())
+                    userid_list.append(user_dict.get(i).get_user_id())
                 nice = difflib.get_close_matches(search.search.data, namelist)
+                emails = difflib.get_close_matches(search.search.data, emaillist)
+                userid = difflib.get_close_matches(search.search.data, userid_list)
+                for e in emails:
+                    nice.append(e)
+                for u in userid:
+                    nice.append(u)
                 for i in nice:
                     for s in user_dict:
-                        if user_dict.get(s).get_username() == i:
+                        if user_dict.get(s).get_username() == i or user_dict.get(s).get_email() == i or user_dict.get(s).get_user_id() == i:
                             if len(user_list) == 5:
                                 display_dict[page_num] = user_list
                                 page_num += 1
 
                                 user_list = []
                                 user = user_dict.get(s)
-                                user_list.append(user)
+                                if user not in user_list:
+                                    user_list.append(user)
                                 display_dict[page_num] = user_list
                             else:
                                 user = user_dict.get(s)
-                                user_list.append(user)
+                                if user not in user_list:
+                                    user_list.append(user)
                                 display_dict[page_num] = user_list
 
                 max_value = 0
