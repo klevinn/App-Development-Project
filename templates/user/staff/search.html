@@ -75,7 +75,7 @@
           <form action="" method="post" class="d-flex" style="margin-bottom:15px">
             {{ render_field(form.search, class="form-control me-2", placeholder="Search...") }}
             <button class="btn btn-info" type="submit">Search</button>
-            <a class="btn btn-info" href="/staffaccountlist/1">Reset</a>
+            <a class="btn btn-danger" href="/staffaccountlist/1">Reset</a>
           </form>
           <h4>Searched for: {{keywords}}</h4>
           
@@ -378,7 +378,7 @@
             </ul>
           </nav>
           {% else %}
-            <h3 style="text-align:center">NO MEMBERS ADDED</h3>
+            <h3 style="text-align:center">NO MEMBERS FOUND</h3>
           {% endif %}
         </div>
       </div>

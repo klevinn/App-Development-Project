@@ -2803,11 +2803,30 @@ def edit_product():
 
             # saving changes
             if request.method == 'POST' and create_product_form.validate():
+                if "productPic" not in request.files:
+                    print("No File Sent")
+                    return redirect(url_for("user"))
+                
+                file = request.files['productPic']
+                filename = file.filename
+                filename = secure_filename(filename)
+                print(filename)
+                if filename != '':
+                    if file and allowed_file(filename):
+                        filepath = os.path.join(app.config['UPLOAD_FOLDER_PRODUCT'], filename)
+                        file.save(filepath)
+                    else:
+                        print("Image not correct format")
+                        return redirect(url_for('retrieve_products'))
+                else:
+                    print("No file inputted")
+                    return redirect(url_for('retrieve_products'))
                 # trying to save picture, dont work
                 # if create_product_form.picture.data:
                     # picture_file = save_picture(create_product_form.picture.data)
                     # product.img_file_name = picture_file
-                #product.img_file_name = create_product_form.img_file_name.data    
+                #product.img_file_name = create_product_form.img_file_name.data   
+                product.img_file_name = filename 
                 product.name = create_product_form.name.data
                 product.price = create_product_form.price.data
                 product.category = create_product_form.category.data
