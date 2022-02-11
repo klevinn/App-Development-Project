@@ -1,4 +1,10 @@
+{% if staffsession %}
+{% extends "admin_base.html" %}
+{% elif usersession %}
 {% extends "user_base.html" %}
+{% else %}
+{% extends "default_base.html" %}
+{% endif %}
 {% block title %}All Consultations | DoctorOnTheGo{% endblock %}
 
 {% block content %}

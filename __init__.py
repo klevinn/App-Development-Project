@@ -3288,9 +3288,89 @@ def create_consultation():
 
                     return redirect(url_for('retrieve_consultation'))
                 else:
-                    return render_template('user/guest/xuzhi/createConsultation.html', user = UserName, av=av, form = create_customer_form, samedate = samedate, sametime = sametime, samedoc = samedoc, consultactive = True)
+                    return render_template('user/guest/xuzhi/createConsultation.html', user = UserName, av=av, form = create_customer_form, samedate = samedate, sametime = sametime, samedoc = samedoc, consultactive = True, usersession = True)
             else:
-                return render_template('user/guest/xuzhi/createConsultation.html', form=create_customer_form, user = UserName, av=av, consultactive = True)
+                return render_template('user/guest/xuzhi/createConsultation.html', form=create_customer_form, user = UserName, av=av, consultactive = True, usersession = True)
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+    elif "staff" in session:
+        StaffName = session["staff"]
+        valid_session, name = validate_session_open_file_admin(StaffName)
+        if valid_session:
+            create_customer_form = Forms.CreateForm(request.form)            
+            if request.method == 'POST' and create_customer_form.validate():
+                customers_dict = {}
+                db = shelve.open('user', 'c')
+
+                try:
+                    if 'Customers' in db:
+                        customers_dict = db['Customers']
+                    else:
+                        db['Customers'] = customers_dict
+                except:
+                    print("Error in retrieving Customers from customer.db.")
+
+
+                customers_list = []
+                appointment = True
+                sametime = False
+                samedate = False
+                samedoc = False
+                for key in customers_dict:
+                    customer = customers_dict.get(key)
+                    customers_list.append(customer)
+                    print("form data is "+ str(create_customer_form.date_joined.data))
+                    for customer in customers_list:
+                        if create_customer_form.date_joined.data == customer.get_date():
+                            print("Same Date")
+                            samedate = True
+                            if create_customer_form.time.data == customer.get_time():
+                                print("Same Time")
+                                sametime = True
+                                if create_customer_form.doc.data == customer.get_doc():
+                                    print("Conflicting Appointment")
+                                    samedoc = True
+                                    appointment = False
+                                    break
+                                else:
+                                    appointment = True
+                            else:
+                                appointment = True
+                        else:
+                            appointment = True
+
+                
+  
+                
+                if appointment == True:
+
+                    #Remake Class File as dont need email username n input
+                    consultation = Customer.Customer()
+                    consultation.set_first_name(create_customer_form.first_name.data)
+                    consultation.set_last_name(create_customer_form.last_name.data)
+                    consultation.set_gender(create_customer_form.gender.data)
+                    consultation.set_remarks(create_customer_form.remarks.data)
+                    consultation.set_email(create_customer_form.email.data)
+                    consultation.set_date(create_customer_form.date_joined.data)
+                    consultation.set_doc(create_customer_form.doc.data)
+                    consultation.set_time(create_customer_form.time.data)
+                    consultation.set_us(StaffName)
+
+                    AppFB = generate_feedback_id()
+                    consultation.set_consult(AppFB)
+
+                    customers_dict[AppFB] = consultation
+
+                    db['Customers'] = customers_dict
+
+                    db.close()
+
+                    return redirect(url_for('retrieve_consultation'))
+                else:
+                    return render_template('user/guest/xuzhi/createConsultation.html', staff = name, form = create_customer_form, samedate = samedate, sametime = sametime, samedoc = samedoc, consultactive = True, staffsession = True)
+            else:
+                return render_template('user/guest/xuzhi/createConsultation.html', form=create_customer_form, staff = name, consultactive = True, staffsession = True)
         else:
             session.clear()
             return redirect(url_for('home'))
@@ -3350,7 +3430,7 @@ def retrieve_consultation():
             """
 
 
-            return render_template('user/guest/xuzhi/retrieveConsultation.html', count=len(customers_list), customers_list=customers_list, var = var, user = UserName, av=av, consultactive = True)
+            return render_template('user/guest/xuzhi/retrieveConsultation.html', count=len(customers_list), customers_list=customers_list, var = var, user = UserName, av=av, consultactive = True, usersession = True)
         else:
             session.clear()
             return redirect(url_for('home'))
@@ -3371,7 +3451,7 @@ def retrieve_consultation():
             db.close()
             
             customers_list = []
-            var = session["user"]
+            var = session["staff"]
             print(var)
             for key in customers_dict:
                 customer = customers_dict.get(key)
@@ -3387,7 +3467,7 @@ def retrieve_consultation():
             """
 
 
-            return render_template('user/guest/xuzhi/retrieveConsultation.html', count=len(customers_list), customers_list=customers_list, var = var, staff = name, consultactive = True)
+            return render_template('user/guest/xuzhi/retrieveConsultation.html', count=len(customers_list), customers_list=customers_list, var = var, staff = name, consultactive = True, staffsession = True)
         else:
             session.clear()
             return redirect(url_for('home'))
@@ -3477,7 +3557,7 @@ def update_consultation(id):
 
                     return redirect(url_for('retrieve_consultation'))
                 else:
-                    return render_template('user/guest/xuzhi/updateConsultation.html', form=update_customer_form, user = UserName, av=av, sametime = sametime, samedoc=samedoc, samedate = samedate, consultactive = True)
+                    return render_template('user/guest/xuzhi/updateConsultation.html', form=update_customer_form, user = UserName, av=av, sametime = sametime, samedoc=samedoc, samedate = samedate, consultactive = True, usersession = True)
 
 
             else:
@@ -3507,7 +3587,7 @@ def update_consultation(id):
 
 
                 db.close()
-                return render_template('user/guest/xuzhi/updateConsultation.html', form=update_customer_form, user = UserName, av=av, consultactive = True)
+                return render_template('user/guest/xuzhi/updateConsultation.html', form=update_customer_form, user = UserName, av=av, consultactive = True, usersession = True)
         else:
             session.clear()
             return redirect(url_for('login')) 
@@ -3568,7 +3648,7 @@ def update_consultation(id):
                 update_customer_form.remarks.data = user.get_remarks()
 
 
-                return render_template('user/guest/xuzhi/updateConsultation.html', form=update_customer_form, staff=name, consultactive = True)
+                return render_template('user/guest/xuzhi/updateConsultation.html', form=update_customer_form, staff=name, consultactive = True, staffsession = True)
 
         else:
             session.clear()

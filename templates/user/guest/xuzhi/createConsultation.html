@@ -1,4 +1,10 @@
+{% if staffsession %}
+{% extends "admin_base.html" %}
+{% elif usersession %}
 {% extends "user_base.html" %}
+{% else %}
+{% extends "default_base.html" %}
+{% endif %}
 
 {# import "bootstrap/wtf.html" as wtf #}
 {% from "includes/_formHelper.html" import render_field %}
