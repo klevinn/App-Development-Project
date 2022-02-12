@@ -43,7 +43,7 @@
             <div class="accordion-body">
               <a href="/staffprod">Product Sales</a>
               <hr style="color:black;">
-              <a href="/staffinvent">Inventory Management</a>
+              <a href="/staffinvent/1">Inventory Management</a>
             </div>
           </div>
         </div>
@@ -101,7 +101,7 @@
                         </thead>
                         <tbody>
                           <td>{{ user.get_card_name() }}</td>
-                          <td>{{ user.get_card_no() }}</td>
+                          <td>{{ user.get_censored_credit_card() }}</td>
                           <td>{{ user.display_expiry_date() }}</td>
                         </tbody>
                       </table>
@@ -200,7 +200,7 @@
                         </thead>
                         <tbody>
                           <td>{{ user.get_card_name() }}</td>
-                          <td>{{ user.get_card_no() }}</td>
+                          <td>{{ user.get_censored_credit_card() }}</td>
                           <td>{{ user.display_expiry_date() }}</td>
                         </tbody>
                       </table>

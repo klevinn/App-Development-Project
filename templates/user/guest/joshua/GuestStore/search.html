@@ -98,6 +98,13 @@
 
             <!--<div class="col-md-3">-->
                 <!--<div class="row">-->
+                <div class = "col">
+                    {% if products.count() == 0 %}
+                    <h3 class="text-danger">{{ products.count() }} products have been found</h3>
+                    {% else %}
+                    <h3 class="">{{ products.count() }} product(s) have been found</h3>
+                    {% endif %}
+                    <div class="row">
                     {% for product in products %}
                     <div class="col-md-3">
                         <div id="product-1" class="single-product">
@@ -113,6 +120,8 @@
                         </div>
                     </div>
                     {% endfor %}
+                    </div>
+                </div>
                 <!--</div>-->
             <!--</div>-->
 
