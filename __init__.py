@@ -3252,7 +3252,28 @@ def create_consultation():
                                     print("Conflicting Appointment")
                                     samedoc = True
                                     appointment = False
-                                    break
+                                    
+                                    Rtimelist = str(timelist)[1:-2]
+                                    Rtimelist = Rtimelist.strip("','")
+                                    Rdatelist = str(datelist)[1:-2]
+                                    Rdatelist = Rdatelist.strip('')
+                                    timelis = []
+                                    for key in customers_dict:
+                                       customer = customers_dict.get(key)
+                                       customers_list.append(customer)
+
+                                       bonk = customer.get_date()
+                                       if bonk == create_customer_form.date_joined.data:
+                                            date = customer.get_time()
+                                            timelis.append(date)
+                                            Rtimelist = str(timelis)[1:-2]
+                                            Rtimelist = Rtimelist.strip("','")
+
+
+
+
+
+                                   return render_template("user/guest/xuzhi/ErrorDate.html", timelistval = Rtimelist, datelistval = create_customer_form.date_joined.data)
                                 else:
                                     appointment = True
                             else:
@@ -3530,7 +3551,27 @@ def update_consultation(id):
                                         print("Conflicting Appointment")
                                         samedoc = True
                                         appointment = False
-                                        break
+                                        Rtimelist = str(timelist)[1:-2]
+                                        Rtimelist = Rtimelist.strip("','")
+                                        Rdatelist = str(datelist)[1:-2]
+                                        Rdatelist = Rdatelist.strip('')
+                                        timelis = []
+                                        for key in customers_dict:
+                                            customer = customers_dict.get(key)
+                                            customers_list.append(customer)
+
+                                            bonk = customer.get_date()
+                                            if bonk == create_customer_form.date_joined.data:
+                                               date = customer.get_time()
+                                               timelis.append(date)
+                                               Rtimelist = str(timelis)[1:-2]
+                                               Rtimelist = Rtimelist.strip("','")
+
+
+
+
+
+                                        return render_template("user/guest/xuzhi/ErrorDate.html", timelistval = Rtimelist, datelistval = create_customer_form.date_joined.data)
                                     else:
                                         appointment = True
                                 else:
