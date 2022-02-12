@@ -1,0 +1,31 @@
+{% extends "default_base.html" %}
+{% block head %}
+<link rel="stylesheet" href="static/CSS/cookiealert.css">{% endblock %}
+{% block title %} | DoctorOnTheGo{% endblock %}
+
+{% block content %}
+
+<style>
+    .BIGGER {
+    font-size:2em;
+
+    }
+
+    .txt {
+    font-size:1.4em;
+
+    }
+
+</style>
+<h1 class="display-4">Time unavailable </h1>
+<p class="txt">The timing slot you have selected has been booked! Please try another doctor, time or date. </p>
+
+<div class="datalink">
+    <a class="nav-link" href="/createConsultation">
+        <button type="button">Back to page</button>
+    </a>
+    <p class="BIGGER">For your selected date, {{datelistval }}, these time {{ timelistval }} have been taken up. We are sorry for the inconvenience caused</p>
+</div>
+
+
+{% endblock %}
