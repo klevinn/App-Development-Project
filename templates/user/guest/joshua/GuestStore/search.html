@@ -56,34 +56,44 @@
                             </div>
                         </div>
 
+                        <br>
+
+                        <div class="heading d-flex justify-content-between align-items-center">
+                            <h6 class="text-uppercase">Price range</h6> <span>--</span>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-2">
+                            <div class="form-check">
+                                {{ render_field(form.price_range_lower, class="form-control") }}
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-2">
+                            <div class="form-check">
+                                {{ render_field(form.price_range_upper, class="form-control") }}
+                            </div>
+                        </div>
+
+                        <br>
+
+                        <div class="d-flex justify-content-between mt-2">
+                            <div class="form-check">
+                                <select class="form-select" aria-label="Default select example" name="sorting_mtd">
+                                    <option selected>Sort by</option>
+                                    <option value="Price (Descending)">Price (Descending)</option>
+                                    <option value="Price (Ascending)">Price (Ascending)</option>
+                                    <option value="Name (A to Z)">Name (A to Z)</option>
+                                    <option value="Name (Z to A)">Name (Z to A)</option>
+                                </select>
+                            </div>
+                        </div>
+
                         <div class="d-flex justify-content-between mt-2">
                             {{ render_field(form.apply_filters, class="btn btn-dark float-end") }}
                         </div>
                     </form>
                 </div>
-                <div class="pricerange p-2">
-                    <div class="heading d-flex justify-content-between align-items-center">
-                        <h6 class="text-uppercase">Price range</h6> <span>--</span>
-                    </div>
-
-                    <form action="", method="POST">
-                        <div class="d-flex justify-content-between mt-2">
-                            <div class="form-check">
-                                {{ render_field(form2.price_range_lower, class="form-control") }}
-                            </div>
-                        </div>
-
-                        <div class="d-flex justify-content-between mt-2">
-                            <div class="form-check">
-                                {{ render_field(form2.price_range_upper, class="form-control") }}
-                            </div>
-                        </div>
-
-                        <div class="d-flex justify-content-between mt-2">
-                            {{ render_field(form2.apply_filters, class="btn btn-dark float-end") }}
-                        </div>
-                    </form>
-                </div>
+                
             </div>
 
             <!--<div class="col-md-3">-->

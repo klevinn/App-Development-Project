@@ -2485,8 +2485,9 @@ def search():
             return redirect(url_for('login'))
     else:
         query = request.args.get('query')
-        form = Forms.CategoryFilter_AndSorting(request.form)
-        form2 = Forms.PriceFilter(request.form)
+        form = Forms.Filters_AndSorting(request.form)
+
+        sorting_mtd = request.form.get("sorting_mtd")
 
         if query:
             products = Product.query.filter(Product.name.contains(query) |
@@ -2498,26 +2499,37 @@ def search():
 
         # filters (only works when 1 is checked)
         if request.method == "POST":
-            if form.Medicine_category.data:
+            
+            if form.Medicine_category.data == True:
                 products = Product.query.filter(Product.category.contains("Medicine"))
 
-            if form.TestKit_category.data:
+            if form.TestKit_category.data == True:
                 products = Product.query.filter(Product.category.contains("Test Kit"))
 
-            if form.Supplement_category.data:
+            if form.Supplement_category.data == True:
                 products = Product.query.filter(Product.category.contains("Supplement"))
 
-            if form.FirstAid_category.data:
+            if form.FirstAid_category.data == True:
                 products = Product.query.filter(Product.category.contains("First Aid"))
 
-        # filter for price range
-        if request.method == 'POST' and form2.validate():
+            if sorting_mtd == "Price (Descending)":
+                products = Product.query.order_by(Product.price.desc())
+
+            if sorting_mtd == "Price (Ascending)":
+                products = Product.query.order_by(Product.price.asc())
+
+            if sorting_mtd == "Name (A to Z)":
+                products = Product.query.order_by(Product.name.asc())
+
+            if sorting_mtd == "Name (Z to A)":
+                products = Product.query.order_by(Product.name.desc())
+
             try:
-                products = Product.query.filter(form2.price_range_lower.data < Product.price, Product.price < form2.price_range_upper.data)
+                products = Product.query.filter(form.price_range_lower.data < Product.price, Product.price < form.price_range_upper.data)
             except:
                 products = products
 
-        return render_template('user/guest/joshua/GuestStore/search.html', products=products, form = form, form2 = form2, storeactive = True)
+        return render_template('user/guest/joshua/GuestStore/search.html', products=products, form = form, storeactive = True)
 
 @app.route('/view_product', methods=["GET", "POST"])
 def view_product():
