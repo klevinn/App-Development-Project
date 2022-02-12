@@ -34,11 +34,122 @@
   cursor: pointer;
 }
 
-.synopsis{
+#chatbot{
   margin-top:20px;
-  padding:10px;
+  padding-bottom: 20px;
 }
 
 #list{
   list-style:circle;
+}
+
+.bottom {
+  margin: 0 auto;
+  max-width: 900px;
+}
+/* chatbot */
+:root {
+    --peekobot-height: 60vh;
+}
+body {
+  font-family: sans-serif;
+}
+#peekobot-container {
+    max-width: 1000px;
+    border: 1px solid hsl(0, 0%, 90%);
+    border-radius: 12px;
+    box-shadow: 2px 2px 5px hsl(0, 0%, 60%);
+    padding: 1rem 1rem 2rem 1rem;
+    height: var(--peekobot-height);
+    position: relative;
+    background-color: white;
+
+}
+#peekobot-inner {
+    height: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    position: relative;
+    /* hide scrollbar, from: https://redstapler.co/css-hidden-scrollbar-while-scrollable-element/ */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+#peekobot-inner::-webkit-scrollbar {
+    display: none;
+}
+
+.chat-response,
+.chat-ask {
+    opacity: 0;  /* Set to activated to show */
+    transform: translateY(-50%); /* Set to activated to move down */
+    transition: all 0.3s 0.3s;
+    border-radius: 12px;
+    background-color: hsl(0, 0%, 90%);
+    padding: 0.5rem 0.7rem;
+    line-height: 1.4;
+    color: black;
+    max-width: 650px;
+    margin-bottom: 0.5rem;
+
+}
+.chat-response {
+    position: relative;
+}
+
+.chat-ask {
+  background: linear-gradient(to right, #FFA7A6, #FFCBC4);
+  max-width: 400px;
+  margin-right: 0;
+  margin-left: auto;
+  color: white;
+}
+
+.choices {
+  opacity: 0; /* Set to active to show */
+  transform: translateY(-50%); /* Set to activated to move down */
+  transition: all 0.3s 0.3s;
+  transition: opacity 0.3s 0.3s;
+  margin-top: 0.5rem;
+  margin-left: 2px;
+}
+.choice {
+  display: inline-block;
+  outline: none;
+  border: 1px solid #187BCD;
+  padding: 0.3rem 0.8rem;
+  background-color: white;
+  border-radius: 1rem;
+  font-size: 0.9rem;
+  line-height: 1.3;
+  margin-bottom: 0.5rem;
+  margin-right: 0.5rem;
+  text-decoration: none;
+  color: #187BCD;
+  cursor: pointer;
+}
+.choice:hover {
+  text-decoration: underline;
+}
+.choice:disabled {
+  color: #D3D3D3;
+  border-color: #D3D3D3;
+}
+.activated {
+  opacity: 1;
+  transform: translateY(0);
+}
+.restart {
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0.5rem;
+  outline: none;
+  font-size: 12px;
+  color: hsl(0, 0%, 50%);
+  box-shadow: none;
+  border: 1px solid hsl(0, 0%, 60%);
+  border-radius: 1rem;
+  background: hsl(0, 0%, 100%);
+  padding: 0.2rem 0.5rem;
+  cursor: pointer;
 }

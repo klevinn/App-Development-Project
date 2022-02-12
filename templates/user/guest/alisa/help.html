@@ -7,6 +7,7 @@
 {% endif %}
 {% block head %}
 <link rel="stylesheet" href="static/CSS/alisa/help.css">
+
 {% endblock %}
 
 {% block title %}Help | DoctorOnTheGo{% endblock %}
@@ -18,19 +19,25 @@
             <p>Encountered a problem ? <br> Do check out our chatbot for help, or leave feedback for us to address your needs better !</p>
         </div>
     </div>
-    <div class="content">
-        <div class="row">
-            <div class="col text-center">
-                <a href="{{ url_for('feedback') }}"><button class="feedback-form btn btn-secondary">Feedback Form</button></a>
-            </div>
-          </div>
-          <div class="row">
-            <div class="synopsis">
-                <h2 style="text-align:center">FAQs</h2>
-                <h3>Look at ChatBot For FAQs</h3>
-                </ul>
+    <div class="container-fluid">
+        <div class="content">
+            <div class="row">
+                <div class="col text-center">
+                    <a href="{{ url_for('feedback') }}"><button class="feedback-form btn btn-secondary">Feedback Form</button></a>
+                </div>
               </div>
-          </div>
+              <div class="bottom">
+                  <div id="chatbot">
+                      <h3>ChatBot For FAQs</h3>
+                      <div id="peekobot-container">
+                          <div id="peekobot-inner">
+                              <div id="peekobot"><script src="static/js/chatbot.js"></script></div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+        </div>
     </div>
+
 
 {% endblock %}
