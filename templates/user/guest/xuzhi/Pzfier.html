@@ -1,222 +1,217 @@
+{% if staffsession %}
+{% extends "admin_base.html" %}
+{% elif usersession %}
+{% extends "user_base.html" %}
+{% else %}
 {% extends "default_base.html" %}
-{% block title %}Omni {% endblock %}
+{% endif %}
+{% block title %}Pfizer | DoctorOnTheGo{% endblock %}
 
 {% block content %}
 <style>
-    .Container{
+  .Container {
 
 
     margin-left: auto;
     margin-right: auto;
-    width: 50em;
+    width: 50%;
 
-    }
-   .title{
-
-text-align:center;
-
-    }
-
-  p{
-  padding:10px;
   }
 
-      .text1 {
+  .title {
 
-    font-size:1.5em;
+    text-align: center;
 
-    }
- .text2 {
+  }
 
-    font-size:1.5em;
-
-    }
- .text3 {
-
-    font-size:1.5em;
-
-    }
-   .text4 {
-
-    font-size:1.5em;
-
-    }
+  p {
+    padding: 10px;
+  }
 
 
 
 
-.ig {
- margin-left: auto;
-  margin-right: auto;
-display:block;
+
+  .ig {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    width:100%
 
 
-}
+  }
 
 
-.pad{
+  .pad {
 
-padding-bottom:32px;
-}
+    padding-bottom: 32px;
+  }
 
-.pad2{
+  .pad2 {
 
-padding-bottom:55px;
-}
-.pad3 {
-padding-bottom: 30px;
+    padding-bottom: 55px;
+  }
 
-}
+  .pad3 {
+    padding-bottom: 30px;
 
-.pader3 {
+  }
 
-padding-bottom:28px;
+  .pader3 {
 
-}
+    padding-bottom: 28px;
 
-.pader2 {
+  }
 
-padding-bottom:28px;
+  .pader2 {
 
-}
+    padding-bottom: 28px;
 
-.pader4 {
+  }
 
-padding-bottom:28px;
+  .pader4 {
 
-}
+    padding-bottom: 28px;
 
-
-div.gallery {
-  margin: 5px;
-  border: 1px solid #ccc;
-  float: left;
-  width: 25%;
-  padding: 10px;
-  width: 300px;
-}
-
-div.gallery:hover {
-  border: 1px solid #777;
-}
-
-div.gallery img {
-  width: 100%;
-  height: auto;
-}
-
-.graph_caption{
-margin-left:50px;
-}
-div.gallery2 {
-  margin: 5px;
-  border: 1px solid #ccc;
-
-  width: 300px;
-}
-
-div.gallery3 {
-  margin: 5px;
-  border: 1px solid #ccc;
-  float: left;
-  width: 25%;
-  padding: 10px;
-  width: 300px;
-}
+  }
 
 
-div.gallery2:hover {
-  border: 1px solid #777;
-}
+  div.gallery {
+    margin: 5px;
+    border: 1px solid #ccc;
+    float: left;
+    width: 25%;
+    padding: 10px;
+    width: 300px;
+  }
 
-div.gallery2 img {
-  width: 100%;
-  height: auto;
-}
+  div.gallery:hover {
+    border: 1px solid #777;
+  }
 
+  div.gallery img {
+    width: 100%;
+    height: auto;
+  }
 
-div.gallery3:hover {
-  border: 1px solid #777;
-}
+  .graph_caption {
+    margin-left: 50px;
+  }
 
-div.gallery3 img {
-  width: 100%;
-  height: auto;
-}
+  div.gallery2 {
+    margin: 5px;
+    border: 1px solid #ccc;
 
-div.desc {
-  padding: 15px;
-  text-align: center;
-}
+    width: 300px;
+  }
 
-.desc {
-
-font-size:1.8em;
-
-}
-
-.botnews{
-
-margin-left:25%;
-
-}
-
-.botnews:after{
-
-  content: "";
-  display: table;
-  clear: both;
-
-}
-
-.spac {
-
-padding:60px;
-
-}
-
-h1{
-
-text-align:center;
-
-}
-.header {
+  div.gallery3 {
+    margin: 5px;
+    border: 1px solid #ccc;
+    float: left;
+    width: 25%;
+    padding: 10px;
+    width: 300px;
+  }
 
 
+  div.gallery2:hover {
+    border: 1px solid #777;
+  }
 
-}
+  div.gallery2 img {
+    width: 100%;
+    height: auto;
+  }
 
+
+  div.gallery3:hover {
+    border: 1px solid #777;
+  }
+
+  div.gallery3 img {
+    width: 100%;
+    height: auto;
+  }
+
+  div.desc {
+    padding: 15px;
+    text-align: center;
+  }
+
+  .botnews {
+
+    margin-left: 25%;
+
+  }
+
+  .botnews:after {
+
+    content: "";
+    display: table;
+    clear: both;
+
+  }
+
+  .spac {
+
+    padding: 60px;
+
+  }
+
+  h1 {
+
+    text-align: center;
+
+  }
 </style>
 <div class="title">
-<h1>Singapore receives its first batch of Pfizer’s Paxlovid pill for COVID-19 treatment.</h1>
- </div>
+  <h1>Singapore receives its first batch of Pfizer’s Paxlovid pill for COVID-19 treatment.</h1>
+</div>
 <div class="Container">
+  <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/News">News</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Vac</li>
+    </ol>
+  </nav>
+  <p class="text1">
+    INGAPORE: Singapore has received its first batch of Pfizer’s Paxlovid pill, after authorities announced last week
+    that they had approved the oral tablet for the treatment of COVID-19 in adult patients who are at risk of severe
+    disease.
 
+    “The first batch of Paxlovid has arrived on our shores this week,” said Health Minister Ong Ye Kung in a Facebook
+    post on Saturday (Feb 12).
 
-    <p class="text1">
-INGAPORE: Singapore has received its first batch of Pfizer’s Paxlovid pill, after authorities announced last week that they had approved the oral tablet for the treatment of COVID-19 in adult patients who are at risk of severe disease.
+    “This is the first oral anti-viral medicine approved for treatment of COVID-19 infection in Singapore. It will be
+    prescribed and prioritised for those at higher risk of severe COVID-19 illness,” he added.
 
-“The first batch of Paxlovid has arrived on our shores this week,” said Health Minister Ong Ye Kung in a Facebook post on Saturday (Feb 12).
+    “With more treatment options, we are now in a better position to provide good care to Singaporeans infected with
+    COVID-19.”
+  </p>
+  <img class="ig" src="{{url_for('static', filename='images/xuzhi/paxlovid.jpg')}}" width="750" height="500">
 
-“This is the first oral anti-viral medicine approved for treatment of COVID-19 infection in Singapore. It will be prescribed and prioritised for those at higher risk of severe COVID-19 illness,” he added.
+  <p class="text1">
+    Paxlovid has been found to reduce the risk of COVID-19 related hospitalisation or death by 88.9 per cent when
+    treatment was given within three days of the onset of symptoms, according to a Health Sciences Authority (HSA)
+    review of clinical data based on an ongoing Pfizer study.
 
-“With more treatment options, we are now in a better position to provide good care to Singaporeans infected with COVID-19.”
-</p>
-     <img class="ig" src="{{url_for('static', filename='paxlovid.jpg')}}" width="750" height="500">
+    Paxlovid comprises two nirmatrelvir tablets and one ritonavir tablet, co-packaged for oral use. Nirmatrelvir is an
+    antiviral medicine while ritonavir maintains the blood level of nirmatrelvir for antiviral efficacy.
 
-    <p class="text1">
-Paxlovid has been found to reduce the risk of COVID-19 related hospitalisation or death by 88.9 per cent when treatment was given within three days of the onset of symptoms, according to a Health Sciences Authority (HSA) review of clinical data based on an ongoing Pfizer study.
+    The pill should be taken twice a day for five days, HSA said on Feb 3, with treatment being initiated "as soon as
+    possible after a diagnosis has been made, within five days of the onset of COVID-19 symptoms".
 
-Paxlovid comprises two nirmatrelvir tablets and one ritonavir tablet, co-packaged for oral use. Nirmatrelvir is an antiviral medicine while ritonavir maintains the blood level of nirmatrelvir for antiviral efficacy.
+    HSA added that in vitro data has also shown that Paxlovid is "active" against the prevailing variants of concern,
+    including Delta and Omicron.
 
-The pill should be taken twice a day for five days, HSA said on Feb 3, with treatment being initiated "as soon as possible after a diagnosis has been made, within five days of the onset of COVID-19 symptoms".
+    Paxlovid has so far been authorised in several countries including the United States and Israel, while the European
+    Union has permitted member states to use it ahead of formal approval as an emergency measure against the Omicron
+    variant.
 
-HSA added that in vitro data has also shown that Paxlovid is "active" against the prevailing variants of concern, including Delta and Omicron.
-
-Paxlovid has so far been authorised in several countries including the United States and Israel, while the European Union has permitted member states to use it ahead of formal approval as an emergency measure against the Omicron variant.
-
-China's medical products regulator announced on Saturday that it had given conditional approval for Paxlovid, making it the first oral anti-coronavirus pill approved in the country to treat the disease.
-    </p>
+    China's medical products regulator announced on Saturday that it had given conditional approval for Paxlovid, making
+    it the first oral anti-coronavirus pill approved in the country to treat the disease.
+  </p>
 
 
 
@@ -225,43 +220,46 @@ China's medical products regulator announced on Saturday that it had given condi
 
 </div>
 <h1> Other news articles you may enjoy</h1>
-<div class="botnews">
-<div class="gallery">
-  <a target="nav-link" href="/MOHnews">
-    <img src="{{url_for('static', filename='2022-01-05t223545z_1_lynxmpei040x9_rtroptp_3_health-coronavirus-usa-children.jpg')}}" width="600" height="400" >
-  </a>
-  <div class="desc">COVID-19 booster shot needed to maintain fully vaccinated status from Feb 14.</div>
+<div class="row" style="margin:auto;">
+  <div class="gallery col">
+    <a target="nav-link" href="/MOHnews">
+      <img
+        src="{{url_for('static', filename='images/xuzhi/2022-01-05t223545z_1_lynxmpei040x9_rtroptp_3_health-coronavirus-usa-children.jpg')}}"
+        width="600" height="400">
+    </a>
+    <div class="desc">COVID-19 booster shot needed to maintain fully vaccinated status from Feb 14.</div>
 
-        <div class="pad3">
+    <div class="pad3">
     </div>
-</div>
+  </div>
 
-<div class="gallery">
-  <a target="nav-link" href="/Omni">
-     <img src="{{url_for('static', filename='dsc_8144.jpg')}}" width="600" height="400">
-  </a>
-  <div class="desc">Omicron Variant: What You Need to Know .</div>
-        <div class="pad2">
+  <div class="gallery col">
+    <a target="nav-link" href="/Omni">
+      <img src="{{url_for('static', filename='images/xuzhi/dsc_8144.jpg')}}" width="600" height="400">
+    </a>
+    <div class="desc">Omicron Variant: What You Need to Know .</div>
+    <div class="pad2">
     </div>
-</div>
+  </div>
 
-<div class="gallery">
-  <a target="nav-link" href="/Vac">
-   <img src="{{url_for('static', filename='vaccination_1.jpg')}}" width="600" height="400">
-  </a>
-  <div class="desc">How might an Omicron wave develop in Singapore? Vaccinations, safety measures may 'wear impact'</div>
-
-</div>
-
-<div class="gallery">
-  <a target="nav-link" href="/World">
-    <img src="{{url_for('static', filename='france-coronavirus_4.jpg')}}" width="600" height="400">
-  </a>
-  <div class="desc">    World passes 300 million COVID-19 cases as Omicron breaks records .</div>
-
-  <div class="pad">
+  <div class="gallery col">
+    <a target="nav-link" href="/Vac">
+      <img src="{{url_for('static', filename='images/xuzhi/vaccination_1.jpg')}}" width="600" height="400">
+    </a>
+    <div class="desc">How might an Omicron wave develop in Singapore? Vaccinations, safety measures may 'wear impact'
+    </div>
 
   </div>
+
+  <div class="gallery col">
+    <a target="nav-link" href="/World">
+      <img src="{{url_for('static', filename='images/xuzhi/france-coronavirus_4.jpg')}}" width="600" height="400">
+    </a>
+    <div class="desc"> World passes 300 million COVID-19 cases as Omicron breaks records .</div>
+
+    <div class="pad">
+
     </div>
+  </div>
 </div>
 {% endblock %}

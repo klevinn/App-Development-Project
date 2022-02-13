@@ -1,266 +1,286 @@
+{% if staffsession %}
+{% extends "admin_base.html" %}
+{% elif usersession %}
+{% extends "user_base.html" %}
+{% else %}
 {% extends "default_base.html" %}
-{% block title %}Omni {% endblock %}
+{% endif %}
+
+{% block title %}Omnicron | DoctorOnTheGo{% endblock %}
 
 {% block content %}
 <style>
-    .Container{
+  .Container {
 
 
     margin-left: auto;
     margin-right: auto;
-    width: 50em;
+    width: 50%;
 
-    }
-   .title{
-
-text-align:center;
-
-    }
-
-  p{
-  padding:10px;
   }
 
-      .text1 {
+  .title {
 
-    font-size:1.5em;
+    text-align: center;
 
-    }
- .text2 {
+  }
 
-    font-size:1.5em;
-
-    }
- .text3 {
-
-    font-size:1.5em;
-
-    }
-   .text4 {
-
-    font-size:1.5em;
-
-    }
+  p {
+    padding: 10px;
+  }
 
 
 
 
-h1{
+  h1 {
 
-text-align:center;
+    text-align: center;
 
-}
+  }
 
-.ig {
- margin-left: auto;
-  margin-right: auto;
-display:block;
-
-
-}
+  .ig {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    width:100%
 
 
-.pad{
-
-padding-bottom:32px;
-}
-
-.pad2{
-
-padding-bottom:55px;
-}
-.pad3 {
-padding-bottom: 30px;
-
-}
-
-.pader3 {
-
-padding-bottom:28px;
-
-}
-
-.pader2 {
-
-padding-bottom:28px;
-
-}
-
-.pader4 {
-
-padding-bottom:28px;
-
-}
+  }
 
 
-div.gallery {
-  margin: 5px;
-  border: 1px solid #ccc;
-  float: left;
-  width: 25%;
-  padding: 10px;
-  width: 300px;
-}
+  .pad {
 
-div.gallery:hover {
-  border: 1px solid #777;
-}
+    padding-bottom: 32px;
+  }
 
-div.gallery img {
-  width: 100%;
-  height: auto;
-}
+  .pad2 {
 
-.graph_caption{
-margin-left:50px;
-}
-div.gallery2 {
-  margin: 5px;
-  border: 1px solid #ccc;
+    padding-bottom: 55px;
+  }
 
-  width: 300px;
-}
+  .pad3 {
+    padding-bottom: 30px;
 
-div.gallery3 {
-  margin: 5px;
-  border: 1px solid #ccc;
-  float: left;
-  width: 25%;
-  padding: 10px;
-  width: 300px;
-}
+  }
+
+  .pader3 {
+
+    padding-bottom: 28px;
+
+  }
+
+  .pader2 {
+
+    padding-bottom: 28px;
+
+  }
+
+  .pader4 {
+
+    padding-bottom: 28px;
+
+  }
 
 
-div.gallery2:hover {
-  border: 1px solid #777;
-}
+  div.gallery {
+    margin: 5px;
+    border: 1px solid #ccc;
+    float: left;
+    width: 25%;
+    padding: 10px;
+    width: 300px;
+  }
 
-div.gallery2 img {
-  width: 100%;
-  height: auto;
-}
+  div.gallery:hover {
+    border: 1px solid #777;
+  }
 
+  div.gallery img {
+    width: 100%;
+    height: auto;
+  }
 
-div.gallery3:hover {
-  border: 1px solid #777;
-}
+  .graph_caption {
+    margin-left: 50px;
+  }
 
-div.gallery3 img {
-  width: 100%;
-  height: auto;
-}
+  div.gallery2 {
+    margin: 5px;
+    border: 1px solid #ccc;
 
-div.desc {
-  padding: 15px;
-  text-align: center;
-}
+    width: 300px;
+  }
 
-.desc {
-
-font-size:1.8em;
-
-}
-
-.botnews{
-
-margin-left:25%;
-
-}
-
-.botnews:after{
-
-  content: "";
-  display: table;
-  clear: both;
-
-}
+  div.gallery3 {
+    margin: 5px;
+    border: 1px solid #ccc;
+    float: left;
+    width: 25%;
+    padding: 10px;
+    width: 300px;
+  }
 
 
-.spac {
+  div.gallery2:hover {
+    border: 1px solid #777;
+  }
 
-padding:60px;
+  div.gallery2 img {
+    width: 100%;
+    height: auto;
+  }
 
-}
 
-h1{
+  div.gallery3:hover {
+    border: 1px solid #777;
+  }
 
-text-align:center;
+  div.gallery3 img {
+    width: 100%;
+    height: auto;
+  }
 
-}
+  div.desc {
+    padding: 15px;
+    text-align: center;
+  }
 
+
+  .botnews {
+
+    margin-left: 25%;
+
+  }
+
+  .botnews:after {
+
+    content: "";
+    display: table;
+    clear: both;
+
+  }
+
+
+  .spac {
+
+    padding: 60px;
+
+  }
+
+  h1 {
+
+    text-align: center;
+
+  }
 </style>
 <div class="title">
-<h1>Omicron Variant: What You Need to Know .</h1>
- </div>
+  <h1>Omicron Variant: What You Need to Know .</h1>
+</div>
 <div class="Container">
+  <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/News">News</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Omni</li>
+    </ol>
+  </nav>
+
+  <h2 class="header"> Symptoms</h2>
+  <p class="text1">
+
+    Persons infected with the Omicron variant can present with symptoms similar to previous variants. The presence and
+    severity of symptoms can be affected by COVID-19 vaccination status, the presence of other health conditions, age,
+    and history of prior infection.
+  </p>
+
+  <p class="text1">
+    Over the past week, hospitals across the island said they have seen a higher number of patients seeking medical
+    attention at their emergency rooms.
+
+    Khoo Teck Puat Hospital told CNA that the average daily attendance at its emergency department rose by 20 per cent
+    in the first week of February compared with January.
+
+    Of the patients who walked into its emergency room that week, 66 per cent were discharged without being
+    hospitalised, said its spokesperson.
+
+    At Singapore General Hospital (SGH), the emergency department is seeing a “higher than usual” daily patient average
+    than in the past two years, said Associate Professor Kenneth Tan, head and senior consultant at SGH’s emergency
+    medicine department.
+
+    Patients with symptoms of acute respiratory infections doubled during and after the first two days of Chinese New
+    Year, of which more than 60 per cent were either eligible for the home recovery programme, sent to isolation
+    facilities in the community, or discharged after their visit.
+
+    The Ministry of Health (MOH) over the weekend urged the public to seek emergency treatment at hospitals only for
+    serious or life-threatening emergencies, amid a rise in the number of such patients.
+
+    Most of the patients who visited hospital emergency departments in recent weeks did not require emergency care, it
+    added.
+
+    Hospitals that CNA spoke to urged patients with mild symptoms to visit their nearest clinics instead of jamming up
+    emergency departments.
+
+    “Only people with serious or life-threatening emergencies, such as chest pain, breathlessness and uncontrollable
+    bleeding, should visit the hospital’s emergency department as this allows those in need of emergency care to be
+    attended to quickly and helps to preserve the hospital’s capacity for those who truly need acute hospital care,”
+    said Associate Professor Thomas Loh, group chairman of the medical board for the National University Health System
+    (NUHS).
+
+    NUHS manages National University Hospital (NUH), Ng Teng Fong General Hospital and Alexandra Hospital.
+  </p>
+  <img class="ig" src="{{url_for('static', filename='images/xuzhi/omnimg.jpg')}}" width="750" height="500">
+
+  <h2 class="header">INCREASED WAITING TIMES</h2>
+  <p class="text2">
+
+    Emergency department staff that CNA spoke to said waiting times have increased by at least 20 minutes to a few hours
+    for mild cases. In some instances, patients have had to wait as long as 20 hours to get a placement in a ward.
+
+    Among hospitals tracked by the Ministry of Health (MOH), latest figures show that daily bed occupancy rates ranged
+    from 61.5 per cent to 100 per cent between Jan 23 and 29.
+  </p>
 
 
-    <h2 class="header"> Symptoms</h2>
-    <p class="text1">
-
-Persons infected with the Omicron variant can present with symptoms similar to previous variants. The presence and severity of symptoms can be affected by COVID-19 vaccination status, the presence of other health conditions, age, and history of prior infection.
-</p>
-
-    <p class="text1">
-Over the past week, hospitals across the island said they have seen a higher number of patients seeking medical attention at their emergency rooms.
-
-Khoo Teck Puat Hospital told CNA that the average daily attendance at its emergency department rose by 20 per cent in the first week of February compared with January.
-
-Of the patients who walked into its emergency room that week, 66 per cent were discharged without being hospitalised, said its spokesperson.
-
-At Singapore General Hospital (SGH), the emergency department is seeing a “higher than usual” daily patient average than in the past two years, said Associate Professor Kenneth Tan, head and senior consultant at SGH’s emergency medicine department.
-
-Patients with symptoms of acute respiratory infections doubled during and after the first two days of Chinese New Year, of which more than 60 per cent were either eligible for the home recovery programme, sent to isolation facilities in the community, or discharged after their visit.
-
-The Ministry of Health (MOH) over the weekend urged the public to seek emergency treatment at hospitals only for serious or life-threatening emergencies, amid a rise in the number of such patients.
-
-Most of the patients who visited hospital emergency departments in recent weeks did not require emergency care, it added.
-
-Hospitals that CNA spoke to urged patients with mild symptoms to visit their nearest clinics instead of jamming up emergency departments.
-
-“Only people with serious or life-threatening emergencies, such as chest pain, breathlessness and uncontrollable bleeding, should visit the hospital’s emergency department as this allows those in need of emergency care to be attended to quickly and helps to preserve the hospital’s capacity for those who truly need acute hospital care,” said Associate Professor Thomas Loh, group chairman of the medical board for the National University Health System (NUHS).
-
-NUHS manages National University Hospital (NUH), Ng Teng Fong General Hospital and Alexandra Hospital.
-    </p>
- <img class="ig" src="{{url_for('static', filename='omnimg.jpg')}}" width="750" height="500">
-
-    <h2 class="header">INCREASED WAITING TIMES</h2>
-<p class="text2">
-
-Emergency department staff that CNA spoke to said waiting times have increased by at least 20 minutes to a few hours for mild cases. In some instances, patients have had to wait as long as 20 hours to get a placement in a ward.
-
-Among hospitals tracked by the Ministry of Health (MOH), latest figures show that daily bed occupancy rates ranged from 61.5 per cent to 100 per cent between Jan 23 and 29.
-</p>
+  <h2 class="header"> Treatments</h2>
+  <p class="text2">
+    Scientists are working to determine how well existing treatments for COVID-19 work. Some, but not all, monoclonal
+    antibody treatments remain effective against Omicron. Public health agencies work with healthcare providers to
+    ensure that effective treatments are used appropriately to treat patients.
+  </p>
 
 
-<h2 class="header"> Treatments</h2>
-    <p class="text2">
-Scientists are working to determine how well existing treatments for COVID-19 work. Some, but not all, monoclonal antibody treatments remain effective against Omicron. Public health agencies work with healthcare providers to ensure that effective treatments are used appropriately to treat patients.
-</p>
+  <h2 class="header"> How to protect yourself</h2>
+  <p class="text3">
+    Get vaccinated. The best way to stop viruses from mutating is to slow their spread, and the best way to slow their
+    spread is through vaccination. Scientists are confident the existing vaccines will continue to offer protection
+    against severe illness, hospitalization and death from COVID-19.
+
+    And there’s another bright spot: Scientists are learning more about booster shots, and it appears the booster does
+    more than just “top off” antibody levels. It might even help broaden your defenses in a way that offers protection
+    against omicron and future variants. Learn more about boosters.
+
+    So, the message on vaccines is simple: Everyone 5 and older should get vaccinated, and boosters are recommended for
+    everyone 12 and older. Find a vaccinator near you.
+
+    Masking and distancing. These public health measures, along with good hand hygiene, are proven to reduce infection
+    from a variety of viruses, including the coronavirus. Wearing a mask or keeping your distance is another way to
+    prevent spread and, by extension, deny the virus a chance to survive and spread.
+  </p>
+  <img class="ig" src="{{url_for('static', filename='images/xuzhi/000_9mt747.jpg')}}" width="800" height="500">
 
 
-    <h2 class="header"> How to protect yourself</h2>
-    <p class="text3">
-Get vaccinated. The best way to stop viruses from mutating is to slow their spread, and the best way to slow their spread is through vaccination. Scientists are confident the existing vaccines will continue to offer protection against severe illness, hospitalization and death from COVID-19.
-
-And there’s another bright spot: Scientists are learning more about booster shots, and it appears the booster does more than just “top off” antibody levels. It might even help broaden your defenses in a way that offers protection against omicron and future variants. Learn more about boosters.
-
-So, the message on vaccines is simple: Everyone 5 and older should get vaccinated, and boosters are recommended for everyone 12 and older. Find a vaccinator near you.
-
-Masking and distancing. These public health measures, along with good hand hygiene, are proven to reduce infection from a variety of viruses, including the coronavirus. Wearing a mask or keeping your distance is another way to prevent spread and, by extension, deny the virus a chance to survive and spread.
-    </p>
- <img class="ig" src="{{url_for('static', filename='000_9mt747.jpg')}}" width="800" height="500">
-
-
-     <h2 class="header">  How serious is the omicron variant?</h2>
+  <h2 class="header"> How serious is the omicron variant?</h2>
   <p class="text4">
 
 
-Each coronavirus variant includes mutations that help the virus to survive and spread. For instance, before omicron, the delta variant had the most known mutations, and it was the most contagious variant.
+    Each coronavirus variant includes mutations that help the virus to survive and spread. For instance, before omicron,
+    the delta variant had the most known mutations, and it was the most contagious variant.
 
-Scientists have identified many more mutations in omicron, including nearly 30 that are unique to this variant, that make the virus more contagious. Although it spreads more easily than past coronavirus variants, there are still details about it that remain unknown, including whether it causes more severe illness.
+    Scientists have identified many more mutations in omicron, including nearly 30 that are unique to this variant, that
+    make the virus more contagious. Although it spreads more easily than past coronavirus variants, there are still
+    details about it that remain unknown, including whether it causes more severe illness.
 
-The good news is that there’s no reason to panic. We already have ways to protect ourselves from the omicron variant.
+    The good news is that there’s no reason to panic. We already have ways to protect ourselves from the omicron
+    variant.
 
   </p>
 </div>
@@ -271,43 +291,46 @@ The good news is that there’s no reason to panic. We already have ways to prot
 
 
 <h1> Other news articles you may enjoy</h1>
-<div class="botnews">
-<div class="gallery">
-  <a target="nav-link" href="/MOHnews">
-    <img src="{{url_for('static', filename='2022-01-05t223545z_1_lynxmpei040x9_rtroptp_3_health-coronavirus-usa-children.jpg')}}" width="600" height="400" >
-  </a>
-  <div class="desc">COVID-19 booster shot needed to maintain fully vaccinated status from Feb 14.</div>
+<div class="row" style="margin:auto;">
+  <div class="gallery col">
+    <a target="nav-link" href="/MOHnews">
+      <img
+        src="{{url_for('static', filename='images/xuzhi/2022-01-05t223545z_1_lynxmpei040x9_rtroptp_3_health-coronavirus-usa-children.jpg')}}"
+        width="600" height="400">
+    </a>
+    <div class="desc">COVID-19 booster shot needed to maintain fully vaccinated status from Feb 14.</div>
 
-        <div class="pad3">
+    <div class="pad3">
     </div>
-</div>
+  </div>
 
-<div class="gallery">
-  <a target="nav-link" href="/Omni">
-     <img src="{{url_for('static', filename='dsc_8144.jpg')}}" width="600" height="400">
-  </a>
-  <div class="desc">Omicron Variant: What You Need to Know .</div>
-        <div class="pad2">
+  <div class="gallery col">
+    <a target="nav-link" href="/Omni">
+      <img src="{{url_for('static', filename='images/xuzhi/dsc_8144.jpg')}}" width="600" height="400">
+    </a>
+    <div class="desc">Omicron Variant: What You Need to Know .</div>
+    <div class="pad2">
     </div>
-</div>
+  </div>
 
-<div class="gallery">
-  <a target="nav-link" href="/Vac">
-   <img src="{{url_for('static', filename='vaccination_1.jpg')}}" width="600" height="400">
-  </a>
-  <div class="desc">How might an Omicron wave develop in Singapore? Vaccinations, safety measures may 'wear impact'</div>
-
-</div>
-
-<div class="gallery">
-  <a target="nav-link" href="/World">
-    <img src="{{url_for('static', filename='france-coronavirus_4.jpg')}}" width="600" height="400">
-  </a>
-  <div class="desc">    World passes 300 million COVID-19 cases as Omicron breaks records .</div>
-
-  <div class="pad">
+  <div class="gallery col">
+    <a target="nav-link" href="/Vac">
+      <img src="{{url_for('static', filename='images/xuzhi/vaccination_1.jpg')}}" width="600" height="400">
+    </a>
+    <div class="desc">How might an Omicron wave develop in Singapore? Vaccinations, safety measures may 'wear impact'
+    </div>
 
   </div>
+
+  <div class="gallery col">
+    <a target="nav-link" href="/World">
+      <img src="{{url_for('static', filename='images/xuzhi/france-coronavirus_4.jpg')}}" width="600" height="400">
+    </a>
+    <div class="desc"> World passes 300 million COVID-19 cases as Omicron breaks records .</div>
+
+    <div class="pad">
+
     </div>
+  </div>
 </div>
 {% endblock %}

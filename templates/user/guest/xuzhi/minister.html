@@ -1,5 +1,11 @@
+{% if staffsession %}
+{% extends "admin_base.html" %}
+{% elif usersession %}
+{% extends "user_base.html" %}
+{% else %}
 {% extends "default_base.html" %}
-{% block title %}Omni {% endblock %}
+{% endif %}
+{% block title %}Minister | DoctorOnTheGo{% endblock %}
 
 {% block content %}
 <style>
@@ -8,7 +14,7 @@
 
     margin-left: auto;
     margin-right: auto;
-    width: 50em;
+    width: 50%;
 
     }
    .title{
@@ -21,26 +27,6 @@ text-align:center;
   padding:10px;
   }
 
-      .text1 {
-
-    font-size:1.5em;
-
-    }
- .text2 {
-
-    font-size:1.5em;
-
-    }
- .text3 {
-
-    font-size:1.5em;
-
-    }
-   .text4 {
-
-    font-size:1.5em;
-
-    }
 
 
 
@@ -50,16 +36,11 @@ img {
  margin-left: auto;
   margin-right: auto;
   display:block;
+  width:100%;
 
 
 }
 
-
-.header {
-
-
-
-}
 
 .pad{
 
@@ -156,11 +137,6 @@ div.desc {
   text-align: center;
 }
 
-.desc {
-
-font-size:1.8em;
-
-}
 .space {
 
 padding:60px;
@@ -203,7 +179,12 @@ margin-left:25%;
 <h1>Omicron Variant: What You Need to Know .</h1>
  </div>
 <div class="Container">
-
+  <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/News">News</a></li>
+        <li class="breadcrumb-item active" aria-current="page">World</li>
+    </ol>
+</nav>
 
     <h2 class="header"> Symptoms</h2>
     <p class="text1">
@@ -216,7 +197,7 @@ SINGAPORE: The recent rise in COVID-19 cases, hitting five digits on some days, 
 Singapore reported 10,505 new COVID-19 cases on Saturday, the fourth time this week that daily infections have exceeded the 10,000 mark.
 </p>
 
-     <img src="{{url_for('static', filename='1479039.jpg')}}" width="750" height="500">
+     <img src="{{url_for('static', filename='images/xuzhi/1479039.jpg')}}" width="750" height="500">
 
     <p class="text1">
 Despite the increase in cases, Mr Ong noted that the healthcare system is still holding up.
@@ -244,10 +225,10 @@ When asked if there will be any changes to COVID-19 measures, Mr Ong said the mu
 
 
 
-<div class="botnews">
+<div class="row" style="margin:auto;">
 <div class="gallery">
   <a target="nav-link" href="/MOHnews">
-    <img src="{{url_for('static', filename='2022-01-05t223545z_1_lynxmpei040x9_rtroptp_3_health-coronavirus-usa-children.jpg')}}" width="600" height="400" >
+    <img src="{{url_for('static', filename='images/xuzhi/2022-01-05t223545z_1_lynxmpei040x9_rtroptp_3_health-coronavirus-usa-children.jpg')}}" width="600" height="400" >
   </a>
   <div class="desc">COVID-19 booster shot needed to maintain fully vaccinated status from Feb 14.</div>
 
@@ -257,7 +238,7 @@ When asked if there will be any changes to COVID-19 measures, Mr Ong said the mu
 
 <div class="gallery">
   <a target="nav-link" href="/Omni">
-     <img src="{{url_for('static', filename='dsc_8144.jpg')}}" width="600" height="400">
+     <img src="{{url_for('static', filename='images/xuzhi/dsc_8144.jpg')}}" width="600" height="400">
   </a>
   <div class="desc">Omicron Variant: What You Need to Know .</div>
         <div class="pad2">
@@ -266,7 +247,7 @@ When asked if there will be any changes to COVID-19 measures, Mr Ong said the mu
 
 <div class="gallery">
   <a target="nav-link" href="/Vac">
-   <img src="{{url_for('static', filename='vaccination_1.jpg')}}" width="600" height="400">
+   <img src="{{url_for('static', filename='images/xuzhi/vaccination_1.jpg')}}" width="600" height="400">
   </a>
   <div class="desc">How might an Omicron wave develop in Singapore? Vaccinations, safety measures may 'wear impact'</div>
 
@@ -274,7 +255,7 @@ When asked if there will be any changes to COVID-19 measures, Mr Ong said the mu
 
 <div class="gallery">
   <a target="nav-link" href="/World">
-    <img src="{{url_for('static', filename='france-coronavirus_4.jpg')}}" width="600" height="400">
+    <img src="{{url_for('static', filename='images/xuzhi/france-coronavirus_4.jpg')}}" width="600" height="400">
   </a>
   <div class="desc">    World passes 300 million COVID-19 cases as Omicron breaks records .</div>
 

@@ -1,211 +1,208 @@
+{% if staffsession %}
+{% extends "admin_base.html" %}
+{% elif usersession %}
+{% extends "user_base.html" %}
+{% else %}
 {% extends "default_base.html" %}
-{% block title %}COVID News Jan 8{% endblock %}
+{% endif %}
+{% block title %}Covid News | DoctorOnTheGo{% endblock %}
 
 {% block content %}
 <style>
-    .Cont{
+  .Cont {
 
 
     margin-left: auto;
     margin-right: auto;
-    width: 100em;
+    width: 100%;
 
-    }
+  }
 
-p{
-padding:10px;
-}
-
-
-.text1  {
-
-font-size:1.5em;
-
-}
-
-.text2 {
-
-font-size:1.5em;
+  p {
+    padding: 10px;
+  }
 
 
-}
-
-.text3 {
-
-font-size:1.5em;
-
-}
-
-.ig {
- margin-left: auto;
-  margin-right: auto;
-display:block;
 
 
-}
+  .ig {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    width:100%;
+
+  }
 
 
-.pad{
+  .pad {
 
-padding-bottom:32px;
-}
+    padding-bottom: 32px;
+  }
 
-.pad2{
+  .pad2 {
 
-padding-bottom:55px;
-}
-.pad3 {
-padding-bottom: 30px;
+    padding-bottom: 55px;
+  }
 
-}
+  .pad3 {
+    padding-bottom: 30px;
 
-.pader3 {
+  }
 
-padding-bottom:28px;
+  .pader3 {
 
-}
+    padding-bottom: 28px;
 
-.pader2 {
+  }
 
-padding-bottom:28px;
+  .pader2 {
 
-}
+    padding-bottom: 28px;
 
-.pader4 {
+  }
 
-padding-bottom:28px;
+  .pader4 {
 
-}
+    padding-bottom: 28px;
 
-
-div.gallery {
-  margin: 5px;
-  border: 1px solid #ccc;
-  float: left;
-  width: 25%;
-  padding: 10px;
-  width: 300px;
-}
-
-div.gallery:hover {
-  border: 1px solid #777;
-}
-
-div.gallery img {
-  width: 100%;
-  height: auto;
-}
-
-.graph_caption{
-margin-left:50px;
-}
-div.gallery2 {
-  margin: 5px;
-  border: 1px solid #ccc;
-
-  width: 300px;
-}
-
-div.gallery3 {
-  margin: 5px;
-  border: 1px solid #ccc;
-  float: left;
-  width: 25%;
-  padding: 10px;
-  width: 300px;
-}
+  }
 
 
-div.gallery2:hover {
-  border: 1px solid #777;
-}
+  div.gallery {
+    margin: 5px;
+    border: 1px solid #ccc;
+    float: left;
+    width: 25%;
+    padding: 10px;
+    width: 300px;
+  }
 
-div.gallery2 img {
-  width: 100%;
-  height: auto;
-}
+  div.gallery:hover {
+    border: 1px solid #777;
+  }
+
+  div.gallery img {
+    width: 100%;
+    height: auto;
+  }
+
+  .graph_caption {
+    margin-left: 50px;
+  }
+
+  div.gallery2 {
+    margin: 5px;
+    border: 1px solid #ccc;
+
+    width: 300px;
+  }
+
+  div.gallery3 {
+    margin: 5px;
+    border: 1px solid #ccc;
+    float: left;
+    width: 25%;
+    padding: 10px;
+    width: 300px;
+  }
 
 
-div.gallery3:hover {
-  border: 1px solid #777;
-}
+  div.gallery2:hover {
+    border: 1px solid #777;
+  }
 
-div.gallery3 img {
-  width: 100%;
-  height: auto;
-}
+  div.gallery2 img {
+    width: 100%;
+    height: auto;
+  }
 
-div.desc {
-  padding: 15px;
-  text-align: center;
-}
 
-.desc {
+  div.gallery3:hover {
+    border: 1px solid #777;
+  }
 
-font-size:1.8em;
+  div.gallery3 img {
+    width: 100%;
+    height: auto;
+  }
 
-}
-.spac {
+  div.desc {
+    padding: 15px;
+    text-align: center;
+  }
 
-padding:60px;
+  .spac {
 
-}
+    padding: 60px;
 
-h1{
+  }
 
-text-align:center;
+  h1 {
 
-}
-.botnews{
+    text-align: center;
 
-margin-left:25%;
+  }
 
-}
 
-.botnews:after{
+  .botnews:after {
 
-  content: "";
-  display: table;
-  clear: both;
+    content: "";
+    display: table;
+    clear: both;
 
-}
+  }
 </style>
 <div class="Cont">
+  <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/News">News</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Omni</li>
+    </ol>
+  </nav>
+
+  <p class="text1">
+    SINGAPORE: Singapore reported 811 new COVID-19 cases as of noon on Saturday (Jan 8), including 544 imported
+    infections.
+
+    There were no fatalities, with the death toll from coronavirus complications remaining at 837, according to the
+    latest infection statistics on the Ministry of Health's (MOH) website.
+  </p>
+
+  <img class="ig"
+    src="{{url_for('static', filename='images/xuzhi/merlin_187916850_c5d3b558-8b52-42d5-8865-658a9463d86f-superJumbo.jpg')}}"
+    width="750" height="500">
+
+  <p class="text2">
+
+    Saturday’s case count was up from the 777 infections reported on Friday.
+
+    Among the new cases reported on Saturday, 267 were locally transmitted, comprising 253 in the community and 14 in
+    migrant worker's dormitories.
+
+    A total of 404 new Omicron infections were also confirmed on Saturday, comprising 243 imported cases and 161 local
+    cases.
+
+    The daily COVID-19 cases and new confirmed Omicron cases are presented as two separate sets of data on MOH's
+    website.
+  </p>
 
 
-<p class="text1">
-SINGAPORE: Singapore reported 811 new COVID-19 cases as of noon on Saturday (Jan 8), including 544 imported infections.
 
-There were no fatalities, with the death toll from coronavirus complications remaining at 837, according to the latest infection statistics on the Ministry of Health's (MOH) website.
-</p>
-
- <img class="ig" src="{{url_for('static', filename='merlin_187916850_c5d3b558-8b52-42d5-8865-658a9463d86f-superJumbo.jpg')}}" width="750" height="500">
-
-<p class="text2">
-
-Saturday’s case count was up from the 777 infections reported on Friday.
-
-Among the new cases reported on Saturday, 267 were locally transmitted, comprising 253 in the community and 14 in migrant worker's dormitories.
-
-A total of 404 new Omicron infections were also confirmed on Saturday, comprising 243 imported cases and 161 local cases.
-
-The daily COVID-19 cases and new confirmed Omicron cases are presented as two separate sets of data on MOH's website.
-</p>
+  <p class="text3">
 
 
+    The weekly infection growth rate on Saturday was 1.73, up from Friday's 1.69. The statistic - viewed by authorities
+    as a key indicator in calibrating COVID-19 measures - refers to the ratio of community cases for the past week over
+    the week before.
+  </p>
 
-    <p class="text3">
+  <p class="text3">
 
+    A rate of more than 1 means that the number of new weekly cases is rising. The weekly infection growth rate
+    surpassed 1 for the first time since Nov 12 on Tuesday.
 
-        The weekly infection growth rate on Saturday was 1.73, up from Friday's 1.69. The statistic - viewed by authorities as a key indicator in calibrating COVID-19 measures - refers to the ratio of community cases for the past week over the week before.
-</p>
-
-        <p class="text3">
-
-A rate of more than 1 means that the number of new weekly cases is rising. The weekly infection growth rate surpassed 1 for the first time since Nov 12 on Tuesday.
-
-As of Saturday, Singapore has recorded 284,802 COVID-19 cases since the start of the pandemic.
-        </p>
+    As of Saturday, Singapore has recorded 284,802 COVID-19 cases since the start of the pandemic.
+  </p>
 </div>
 
 <h1> Other news articles you may enjoy</h1>
@@ -214,43 +211,48 @@ As of Saturday, Singapore has recorded 284,802 COVID-19 cases since the start of
 <div class="spac">
 
 </div>
-<div class="botnews">
-<div class="gallery">
-  <a target="nav-link" href="/MOHnews">
-    <img src="{{url_for('static', filename='2022-01-05t223545z_1_lynxmpei040x9_rtroptp_3_health-coronavirus-usa-children.jpg')}}" width="600" height="400" >
-  </a>
-  <div class="desc">COVID-19 booster shot needed to maintain fully vaccinated status from Feb 14.</div>
+<div class="row" style="margin:auto;">
+  <div class="botnews">
+    <div class="gallery col">
+      <a target="nav-link" href="/MOHnews">
+        <img
+          src="{{url_for('static', filename='images/xuzhi/2022-01-05t223545z_1_lynxmpei040x9_rtroptp_3_health-coronavirus-usa-children.jpg')}}"
+          width="600" height="400">
+      </a>
+      <div class="desc">COVID-19 booster shot needed to maintain fully vaccinated status from Feb 14.</div>
 
-        <div class="pad3">
+      <div class="pad3">
+      </div>
     </div>
-</div>
 
-<div class="gallery">
-  <a target="nav-link" href="/Omni">
-     <img src="{{url_for('static', filename='dsc_8144.jpg')}}" width="600" height="400">
-  </a>
-  <div class="desc">Omicron Variant: What You Need to Know .</div>
-        <div class="pad2">
+    <div class="gallery col">
+      <a target="nav-link" href="/Omni">
+        <img src="{{url_for('static', filename='images/xuzhi/dsc_8144.jpg')}}" width="600" height="400">
+      </a>
+      <div class="desc">Omicron Variant: What You Need to Know .</div>
+      <div class="pad2">
+      </div>
     </div>
-</div>
 
-<div class="gallery">
-  <a target="nav-link" href="/Vac">
-   <img src="{{url_for('static', filename='vaccination_1.jpg')}}" width="600" height="400">
-  </a>
-  <div class="desc">How might an Omicron wave develop in Singapore? Vaccinations, safety measures may 'wear impact'</div>
+    <div class="gallery col">
+      <a target="nav-link" href="/Vac">
+        <img src="{{url_for('static', filename='images/xuzhi/vaccination_1.jpg')}}" width="600" height="400">
+      </a>
+      <div class="desc">How might an Omicron wave develop in Singapore? Vaccinations, safety measures may 'wear impact'
+      </div>
 
-</div>
+    </div>
 
-<div class="gallery">
-  <a target="nav-link" href="/World">
-    <img src="{{url_for('static', filename='france-coronavirus_4.jpg')}}" width="600" height="400">
-  </a>
-  <div class="desc">    World passes 300 million COVID-19 cases as Omicron breaks records .</div>
+    <div class="gallery col">
+      <a target="nav-link" href="/World">
+        <img src="{{url_for('static', filename='images/xuzhi/france-coronavirus_4.jpg')}}" width="600" height="400">
+      </a>
+      <div class="desc"> World passes 300 million COVID-19 cases as Omicron breaks records .</div>
 
-  <div class="pad">
+      <div class="pad">
 
+      </div>
+    </div>
   </div>
-    </div>
 </div>
 {% endblock %}
