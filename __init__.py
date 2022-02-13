@@ -4073,6 +4073,26 @@ def Graphform():
     else:
         return redirect(url_for('login'))
 
+@app.route('/Pzfier')
+def Pzfier():
+    return render_template('Pzfier.html')
+
+
+
+@app.route('/Healthcare')
+def Healthcare():
+    return render_template('Healthcare.html')
+
+
+@app.route('/minister')
+def minister():
+    return render_template('minister.html')
+
+
+
+@app.route('/UStudy')
+def UStudy():
+    return render_template('UStudy.html')
 
 
 @app.route("/News",methods=['GET', 'POST'])
