@@ -1,14 +1,8 @@
-{% if staffsession %}
-{% extends "admin_base.html" %}
-{% elif usersession %}
-{% extends "user_base.html" %}
-{% else %}
 {% extends "default_base.html" %}
-{% endif %}
 
-{# import "bootstrap/wtf.html" as wtf #}
+{% import "bootstrap/wtf.html" as wtf %}
 {% from "includes/_formHelper.html" import render_field %}
-{% block title %}Create Consultation | DoctorOnTheGo{% endblock %}
+{% block title %}Clinic - Create Consultation{% endblock %}
 
 
 
@@ -18,58 +12,232 @@
 
 
 <style>
-  .text-primary {
 
-    display: inline;
-    position: relative;
+  .text-primary{
 
+  	display:inline;
+	position:relative;
+
+  }
+
+  *{
+
+  font-size:1.1em;
+  }
+
+#first_name {
+
+font-size:1.1em;
+
+}
+
+#last_name {
+
+font-size:1.1em;
+
+}
+
+#email {
+
+font-size:1.1em;
+
+}
+#gender{
+
+font-size:1.1em;
+
+}
+
+
+#date_joined{
+
+font-size:1.1em;
+
+}
+
+
+#time {
+
+font-size:1.1em;
+
+}
+
+#remarks {
+
+font-size:1.1em;
+
+}
+
+
+ .radio-inline .radio{
+ display:inline;
+  }
+
+  #id {
+  margin-top:100px;
+  width:400px;
+  height:400px;
+
+
+  }
+  .img {
+
+  width:400px;
+  height:400px;
+
+  }
+
+  #result {
+  font-weight:bold;
+
+  }
+
+  #Quali {
+
+  font-size:1.1em;
+  }
+
+
+  #txt {
+
+
+  }
+
+  .br {
+
+  padding:5px;
   }
 </style>
 
 
 <h1 class="display-4">Your appointment</h1>
 <div class="container">
-  <form method="POST" action="">
-    <div class="text-primary">
+<form method="POST" action="">
+<div class="text-primary">
 
-      <div class="form-group">
-        <P>Choice of doctor</P>
-        <div class="form-check form-check-inline">
-          {{ render_field(form.doc, class="form-control") }}
-        </div>
+  <div class="form-group">
+    <P>Choice of doctor</P>
+
+    <div class="form-check form-check-inline radio-inline" >
+
+    {{ wtf.form_field(form.doc, class="form-control") }}
+
+
+    </div>
+    <div class ="br">
+  <output id="result"> You have selected nothing. Chose a doctor to learn more about them</output>
+    </div>
+    <div class="br">
+      <div class="img">
+<img id="img" src="">
       </div>
     </div>
-    <div class="form-group">
-      {{ render_field(form.first_name, class="form-control") }}
-    </div>
-    <div class="form-group">
-      {{ render_field(form.last_name, class="form-control") }}
-    </div>
-    <div class="form-group">
-      {{ render_field(form.gender, class="form-control") }}
-    </div>
-    <div class="form-group">
-      {{ render_field(form.email, class="form-control") }}
-    </div>
-
-    <div class="form-group">
-      {{ render_field(form.date_joined, class="form-control datepicker") }}
-    </div>
-    <div class="form-group">
-      {{ render_field(form.time, class="form-control") }}
-    </div>
-    
-
-    <div id="prof">
-      <div class="form-group">
-        {{ render_field(form.remarks, class="form-control") }}
-      </div>
-      {% if samedate and sametime and samedoc %}<div class="text-danger"><span id="error">The Doctor for this date and time is unavailable</span></div>{% endif %}
-    </div>
-    
-    <form action="retrieveConsultation">
-      <input type="submit" value="Submit" class="btn btn-primary" />
-    </form>
-  </form>
+<div class="br">
+  <output id="Quali"></output>
 </div>
+    <div class = 'br' >
+      <output id="txt"></output>
+    </div>
+  </div>
+  <div class="form-group">
+    {{ wtf.form_field(form.first_name, class="form-control") }}
+  </div>
+  <div class="form-group">
+    {{ wtf.form_field(form.last_name, class="form-control") }}
+  </div>
+  <div class="form-group">
+    {{ wtf.form_field(form.gender, class="form-control") }}
+  </div>
+  <div class="form-group">
+    {{ wtf.form_field(form.email, class="form-control") }}
+  </div>
+
+  <div class="form-group">
+    {{ wtf.form_field(form.date_joined, class="form-control datepicker") }}
+  </div>
+  <div class="form-group">
+    {{ wtf.form_field(form.time, class="form-control datepicker") }}
+
+  </div>
+
+  <div id="prof">
+    <div class="form-group">
+      {{ wtf.form_field(form.remarks, class="form-control") }}
+    </div>
+  </div>
+  <form action="retrieveConsultation">
+  <input type="submit" value="Submit" class="btn btn-primary"/>
+</form>
+</div>
+<script>
+
+
+
+
+
+        </script>
+{% endblock %}
+
+
+{% block scripts %}
+{{super()}}
+<script type="text/javascript">
+
+  (() => {
+    // Select all input fields by name and iterate over them.
+    const elems = document.querySelectorAll('input[name="doc"]');
+    elems.forEach(elem => {
+      // Register an event listener for the change event.
+      elem.addEventListener('change', evt => {
+        // Update the text as soon as there is a change.
+        const value = evt.target.value;
+        const label = evt.target.parentElement.textContent.trim();
+        const Dr = document.getElementById('result');
+        const quali = document.getElementById('Quali');
+        const txt = document.getElementById('txt');
+        img = document.getElementById("img")
+
+            if (value == "Dr Tan") {
+           Dr.innerHTML = `Dr Tan`;
+           quali.innerHTML = 'Graduate of the National University of Singapore Yong Loo Lin Medical School , (DCM). Eight years of experience '
+           img.src = "{{url_for('static', filename='Docto1.jpg')}}" ;
+           document.getElementById("img").width = "400";
+           document.getElementById("img").height = "400";
+           document.getElementById("result").style.fontSize ="1.5em"
+
+
+
+        }
+
+           else if (value == "Dr Mok") {
+             Dr.innerHTML = `Dr Mok`;
+
+             quali.innerHTML = 'University of British Columbia, Faculty of Medicine, MD. Nine years of experience '
+             img.src = "{{url_for('static', filename='doctor2.jpg')}}" ;
+             document.getElementById("img").width = "400";
+             document.getElementById("img").height = "400";
+             document.getElementById("result").style.fontSize ="1.5em"
+
+
+
+
+           }
+           else if (value == "Dr Lim") {
+               img.src = "{{url_for('static', filename='doctor3.jpg')}}" ;
+               Dr.innerHTML = `Dr Lim`;
+
+               quali.innerHTML = 'National University of Singapore, PHD. Eight years of experience '
+               document.getElementById("img").width = "400";
+               document.getElementById("img").height = "400";
+               document.getElementById("result").style.fontSize ="1.5em"
+
+
+            }
+
+      });
+    });
+  })();
+
+
+</script>
 {% endblock %}
