@@ -75,6 +75,7 @@
           <div id="Appointments">
             <canvas id="barChart"></canvas>
             <h4 style="text-align:center">Last Updated : {{ current }}</h2>
+            <a href="/graphdownload">Download Image</a>
             <script>
               var ctx = document.getElementById("barChart").getContext("2d");
               var barChart = new Chart(ctx, {

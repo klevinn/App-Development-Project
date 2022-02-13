@@ -4,7 +4,8 @@ from re import T
 from tkinter import S
 from xml.dom.domreg import registered
 #flash was initially used but instead changed to session for display of messages
-from flask import Flask, render_template, request, redirect, url_for, session, flash, send_from_directory, abort
+from flask import Flask, render_template, request, redirect, url_for, session, flash, send_from_directory, abort, send_file
+import matplotlib.pyplot as plt
 #Shelve for Persistent Storage
 import shelve
 #os for stuff like environment variables
@@ -44,6 +45,7 @@ import User, Staff, Feedback, Customer
 from Security_Validation import validate_card_number, Sanitise, validate_expiry_date, validate_session, validate_session_open_file_admin, validate_session_admin
 #Functions to shorten code
 from Functions import duplicate_email, duplicate_username, get_user_name, check_banned, fix_unit_number, fix_expiry_year, allowed_file, generate_random_password, generate_staff_id, generate_feedback_id, get_file_extension, generate_user_id
+from productgraphgen import graph
 
 #Start Of Web Dev
 app = Flask(__name__)
@@ -82,6 +84,8 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 #For product
 PRODUCTPIC_UPLOAD_PATH = 'static/images/store'
 app.config['UPLOAD_FOLDER_PRODUCT'] = PRODUCTPIC_UPLOAD_PATH
+
+
 
 #Limiter for login security
 limiter = Limiter(app, key_func=get_remote_address)
@@ -1739,6 +1743,25 @@ def staffprod():
             return redirect(url_for('home'))
     else:
         return redirect(url_for('login'))
+
+@app.route('/graphdownload', methods=['GET', 'POST'])
+def graphdownload():
+    if "staff" in session:
+        StaffName = session["staff"]
+        valid_session, name = validate_session_open_file_admin(StaffName)
+        if valid_session:
+
+            try:
+                graph()
+            except:
+                print("Error")
+
+            return send_file('static/images/graph.png', as_attachment=True)
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+    else:
+        abort(403)
 
 @app.route('/staffupdate/<id>/', methods=['GET', 'POST'])
 #@app.route('/staffupdate/<string:id>/', methods=['GET', 'POST'])
