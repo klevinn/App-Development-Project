@@ -1,34 +1,170 @@
-{% if staffsession %}
-{% extends "admin_base.html" %}
-{% elif usersession %}
-{% extends "user_base.html" %}
-{% else %}
 {% extends "default_base.html" %}
-{% endif %}
-{% block title %}MOH News | DoctorOnTheGo{% endblock %}
+{% block title %}MOH News{% endblock %}
 
 {% block content %}
 <style>
-    .container{
+    .con{
 
 
     margin-left: auto;
     margin-right: auto;
-    width: 50em;
+    width: 100em;
+
 
     }
 
 p{
 padding:10px;
 }
+
+.text1 {
+font-size: 1.5em;
+
+}
+
+.text2 {
+
+font-size:1.5em;
+}
+.ig {
+ margin-left: auto;
+  margin-right: auto;
+display:block;
+
+
+}
+.space {
+
+padding:60px;
+
+}
+
+h1{
+
+text-align:center;
+
+}
+
+
+
+.pad{
+
+padding-bottom:32px;
+}
+
+.pad2{
+
+padding-bottom:55px;
+}
+.pad3 {
+padding-bottom: 30px;
+
+}
+
+.pader3 {
+
+padding-bottom:28px;
+
+}
+
+.pader2 {
+
+padding-bottom:28px;
+
+}
+
+.pader4 {
+
+padding-bottom:28px;
+
+}
+
+
+div.gallery {
+  margin: 5px;
+  border: 1px solid #ccc;
+  float: left;
+  width: 25%;
+  padding: 10px;
+  width: 300px;
+}
+
+div.gallery:hover {
+  border: 1px solid #777;
+}
+
+div.gallery img {
+  width: 100%;
+  height: auto;
+}
+
+.graph_caption{
+margin-left:50px;
+}
+div.gallery2 {
+  margin: 5px;
+  border: 1px solid #ccc;
+
+  width: 300px;
+}
+
+div.gallery3 {
+  margin: 5px;
+  border: 1px solid #ccc;
+  float: left;
+  width: 25%;
+  padding: 10px;
+  width: 300px;
+}
+
+
+div.gallery2:hover {
+  border: 1px solid #777;
+}
+
+div.gallery2 img {
+  width: 100%;
+  height: auto;
+}
+
+
+div.gallery3:hover {
+  border: 1px solid #777;
+}
+
+div.gallery3 img {
+  width: 100%;
+  height: auto;
+}
+
+div.desc {
+  padding: 15px;
+  text-align: center;
+}
+
+.desc {
+
+font-size:1.8em;
+
+}
+
+.botnews{
+
+margin-left:25%;
+
+}
+
+.botnews:after{
+
+  content: "";
+  display: table;
+  clear: both;
+
+}
+
 </style>
-<div class="container">
-<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-    <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/News">News</a></li>
-            <li class="breadcrumb-item active" aria-current="page">MOH News</li>
-    </ol>
-</nav>
+<div class="con">
+
 
 <p class="text1">
     SINGAPORE: From Feb 14, those aged 18 and above will have to take a booster shot within 270 days of completing their primary vaccination series in order to maintain a fully vaccinated status against COVID-19, the Ministry of Health said on Wednesday (Jan 5).
@@ -36,7 +172,7 @@ padding:10px;
 The new rule will apply to those whose final vaccine dose was taken on May 20 last year or before, said Health Minister Ong Ye Kung at a multi-ministry task force press conference.
 </p>
 
- <img src="{{url_for('static', filename='images/xuzhi/000_9vj7cz.jpg')}}" width="750" height="500">
+ <img class="ig" src="{{url_for('static', filename='000_9vj7cz.jpg')}}" width="750" height="500">
 
 <p class="text2">
 “From now to Feb 13, 2022, as long as you have taken two doses of mRNA or three doses of the Sinovac, Sinopharm vaccine, regardless of how long ago you have received those jabs, you will still be deemed as fully vaccinated," he said.
@@ -49,6 +185,47 @@ Those who have not reached the nine-month expiry by then, or who are medically i
 
 Authorities are announcing this updated policy more than one month in advance so that those vaccination status may lapse next month will have a chance to get their booster jabs early and before the deadline, the minister said.
 </p>
+</div>
+
+<h1> Other news articles you may enjoy</h1>
+<div class="botnews">
+<div class="gallery">
+  <a target="nav-link" href="/MOHnews">
+    <img src="{{url_for('static', filename='2022-01-05t223545z_1_lynxmpei040x9_rtroptp_3_health-coronavirus-usa-children.jpg')}}" width="600" height="400" >
+  </a>
+  <div class="desc">COVID-19 booster shot needed to maintain fully vaccinated status from Feb 14.</div>
+
+        <div class="pad3">
+    </div>
+</div>
+
+<div class="gallery">
+  <a target="nav-link" href="/Omni">
+     <img src="{{url_for('static', filename='dsc_8144.jpg')}}" width="600" height="400">
+  </a>
+  <div class="desc">Omicron Variant: What You Need to Know .</div>
+        <div class="pad2">
+    </div>
+</div>
+
+<div class="gallery">
+  <a target="nav-link" href="/Vac">
+   <img src="{{url_for('static', filename='vaccination_1.jpg')}}" width="600" height="400">
+  </a>
+  <div class="desc">How might an Omicron wave develop in Singapore? Vaccinations, safety measures may 'wear impact'</div>
+
+</div>
+
+<div class="gallery">
+  <a target="nav-link" href="/World">
+    <img src="{{url_for('static', filename='france-coronavirus_4.jpg')}}" width="600" height="400">
+  </a>
+  <div class="desc">    World passes 300 million COVID-19 cases as Omicron breaks records .</div>
+
+  <div class="pad">
+
+  </div>
+    </div>
 </div>
 
 {% endblock %}

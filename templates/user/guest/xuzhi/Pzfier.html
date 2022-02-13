@@ -1,40 +1,49 @@
 {% extends "default_base.html" %}
-{% block title %}COVID News Jan 8{% endblock %}
+{% block title %}Omni {% endblock %}
 
 {% block content %}
 <style>
-    .Cont{
+    .Container{
 
 
     margin-left: auto;
     margin-right: auto;
-    width: 100em;
+    width: 50em;
+
+    }
+   .title{
+
+text-align:center;
 
     }
 
-p{
-padding:10px;
-}
+  p{
+  padding:10px;
+  }
+
+      .text1 {
+
+    font-size:1.5em;
+
+    }
+ .text2 {
+
+    font-size:1.5em;
+
+    }
+ .text3 {
+
+    font-size:1.5em;
+
+    }
+   .text4 {
+
+    font-size:1.5em;
+
+    }
 
 
-.text1  {
 
-font-size:1.5em;
-
-}
-
-.text2 {
-
-font-size:1.5em;
-
-
-}
-
-.text3 {
-
-font-size:1.5em;
-
-}
 
 .ig {
  margin-left: auto;
@@ -145,17 +154,7 @@ div.desc {
 font-size:1.8em;
 
 }
-.spac {
 
-padding:60px;
-
-}
-
-h1{
-
-text-align:center;
-
-}
 .botnews{
 
 margin-left:25%;
@@ -169,51 +168,63 @@ margin-left:25%;
   clear: both;
 
 }
+
+.spac {
+
+padding:60px;
+
+}
+
+h1{
+
+text-align:center;
+
+}
+.header {
+
+
+
+}
+
 </style>
-<div class="Cont">
+<div class="title">
+<h1>Singapore receives its first batch of Pfizer’s Paxlovid pill for COVID-19 treatment.</h1>
+ </div>
+<div class="Container">
 
 
-<p class="text1">
-SINGAPORE: Singapore reported 811 new COVID-19 cases as of noon on Saturday (Jan 8), including 544 imported infections.
+    <p class="text1">
+INGAPORE: Singapore has received its first batch of Pfizer’s Paxlovid pill, after authorities announced last week that they had approved the oral tablet for the treatment of COVID-19 in adult patients who are at risk of severe disease.
 
-There were no fatalities, with the death toll from coronavirus complications remaining at 837, according to the latest infection statistics on the Ministry of Health's (MOH) website.
+“The first batch of Paxlovid has arrived on our shores this week,” said Health Minister Ong Ye Kung in a Facebook post on Saturday (Feb 12).
+
+“This is the first oral anti-viral medicine approved for treatment of COVID-19 infection in Singapore. It will be prescribed and prioritised for those at higher risk of severe COVID-19 illness,” he added.
+
+“With more treatment options, we are now in a better position to provide good care to Singaporeans infected with COVID-19.”
 </p>
+     <img class="ig" src="{{url_for('static', filename='paxlovid.jpg')}}" width="750" height="500">
 
- <img class="ig" src="{{url_for('static', filename='merlin_187916850_c5d3b558-8b52-42d5-8865-658a9463d86f-superJumbo.jpg')}}" width="750" height="500">
+    <p class="text1">
+Paxlovid has been found to reduce the risk of COVID-19 related hospitalisation or death by 88.9 per cent when treatment was given within three days of the onset of symptoms, according to a Health Sciences Authority (HSA) review of clinical data based on an ongoing Pfizer study.
 
-<p class="text2">
+Paxlovid comprises two nirmatrelvir tablets and one ritonavir tablet, co-packaged for oral use. Nirmatrelvir is an antiviral medicine while ritonavir maintains the blood level of nirmatrelvir for antiviral efficacy.
 
-Saturday’s case count was up from the 777 infections reported on Friday.
+The pill should be taken twice a day for five days, HSA said on Feb 3, with treatment being initiated "as soon as possible after a diagnosis has been made, within five days of the onset of COVID-19 symptoms".
 
-Among the new cases reported on Saturday, 267 were locally transmitted, comprising 253 in the community and 14 in migrant worker's dormitories.
+HSA added that in vitro data has also shown that Paxlovid is "active" against the prevailing variants of concern, including Delta and Omicron.
 
-A total of 404 new Omicron infections were also confirmed on Saturday, comprising 243 imported cases and 161 local cases.
+Paxlovid has so far been authorised in several countries including the United States and Israel, while the European Union has permitted member states to use it ahead of formal approval as an emergency measure against the Omicron variant.
 
-The daily COVID-19 cases and new confirmed Omicron cases are presented as two separate sets of data on MOH's website.
-</p>
-
-
-
-    <p class="text3">
+China's medical products regulator announced on Saturday that it had given conditional approval for Paxlovid, making it the first oral anti-coronavirus pill approved in the country to treat the disease.
+    </p>
 
 
-        The weekly infection growth rate on Saturday was 1.73, up from Friday's 1.69. The statistic - viewed by authorities as a key indicator in calibrating COVID-19 measures - refers to the ratio of community cases for the past week over the week before.
-</p>
 
-        <p class="text3">
-
-A rate of more than 1 means that the number of new weekly cases is rising. The weekly infection growth rate surpassed 1 for the first time since Nov 12 on Tuesday.
-
-As of Saturday, Singapore has recorded 284,802 COVID-19 cases since the start of the pandemic.
-        </p>
 </div>
-
-<h1> Other news articles you may enjoy</h1>
-
-
 <div class="spac">
 
 </div>
+<h1> Other news articles you may enjoy</h1>
 <div class="botnews">
 <div class="gallery">
   <a target="nav-link" href="/MOHnews">

@@ -1,87 +1,295 @@
-{% if staffsession %}
-{% extends "admin_base.html" %}
-{% elif usersession %}
-{% extends "user_base.html" %}
-{% else %}
 {% extends "default_base.html" %}
-{% endif %}
-{% block title %}Vaccination | DoctorOnTheGo{% endblock %}
+{% block title %}Vaccination {% endblock %}
 
 {% block content %}
 <style>
-  .container {
+    .Container{
 
 
     margin-left: auto;
     margin-right: auto;
     width: 50em;
 
+    }
+   .title{
+
+text-align:center;
+
+    }
+
+  p{
+
+  padding:10px;
+
   }
 
-  .title {
+      .text1 {
 
-    text-align: center;
+    font-size:1.5em;
 
-  }
+    }
+ .text2 {
 
-  p {
-    padding: 10px;
-  }
+    font-size:1.5em;
+
+    }
+ .text3 {
+
+    font-size:1.5em;
+
+    }
+   .text4 {
+
+    font-size:1.5em;
+
+    }
+
+
+
+
+img {
+
+ margin-left: auto;
+  margin-right: auto;
+  display:block;
+
+
+}
+
+
+.header {
+
+
+
+}
+
+.pad{
+
+padding-bottom:32px;
+}
+
+.pad2{
+
+padding-bottom:55px;
+}
+.pad3 {
+padding-bottom: 30px;
+
+}
+
+.pader3 {
+
+padding-bottom:28px;
+
+}
+
+.pader2 {
+
+padding-bottom:28px;
+
+}
+
+.pader4 {
+
+padding-bottom:28px;
+
+}
+
+
+div.gallery {
+  margin: 5px;
+  border: 1px solid #ccc;
+  float: left;
+  width: 25%;
+  padding: 10px;
+  width: 300px;
+}
+
+div.gallery:hover {
+  border: 1px solid #777;
+}
+
+div.gallery img {
+  width: 100%;
+  height: auto;
+}
+
+.graph_caption{
+margin-left:50px;
+}
+div.gallery2 {
+  margin: 5px;
+  border: 1px solid #ccc;
+
+  width: 300px;
+}
+
+div.gallery3 {
+  margin: 5px;
+  border: 1px solid #ccc;
+  float: left;
+  width: 25%;
+  padding: 10px;
+  width: 300px;
+}
+
+
+div.gallery2:hover {
+  border: 1px solid #777;
+}
+
+div.gallery2 img {
+  width: 100%;
+  height: auto;
+}
+
+
+div.gallery3:hover {
+  border: 1px solid #777;
+}
+
+div.gallery3 img {
+  width: 100%;
+  height: auto;
+}
+
+div.desc {
+  padding: 15px;
+  text-align: center;
+}
+
+.desc {
+
+font-size:1.8em;
+
+}
+
+.botnews{
+
+margin-left:25%;
+
+}
+
+.botnews:after{
+
+  content: "";
+  display: table;
+  clear: both;
+
+}
+.spac {
+
+padding:60px;
+
+}
+
+h1{
+
+text-align:center;
+
+}
+
 </style>
+<div class="title">
+<h1>How might an Omicron wave develop in Singapore? Vaccinations, safety measures may 'wear impact'</h1>
+ </div>
+<div class="Container">
+
+<h2 class="header"></h2>
+<p class="text1">
+
+INGAPORE: A wave of COVID-19 infections from the Delta variant subsided late last year, but the emergence of Omicron has led to a surge in cases worldwide.
+
+Here in Singapore, Health Minister Ong Ye Kung said on Wednesday (Jan 5) that the Omicron variant accounts for close to 20 per cent of local cases. Globally, it is becoming the dominant strain due to how transmissible it is.
+
+Said Mr Ong: "It is a matter of time before it starts to multiply quickly. We must be prepared for that."
+
+At its peak, the number of Omicron cases could be “a few times” more than the roughly 3,000 daily cases that the Delta variant was registering in October and November last year, Mr Ong said.
+
+The Ministry of Health's director of medical services Kenneth Mak said COVID-19 infections in Singapore could reach 15,000 a day in a "worst-case scenario".
+
+The daily number of new cases has spiked since Jan 3, and was at 813 on Thursday. Of these, 365 were Omicron cases. The weekly infection growth rate, the ratio of community cases in the past week over the week before, was 1.5.
+</p>
+
+ <img src="{{url_for('static', filename='wisma_0.jpg')}}" width="800" height="500">
+
+    <h2 class="header"> Vaccine booster program</h2>
+    <p class="text1">
+
+Countries around the world are seeing daily case numbers spike. While Omicron appears to cause less severe disease than Delta, the World Health Organization (WHO) has warned that it cannot be called "mild".
+
+"Just like previous variants, Omicron is hospitalising people and it is killing people," said WHO chief Tedros Adhanom Ghebreyesus.
+
+"In fact, the tsunami of cases is so huge and quick, that it is overwhelming health systems around the world."
+
+In Asia, a few countries have sounded the alarm with Indian cities like Mumbai registering a surge, and Thailand raising its COVID-19 alert level from three to four, which means restrictions may follow.
+
+So will Singapore see its healthcare system strained again and possible restrictions amid another COVID-19 wave?
+
+Professor Leo Yee Sin, executive director of Singapore's National Centre for Infectious Diseases (NCID), said that epidemic waves may appear differently in different geographical regions or even within the same countries, such as between cities and rural areas.
+
+How the current Omicron wave affects Europe and North America may differ from how it affects Singapore, she said.    </p>
 
 
-<div class="container">
-  <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="/News">News</a></li>
-      <li class="breadcrumb-item active" aria-current="page">Vac</li>
-    </ol>
-  </nav>
-  <div class="title">
-    <h1>Omicron Variant: What You Need to Know .</h1>
+     <img src="{{url_for('static', filename='mtf_nov_14_-_vax_differentiated_measures_final.png')}}" width="800" height="1000">
+
+    <p class="text1">
+
+        She highlighted a few key differences: "Firstly, in Singapore there is universal donning of surgical masks which has been proven to be effective and safe management measures are still in force.
+
+"Secondly, we have high vaccine coverage and are actively embarking on (a) third (booster) dose to strengthen the population’s immunity."
+
+However, people in Singapore have less natural protection from prior COVID-19 disease. A fourth factor is that winter in Europe and North America could drive people indoors, which increases the chance of close human-to-human contact.
+
+"Last but not least, we have a high degree of adherence to safe management measures locally," said Prof Leo.
+
+"Although we anticipate a large wave owing to Omicron’s changed properties that evade pre-existing immunity, has a shorter incubation period and more efficient transmission, we certainly hope that we can wear the impact with current practices."
+
+
+    </p>
+</div>
+<div class="spac">
+
+</div>
+<h1> Other news articles you may enjoy</h1>
+<div class="botnews">
+<div class="gallery">
+  <a target="nav-link" href="/MOHnews">
+    <img src="{{url_for('static', filename='2022-01-05t223545z_1_lynxmpei040x9_rtroptp_3_health-coronavirus-usa-children.jpg')}}" width="600" height="400" >
+  </a>
+  <div class="desc">COVID-19 booster shot needed to maintain fully vaccinated status from Feb 14.</div>
+
+        <div class="pad3">
+    </div>
+</div>
+
+<div class="gallery">
+  <a target="nav-link" href="/Omni">
+     <img src="{{url_for('static', filename='dsc_8144.jpg')}}" width="600" height="400">
+  </a>
+  <div class="desc">Omicron Variant: What You Need to Know .</div>
+        <div class="pad2">
+    </div>
+</div>
+
+<div class="gallery">
+  <a target="nav-link" href="/Vac">
+   <img src="{{url_for('static', filename='vaccination_1.jpg')}}" width="600" height="400">
+  </a>
+  <div class="desc">How might an Omicron wave develop in Singapore? Vaccinations, safety measures may 'wear impact'</div>
+
+</div>
+
+<div class="gallery">
+  <a target="nav-link" href="/World">
+    <img src="{{url_for('static', filename='france-coronavirus_4.jpg')}}" width="600" height="400">
+  </a>
+  <div class="desc">    World passes 300 million COVID-19 cases as Omicron breaks records .</div>
+
+  <div class="pad">
+
   </div>
-  <p class="text1">
-
-    SINGAPORE: A wave of COVID-19 infections from the Delta variant subsided late last year, but the emergence of
-    Omicron has led to a surge in cases worldwide.
-
-    Here in Singapore, Health Minister Ong Ye Kung said on Wednesday (Jan 5) that the Omicron variant accounts for close
-    to 20 per cent of local cases. Globally, it is becoming the dominant strain due to how transmissible it is.
-
-  </p>
-  <img src="{{url_for('static', filename='images/xuzhi/omnimg.jpg')}}" width="750" height="500">
-
-  <p class="text2">
-
-
-    Said Mr Ong: "It is a matter of time before it starts to multiply quickly. We must be prepared for that."
-
-    At its peak, the number of Omicron cases could be “a few times” more than the roughly 3,000 daily cases that the
-    Delta variant was registering in October and November last year, Mr Ong said.
-
-    The Ministry of Health's director of medical services Kenneth Mak said COVID-19 infections in Singapore could reach
-    15,000 a day in a "worst-case scenario".
-
-    The daily number of new cases has spiked since Jan 3, and was at 813 on Thursday. Of these, 365 were Omicron cases.
-    The weekly infection growth rate, the ratio of community cases in the past week over the week before, was 1.5.
-
-  </p>
-
-  <p class="text3">
-
-    Professor Leo Yee Sin, executive director of Singapore's National Centre for Infectious Diseases (NCID), said that
-    epidemic waves may appear differently in different geographical regions or even within the same countries, such as
-    between cities and rural areas.
-
-  </p>
-  <img src="{{url_for('static', filename='images/xuzhi/000_9mt747.jpg')}}" width="800" height="500">
-
-  <p class="text4">
-
-    "Although we anticipate a large wave owing to Omicron’s changed properties that evade pre-existing immunity, has a
-    shorter incubation period and more efficient transmission, we certainly hope that we can wear the impact with
-    current practices."
-  </p>
+    </div>
 </div>
 
 {% endblock %}

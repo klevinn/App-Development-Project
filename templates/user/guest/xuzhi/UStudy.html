@@ -1,0 +1,274 @@
+{% extends "default_base.html" %}
+{% block title %}Omni {% endblock %}
+
+{% block content %}
+<style>
+    .Container{
+
+
+    margin-left: auto;
+    margin-right: auto;
+    width: 50em;
+
+    }
+   .title{
+
+text-align:center;
+
+    }
+
+  p{
+  padding:10px;
+  }
+
+      .text1 {
+
+    font-size:1.5em;
+
+    }
+ .text2 {
+
+    font-size:1.5em;
+
+    }
+ .text3 {
+
+    font-size:1.5em;
+
+    }
+   .text4 {
+
+    font-size:1.5em;
+
+    }
+
+
+
+
+
+.ig {
+ margin-left: auto;
+  margin-right: auto;
+display:block;
+
+
+}
+
+
+.pad{
+
+padding-bottom:32px;
+}
+
+.pad2{
+
+padding-bottom:55px;
+}
+.pad3 {
+padding-bottom: 30px;
+
+}
+
+.pader3 {
+
+padding-bottom:28px;
+
+}
+
+.pader2 {
+
+padding-bottom:28px;
+
+}
+
+.pader4 {
+
+padding-bottom:28px;
+
+}
+
+
+div.gallery {
+  margin: 5px;
+  border: 1px solid #ccc;
+  float: left;
+  width: 25%;
+  padding: 10px;
+  width: 300px;
+}
+
+div.gallery:hover {
+  border: 1px solid #777;
+}
+
+div.gallery img {
+  width: 100%;
+  height: auto;
+}
+
+.graph_caption{
+margin-left:50px;
+}
+div.gallery2 {
+  margin: 5px;
+  border: 1px solid #ccc;
+
+  width: 300px;
+}
+
+div.gallery3 {
+  margin: 5px;
+  border: 1px solid #ccc;
+  float: left;
+  width: 25%;
+  padding: 10px;
+  width: 300px;
+}
+
+
+div.gallery2:hover {
+  border: 1px solid #777;
+}
+
+div.gallery2 img {
+  width: 100%;
+  height: auto;
+}
+
+
+div.gallery3:hover {
+  border: 1px solid #777;
+}
+
+div.gallery3 img {
+  width: 100%;
+  height: auto;
+}
+
+div.desc {
+  padding: 15px;
+  text-align: center;
+}
+
+.desc {
+
+font-size:1.8em;
+
+}
+
+.botnews{
+
+margin-left:25%;
+
+}
+
+.botnews:after{
+
+  content: "";
+  display: table;
+  clear: both;
+
+}
+
+.spac {
+
+padding:60px;
+
+}
+
+h1{
+
+text-align:center;
+
+}
+
+.header {
+
+
+
+}
+
+</style>
+<div class="title">
+<h1>Covid-19 booster efficacy wanes significantly by fourth month: US study</h1>
+ </div>
+<div class="Container">
+
+
+    <p class="text1">
+
+WASHINGTON (AFP) - The efficacy of third doses of the Pfizer and Moderna mRNA vaccines wanes substantially by the fourth month after administration, a new study by the US Centres of Disease Control and Prevention (CDC) said on Friday (Feb 11).
+
+Though it's now well documented that vaccine efficacy goes down after two doses, relatively little has been published on the duration of protection after a booster.
+
+The new study was based on more than 241,204 visits to the emergency department or an urgent care clinic, and 93,408 hospitalisations, which are more serious, among adults with Covid-19-like illness during August 26, 2021-January 22, 2022.
+
+Vaccine efficacy was estimated by comparing the odds of a positive Covid-19 test between vaccinated and unvaccinated patients and using statistical methods to control for calendar week, geographic area, while adjusting for age, the level of local transmission, and patient characteristics like comorbidities.
+
+During the Omicron-predominant period, vaccine efficacy against Covid-associated emergency department or urgent care visits was 87 per cent during the two months after a third dose, but fell to 66 per cent by the fourth month.
+
+Vaccine efficacy against hospitalisation was 91 per cent in the first two months, but fell to 78 per cent by the fourth month after a third dose.
+
+"The finding that protection conferred by mRNA vaccines waned in the months after receipt of a third vaccine dose reinforces the importance of further consideration of additional doses to sustain or improve protection," the authors concluded.
+
+Speaking at a White House Covid-19 briefing on Wednesday, President Joe Biden's top medical advisor Anthony Fauci said it was likely that fourth doses would more likely be needed for subsets of people who mount weaker immune responses, such as the elderly and immunocompromised.
+
+</p>
+<img src="{{url_for('static', filename='AFP021204708_1644652554.jpg')}}" width="750" height="500">
+    <h2 class="header">  New antibody authorised </h2>
+
+    <p class="text1">
+In a separate development on Friday, the Food and Drug Administration (FDA) authorised a new lab-grown antibody treatment by pharmaceutical company Lilly called bebtelovimab.
+
+The drug is administered as an intravenous injection over at least 30 seconds and has been green lighted for the treatment of mild-to-moderate Covid-19 among people 12 and over at high risk of severe disease.
+
+Data supporting the authorisation came from a clinical trial that showed the drug has strong promise against Omicron. Lilly's previous antibody treatment was de-authorised by the FDA after it was found to be ineffective against this variant.
+
+    </p>
+
+
+</div>
+<div class="spac">
+
+</div>
+<h1> Other news articles you may enjoy</h1>
+<div class="botnews">
+<div class="gallery">
+  <a target="nav-link" href="/MOHnews">
+    <img src="{{url_for('static', filename='2022-01-05t223545z_1_lynxmpei040x9_rtroptp_3_health-coronavirus-usa-children.jpg')}}" width="600" height="400" >
+  </a>
+  <div class="desc">COVID-19 booster shot needed to maintain fully vaccinated status from Feb 14.</div>
+
+        <div class="pad3">
+    </div>
+</div>
+
+<div class="gallery">
+  <a target="nav-link" href="/Omni">
+     <img src="{{url_for('static', filename='dsc_8144.jpg')}}" width="600" height="400">
+  </a>
+  <div class="desc">Omicron Variant: What You Need to Know .</div>
+        <div class="pad2">
+    </div>
+</div>
+
+<div class="gallery">
+  <a target="nav-link" href="/Vac">
+   <img src="{{url_for('static', filename='vaccination_1.jpg')}}" width="600" height="400">
+  </a>
+  <div class="desc">How might an Omicron wave develop in Singapore? Vaccinations, safety measures may 'wear impact'</div>
+
+</div>
+
+<div class="gallery">
+  <a target="nav-link" href="/World">
+    <img src="{{url_for('static', filename='france-coronavirus_4.jpg')}}" width="600" height="400">
+  </a>
+  <div class="desc">    World passes 300 million COVID-19 cases as Omicron breaks records .</div>
+
+  <div class="pad">
+
+  </div>
+    </div>
+</div>
+{% endblock %}
