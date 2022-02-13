@@ -6,7 +6,7 @@ Group Members:
 <ol>
     <li>Calvin (Staff Account Management, User Account Management, Staff Login, User Login/Signup)</li>
     <li>Alisa</li>
-    <li>Xu Zhi(Consultation page, news page)</li>
+    <li>Xu Zhi(Consultation pages , news pages)</li>
     <li>Joshua</li>
 </ol>
 <br>
