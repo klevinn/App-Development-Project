@@ -2449,9 +2449,10 @@ def search():
         db.close()
 
         if valid_session:
-            form = Forms.CategoryFilter_AndSorting(request.form)
-            form2 = Forms.PriceFilter(request.form)
             query = request.args.get('query')
+            form = Forms.Filters_AndSorting(request.form)
+
+            sorting_mtd = request.form.get("sorting_mtd")
 
             if query:
                 products = Product.query.filter(Product.name.contains(query) |
@@ -2461,7 +2462,40 @@ def search():
             else:
                 products = Product.query.all()
 
-            return render_template('user/guest/joshua/GuestStore/search.html', products=products, user = UserName, av=av, usersession = True, storeactive = True,  form = form, form2 = form2,)
+            # filters (only works when 1 is checked)
+            if request.method == "POST":
+                
+                if form.Medicine_category.data == True:
+                    products = Product.query.filter(Product.category.contains("Medicine"))
+
+                if form.TestKit_category.data == True:
+                    products = Product.query.filter(Product.category.contains("Test Kit"))
+
+                if form.Supplement_category.data == True:
+                    products = Product.query.filter(Product.category.contains("Supplement"))
+
+                if form.FirstAid_category.data == True:
+                    products = Product.query.filter(Product.category.contains("First Aid"))
+
+                if sorting_mtd == "Price (Descending)":
+                    products = Product.query.order_by(Product.price.desc())
+
+                if sorting_mtd == "Price (Ascending)":
+                    products = Product.query.order_by(Product.price.asc())
+
+                if sorting_mtd == "Name (A to Z)":
+                    products = Product.query.order_by(Product.name.asc())
+
+                if sorting_mtd == "Name (Z to A)":
+                    products = Product.query.order_by(Product.name.desc())
+
+                try:
+                    products = Product.query.filter(form.price_range_lower.data < Product.price, Product.price < form.price_range_upper.data)
+                except:
+                    products = products
+
+            return render_template('user/guest/joshua/GuestStore/search.html', products=products, form = form, user = UserName, av=av, usersession = True, storeactive = True)
+
         else:
             session.clear()
             return redirect(url_for('login'))
@@ -2470,9 +2504,10 @@ def search():
         StaffName = session["staff"]
         valid_session , name = validate_session_open_file_admin(StaffName)
         if valid_session:
-            form = Forms.CategoryFilter_AndSorting(request.form)
-            form2 = Forms.PriceFilter(request.form)
             query = request.args.get('query')
+            form = Forms.Filters_AndSorting(request.form)
+
+            sorting_mtd = request.form.get("sorting_mtd")
 
             if query:
                 products = Product.query.filter(Product.name.contains(query) |
@@ -2482,7 +2517,40 @@ def search():
             else:
                 products = Product.query.all()
 
-            return render_template('user/guest/joshua/GuestStore/search.html', products=products, staff = name, staffsession = True, storeactive = True, form = form, form2 = form2,)
+            # filters (only works when 1 is checked)
+            if request.method == "POST":
+                
+                if form.Medicine_category.data == True:
+                    products = Product.query.filter(Product.category.contains("Medicine"))
+
+                if form.TestKit_category.data == True:
+                    products = Product.query.filter(Product.category.contains("Test Kit"))
+
+                if form.Supplement_category.data == True:
+                    products = Product.query.filter(Product.category.contains("Supplement"))
+
+                if form.FirstAid_category.data == True:
+                    products = Product.query.filter(Product.category.contains("First Aid"))
+
+                if sorting_mtd == "Price (Descending)":
+                    products = Product.query.order_by(Product.price.desc())
+
+                if sorting_mtd == "Price (Ascending)":
+                    products = Product.query.order_by(Product.price.asc())
+
+                if sorting_mtd == "Name (A to Z)":
+                    products = Product.query.order_by(Product.name.asc())
+
+                if sorting_mtd == "Name (Z to A)":
+                    products = Product.query.order_by(Product.name.desc())
+
+                try:
+                    products = Product.query.filter(form.price_range_lower.data < Product.price, Product.price < form.price_range_upper.data)
+                except:
+                    products = products
+
+            return render_template('user/guest/joshua/GuestStore/search.html', products=products, form = form, storeactive = True, staff = name, staffsession = True)
+            
         else:
             session.clear()
             return redirect(url_for('login'))
@@ -2779,15 +2847,37 @@ def create_product():
         return redirect(url_for("login"))
 
 #Replace Inventory
-@app.route('/staffinvent' , methods=["GET","POST"])
-def retrieve_products():
+@app.route('/staffinvent/<int:page>' , methods=["GET","POST"])
+def retrieve_products(page=1):
     if "staff" in session:
         StaffName = session["staff"]
         valid_session, name = validate_session_open_file_admin(StaffName)
 
         if valid_session:
             products = Product.query.all()
-            return render_template('user/staff/joshua/StaffInventory/staffinventory.html', products=products, staff = name)
+            display_dict = {}
+            page_num = 1
+        #Displaying the appending data into the stafflist so that it can be used to display data on the site
+            staff_list = []
+            for i in products:
+                if len(staff_list) == 10:
+                    display_dict[page_num] = staff_list
+                    page_num += 1
+
+                    staff_list = []
+                    staff_list.append(i)
+                    display_dict[page_num] = staff_list
+                else:
+                    staff_list.append(i)
+                    display_dict[page_num] = staff_list
+                        
+            max_value = 0
+            if len(display_dict) != 0:
+                staff_list = display_dict[page]
+                all_keys = display_dict.keys()
+                max_value = max(all_keys)
+    
+            return render_template('user/staff/joshua/StaffInventory/staffinventory.html', products=products, display_dict = display_dict, staff = name,  page=page, max_value = max_value)
             
             # return render_template('user/loggedin/CRUDProducts/retrieve_products.html', products=products)
         else:
@@ -3270,7 +3360,28 @@ def create_consultation():
                                     print("Conflicting Appointment")
                                     samedoc = True
                                     appointment = False
-                                    break
+                                    
+                                    Rtimelist = str(timelist)[1:-2]
+                                    Rtimelist = Rtimelist.strip("','")
+                                    Rdatelist = str(datelist)[1:-2]
+                                    Rdatelist = Rdatelist.strip('')
+                                    timelis = []
+                                    for key in customers_dict:
+                                       customer = customers_dict.get(key)
+                                       customers_list.append(customer)
+
+                                       bonk = customer.get_date()
+                                       if bonk == create_customer_form.date_joined.data:
+                                            date = customer.get_time()
+                                            timelis.append(date)
+                                            Rtimelist = str(timelis)[1:-2]
+                                            Rtimelist = Rtimelist.strip("','")
+
+
+
+
+
+                                   return render_template("user/guest/xuzhi/ErrorDate.html", timelistval = Rtimelist, datelistval = create_customer_form.date_joined.data)
                                 else:
                                     appointment = True
                             else:
@@ -3548,7 +3659,27 @@ def update_consultation(id):
                                         print("Conflicting Appointment")
                                         samedoc = True
                                         appointment = False
-                                        break
+                                        Rtimelist = str(timelist)[1:-2]
+                                        Rtimelist = Rtimelist.strip("','")
+                                        Rdatelist = str(datelist)[1:-2]
+                                        Rdatelist = Rdatelist.strip('')
+                                        timelis = []
+                                        for key in customers_dict:
+                                            customer = customers_dict.get(key)
+                                            customers_list.append(customer)
+
+                                            bonk = customer.get_date()
+                                            if bonk == create_customer_form.date_joined.data:
+                                               date = customer.get_time()
+                                               timelis.append(date)
+                                               Rtimelist = str(timelis)[1:-2]
+                                               Rtimelist = Rtimelist.strip("','")
+
+
+
+
+
+                                        return render_template("user/guest/xuzhi/ErrorDate.html", timelistval = Rtimelist, datelistval = create_customer_form.date_joined.data)
                                     else:
                                         appointment = True
                                 else:
