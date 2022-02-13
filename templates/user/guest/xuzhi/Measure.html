@@ -1,5 +1,12 @@
+
+{% if staffsession %}
+{% extends "admin_base.html" %}
+{% elif usersession %}
+{% extends "user_base.html" %}
+{% else %}
 {% extends "default_base.html" %}
-{% block title %}Library Loan System - Home{% endblock %}
+{% endif %}
+{% block title %}Covid measures | DoctorOnTheGo{% endblock %}
 
 {% block content %}
 <style>
