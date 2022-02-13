@@ -4075,24 +4075,153 @@ def Graphform():
 
 @app.route('/Pzfier')
 def Pzfier():
-    return render_template('Pzfier.html')
+    if "user" in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
+
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+
+
+        UserName =  get_user_name(idNumber, users_dict)
+        av = users_dict[idNumber].get_profile_pic()
+        valid_session = validate_session(idNumber, users_dict)
+        db.close()
+        if valid_session:
+            return render_template('Pzfier.html', user = UserName, av=av, usersession = True, newsactive = True)
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+    elif "staff" in session:
+        StaffName = session["staff"]
+        valid_session, name = validate_session_open_file_admin(StaffName)
+        if valid_session:
+            return render_template('Pzfier.html',staff = name, staffsession = True, newsactive = True)
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+    else:
+        return render_template('Pzfier.html')
 
 
 
 @app.route('/Healthcare')
 def Healthcare():
-    return render_template('Healthcare.html')
+    if "user" in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
+
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+
+
+        UserName =  get_user_name(idNumber, users_dict)
+        av = users_dict[idNumber].get_profile_pic()
+        valid_session = validate_session(idNumber, users_dict)
+        db.close()
+        if valid_session:
+            return render_template('Healthcare.html')
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+    elif "staff" in session:
+        StaffName = session["staff"]
+        valid_session, name = validate_session_open_file_admin(StaffName)
+        if valid_session:
+            return render_template('Healthcare.html', user = UserName, av=av, usersession = True, newsactive = True)
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+    else:
+        return render_template('Healthcare.html',staff = name, staffsession = True, newsactive = True)
+    
 
 
 @app.route('/minister')
 def minister():
-    return render_template('minister.html')
+    if "user" in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
+
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+
+
+        UserName =  get_user_name(idNumber, users_dict)
+        av = users_dict[idNumber].get_profile_pic()
+        valid_session = validate_session(idNumber, users_dict)
+        db.close()
+        if valid_session:
+            return render_template('minister.html', user = UserName, av=av, usersession = True, newsactive = True)
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+    elif "staff" in session:
+        StaffName = session["staff"]
+        valid_session, name = validate_session_open_file_admin(StaffName)
+        if valid_session:
+            return render_template('minister.html',staff = name, staffsession = True, newsactive = True)
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+    else:
+        return render_template('minister.html')
 
 
 
 @app.route('/UStudy')
 def UStudy():
-    return render_template('UStudy.html')
+    if "user" in session:
+        idNumber = session["user"]
+        users_dict ={}
+        db = shelve.open('user', 'c')
+
+        try:
+            if 'Users' in db:
+                users_dict = db['Users']
+            else:
+                db["Users"] = users_dict
+        except:
+            print("Error in retrieving User from staff.db")
+
+
+        UserName =  get_user_name(idNumber, users_dict)
+        av = users_dict[idNumber].get_profile_pic()
+        valid_session = validate_session(idNumber, users_dict)
+        db.close()
+        if valid_session:
+            return render_template('UStudy.html', user = UserName, av=av, usersession = True, newsactive = True)
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+    elif "staff" in session:
+        StaffName = session["staff"]
+        valid_session, name = validate_session_open_file_admin(StaffName)
+        if valid_session:
+            return render_template('UStudy.html',staff = name, staffsession = True, newsactive = True)
+        else:
+            session.clear()
+            return redirect(url_for('home'))
+    else:
+        return render_template('UStudy.html')
 
 
 @app.route("/News",methods=['GET', 'POST'])
