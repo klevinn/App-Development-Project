@@ -2402,7 +2402,8 @@ def store():
         db.close()
 
         if valid_session:
-            products = Product.query.all()
+            page = request.args.get('page', 1, type=int)
+            products = Product.query.paginate(page = page, per_page = 8)
 
             return render_template('user/guest/joshua/GuestStore/store.html', products=products, user = UserName, av=av, usersession = True, storeactive = True)
         else:
@@ -2414,14 +2415,16 @@ def store():
         valid_session , name = validate_session_open_file_admin(StaffName)
 
         if valid_session:
-            products = Product.query.all()
+            page = request.args.get('page', 1, type=int)
+            products = Product.query.paginate(page = page, per_page = 8)
 
             return render_template('user/guest/joshua/GuestStore/store.html', products=products, staff = name, staffsession = True, storeactive = True)
         else:
             session.clear()
             return redirect(url_for('login'))
     else:
-        products = Product.query.all()
+        page = request.args.get('page', 1, type=int)
+        products = Product.query.paginate(page = page, per_page = 8)
 
         return render_template('user/guest/joshua/GuestStore/store.html', products=products, storeactive = True)
 
@@ -2487,45 +2490,48 @@ def search():
         query = request.args.get('query')
         form = Forms.Filters_AndSorting(request.form)
 
+        page = request.args.get('page', 1, type=int)
+        # products = Product.query.paginate(page = page, per_page = 8)
+
         sorting_mtd = request.form.get("sorting_mtd")
 
         if query:
             products = Product.query.filter(Product.name.contains(query) |
             Product.short_description.contains(query) |
             Product.long_description.contains(query) |
-            Product.category.contains(query))
+            Product.category.contains(query)).paginate(page = page, per_page = 8)
         else:
-            products = Product.query.all()
+            products = Product.query.paginate(page = page, per_page = 8)
 
         # filters (only works when 1 is checked)
         if request.method == "POST":
             
             if form.Medicine_category.data == True:
-                products = Product.query.filter(Product.category.contains("Medicine"))
+                products = Product.query.filter(Product.category.contains("Medicine")).paginate(page = page, per_page = 8)
 
             if form.TestKit_category.data == True:
-                products = Product.query.filter(Product.category.contains("Test Kit"))
+                products = Product.query.filter(Product.category.contains("Test Kit")).paginate(page = page, per_page = 8)
 
             if form.Supplement_category.data == True:
-                products = Product.query.filter(Product.category.contains("Supplement"))
+                products = Product.query.filter(Product.category.contains("Supplement")).paginate(page = page, per_page = 8)
 
             if form.FirstAid_category.data == True:
-                products = Product.query.filter(Product.category.contains("First Aid"))
+                products = Product.query.filter(Product.category.contains("First Aid")).paginate(page = page, per_page = 8)
 
             if sorting_mtd == "Price (Descending)":
-                products = Product.query.order_by(Product.price.desc())
+                products = Product.query.order_by(Product.price.desc()).paginate(page = page, per_page = 8)
 
             if sorting_mtd == "Price (Ascending)":
-                products = Product.query.order_by(Product.price.asc())
+                products = Product.query.order_by(Product.price.asc()).paginate(page = page, per_page = 8)
 
             if sorting_mtd == "Name (A to Z)":
-                products = Product.query.order_by(Product.name.asc())
+                products = Product.query.order_by(Product.name.asc()).paginate(page = page, per_page = 8)
 
             if sorting_mtd == "Name (Z to A)":
-                products = Product.query.order_by(Product.name.desc())
+                products = Product.query.order_by(Product.name.desc()).paginate(page = page, per_page = 8)
 
             try:
-                products = Product.query.filter(form.price_range_lower.data < Product.price, Product.price < form.price_range_upper.data)
+                products = Product.query.filter(form.price_range_lower.data < Product.price, Product.price < form.price_range_upper.data).paginate(page = page, per_page = 8)
             except:
                 products = products
 
