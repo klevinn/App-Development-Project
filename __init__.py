@@ -2948,10 +2948,8 @@ def edit_product():
                         file.save(filepath)
                     else:
                         print("Image not correct format")
-                        return redirect(url_for('retrieve_products'))
                 else:
                     print("No file inputted")
-                    return redirect(url_for('retrieve_products'))
                 # trying to save picture, dont work
                 # if create_product_form.picture.data:
                     # picture_file = save_picture(create_product_form.picture.data)
@@ -2964,8 +2962,9 @@ def edit_product():
                 product.short_description = create_product_form.short_description.data
                 product.long_description = create_product_form.long_description.data
                 product.stock = create_product_form.stock.data
+                print(product.stock)
                 j_db.session.commit()
-                return redirect(url_for('retrieve_products'))
+                return redirect(url_for('retrieve_products', page=1))
 
             # filling form with current product's data
             elif request.method =='GET':
@@ -2981,7 +2980,7 @@ def edit_product():
             elif request.method == 'POST':
                 j_db.session.delete(product)
                 j_db.session.commit()
-                return redirect(url_for('retrieve_products'))
+                return redirect(url_for('retrieve_products', page=1))
 
             return render_template('user/staff/joshua/StaffInventory/CRUDProducts/edit_product.html', product=product, form=create_product_form, staff = name)
         else:
