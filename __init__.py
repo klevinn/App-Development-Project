@@ -2449,19 +2449,51 @@ def search():
         db.close()
 
         if valid_session:
-            form = Forms.CategoryFilter_AndSorting(request.form)
-            form2 = Forms.PriceFilter(request.form)
+            form = Forms.Filters_AndSorting(request.form)
+            sorting_mtd = request.form.get("sorting_mtd")
             query = request.args.get('query')
+            page = request.args.get('page', 1, type=int)
 
             if query:
                 products = Product.query.filter(Product.name.contains(query) |
                 Product.short_description.contains(query) |
                 Product.long_description.contains(query) |
-                Product.category.contains(query))
+                Product.category.contains(query)).paginate(page = page, per_page = 8)
             else:
-                products = Product.query.all()
+                products = Product.query.paginate(page = page, per_page = 8)
 
-            return render_template('user/guest/joshua/GuestStore/search.html', products=products, user = UserName, av=av, usersession = True, storeactive = True,  form = form, form2 = form2,)
+            if request.method == "POST":
+
+                if form.Medicine_category.data == True:
+                    products = Product.query.filter(Product.category.contains("Medicine")).paginate(page = page, per_page = 8)
+
+                if form.TestKit_category.data == True:
+                    products = Product.query.filter(Product.category.contains("Test Kit")).paginate(page = page, per_page = 8)
+
+                if form.Supplement_category.data == True:
+                    products = Product.query.filter(Product.category.contains("Supplement")).paginate(page = page, per_page = 8)
+
+                if form.FirstAid_category.data == True:
+                    products = Product.query.filter(Product.category.contains("First Aid")).paginate(page = page, per_page = 8)
+
+                if sorting_mtd == "Price (Descending)":
+                    products = Product.query.order_by(Product.price.desc()).paginate(page = page, per_page = 8)
+
+                if sorting_mtd == "Price (Ascending)":
+                    products = Product.query.order_by(Product.price.asc()).paginate(page = page, per_page = 8)
+
+                if sorting_mtd == "Name (A to Z)":
+                    products = Product.query.order_by(Product.name.asc()).paginate(page = page, per_page = 8)
+
+                if sorting_mtd == "Name (Z to A)":
+                    products = Product.query.order_by(Product.name.desc()).paginate(page = page, per_page = 8)
+                try:
+                    products = Product.query.filter(form.price_range_lower.data < Product.price, Product.price < form.price_range_upper.data).paginate(page = page, per_page = 8)
+                except:
+                    products = products
+
+            return render_template('user/guest/joshua/GuestStore/search.html', products=products, form = form, user = UserName, av=av, usersession = True, storeactive = True)
+
         else:
             session.clear()
             return redirect(url_for('login'))
@@ -2470,19 +2502,52 @@ def search():
         StaffName = session["staff"]
         valid_session , name = validate_session_open_file_admin(StaffName)
         if valid_session:
-            form = Forms.CategoryFilter_AndSorting(request.form)
-            form2 = Forms.PriceFilter(request.form)
+            form = Forms.Filters_AndSorting(request.form)
+            sorting_mtd = request.form.get("sorting_mtd")
             query = request.args.get('query')
+            page = request.args.get('page', 1, type=int)
 
             if query:
                 products = Product.query.filter(Product.name.contains(query) |
                 Product.short_description.contains(query) |
                 Product.long_description.contains(query) |
-                Product.category.contains(query))
+                Product.category.contains(query)).paginate(page = page, per_page = 8)
             else:
-                products = Product.query.all()
+                products = Product.query.paginate(page = page, per_page = 8)
 
-            return render_template('user/guest/joshua/GuestStore/search.html', products=products, staff = name, staffsession = True, storeactive = True, form = form, form2 = form2,)
+            if request.method == "POST":
+
+                if form.Medicine_category.data == True:
+                    products = Product.query.filter(Product.category.contains("Medicine")).paginate(page = page, per_page = 8)
+
+                if form.TestKit_category.data == True:
+                    products = Product.query.filter(Product.category.contains("Test Kit")).paginate(page = page, per_page = 8)
+
+                if form.Supplement_category.data == True:
+                    products = Product.query.filter(Product.category.contains("Supplement")).paginate(page = page, per_page = 8)
+
+                if form.FirstAid_category.data == True:
+                    products = Product.query.filter(Product.category.contains("First Aid")).paginate(page = page, per_page = 8)
+
+                if sorting_mtd == "Price (Descending)":
+                    products = Product.query.order_by(Product.price.desc()).paginate(page = page, per_page = 8)
+
+                if sorting_mtd == "Price (Ascending)":
+                    products = Product.query.order_by(Product.price.asc()).paginate(page = page, per_page = 8)
+
+                if sorting_mtd == "Name (A to Z)":
+                    products = Product.query.order_by(Product.name.asc()).paginate(page = page, per_page = 8)
+
+                if sorting_mtd == "Name (Z to A)":
+                    products = Product.query.order_by(Product.name.desc()).paginate(page = page, per_page = 8)
+
+                try:
+                    products = Product.query.filter(form.price_range_lower.data < Product.price, Product.price < form.price_range_upper.data).paginate(page = page, per_page = 8)
+                except:
+                    products = products
+
+            return render_template('user/guest/joshua/GuestStore/search.html', products=products, form = form, storeactive = True, staff = name, staffsession = True)
+
         else:
             session.clear()
             return redirect(url_for('login'))
@@ -2779,15 +2844,37 @@ def create_product():
         return redirect(url_for("login"))
 
 #Replace Inventory
-@app.route('/staffinvent' , methods=["GET","POST"])
-def retrieve_products():
+@app.route('/staffinvent/<int:page>' , methods=["GET","POST"])
+def retrieve_products(page=1):
     if "staff" in session:
         StaffName = session["staff"]
         valid_session, name = validate_session_open_file_admin(StaffName)
 
         if valid_session:
             products = Product.query.all()
-            return render_template('user/staff/joshua/StaffInventory/staffinventory.html', products=products, staff = name)
+            display_dict = {}
+            page_num = 1
+        #Displaying the appending data into the stafflist so that it can be used to display data on the site
+            staff_list = []
+            for i in products:
+                if len(staff_list) == 10:
+                    display_dict[page_num] = staff_list
+                    page_num += 1
+
+                    staff_list = []
+                    staff_list.append(i)
+                    display_dict[page_num] = staff_list
+                else:
+                    staff_list.append(i)
+                    display_dict[page_num] = staff_list
+
+            max_value = 0
+            if len(display_dict) != 0:
+                staff_list = display_dict[page]
+                all_keys = display_dict.keys()
+                max_value = max(all_keys)
+
+            return render_template('user/staff/joshua/StaffInventory/staffinventory.html', products=products, display_dict = display_dict, staff = name,  page=page, max_value = max_value)
             
             # return render_template('user/loggedin/CRUDProducts/retrieve_products.html', products=products)
         else:
@@ -3271,6 +3358,29 @@ def create_consultation():
                                     samedoc = True
                                     appointment = False
                                     break
+                                    """
+                                    Rtimelist = str(timelist)[1:-2]
+                                    Rtimelist = Rtimelist.strip("','")
+                                    Rdatelist = str(datelist)[1:-2]
+                                    Rdatelist = Rdatelist.strip('')
+                                    timelis = []
+                                    for key in customers_dict:
+                                       customer = customers_dict.get(key)
+                                       customers_list.append(customer)
+
+                                       bonk = customer.get_date()
+                                       if bonk == create_customer_form.date_joined.data:
+                                            date = customer.get_time()
+                                            timelis.append(date)
+                                            Rtimelist = str(timelis)[1:-2]
+                                            Rtimelist = Rtimelist.strip("','")
+
+
+
+
+
+                                    return render_template("user/guest/xuzhi/ErrorDate.html", timelistval = Rtimelist, datelistval = create_customer_form.date_joined.data)
+                                    """
                                 else:
                                     appointment = True
                             else:
@@ -3351,6 +3461,29 @@ def create_consultation():
                                     samedoc = True
                                     appointment = False
                                     break
+                                    """
+                                    Rtimelist = str(timelist)[1:-2]
+                                    Rtimelist = Rtimelist.strip("','")
+                                    Rdatelist = str(datelist)[1:-2]
+                                    Rdatelist = Rdatelist.strip('')
+                                    timelis = []
+                                    for key in customers_dict:
+                                       customer = customers_dict.get(key)
+                                       customers_list.append(customer)
+
+                                       bonk = customer.get_date()
+                                       if bonk == create_customer_form.date_joined.data:
+                                            date = customer.get_time()
+                                            timelis.append(date)
+                                            Rtimelist = str(timelis)[1:-2]
+                                            Rtimelist = Rtimelist.strip("','")
+
+
+
+
+
+                                    return render_template("user/guest/xuzhi/ErrorDate.html", timelistval = Rtimelist, datelistval = create_customer_form.date_joined.data)
+                                    """
                                 else:
                                     appointment = True
                             else:
@@ -3549,6 +3682,29 @@ def update_consultation(id):
                                         samedoc = True
                                         appointment = False
                                         break
+                                        """
+                                        Rtimelist = str(timelist)[1:-2]
+                                        Rtimelist = Rtimelist.strip("','")
+                                        Rdatelist = str(datelist)[1:-2]
+                                        Rdatelist = Rdatelist.strip('')
+                                        timelis = []
+                                        for key in customers_dict:
+                                        customer = customers_dict.get(key)
+                                        customers_list.append(customer)
+
+                                        bonk = customer.get_date()
+                                        if bonk == create_customer_form.date_joined.data:
+                                                date = customer.get_time()
+                                                timelis.append(date)
+                                                Rtimelist = str(timelis)[1:-2]
+                                                Rtimelist = Rtimelist.strip("','")
+
+
+
+
+
+                                        return render_template("user/guest/xuzhi/ErrorDate.html", timelistval = Rtimelist, datelistval = create_customer_form.date_joined.data)
+                                        """
                                     else:
                                         appointment = True
                                 else:
@@ -3624,22 +3780,77 @@ def update_consultation(id):
                 except:
                     update_customer_form.populate_obj(customer_dict)
 
-                customer = customer_dict.get(id)
-                customer.set_doc(update_customer_form.doc.data)
-                customer.set_first_name(update_customer_form.first_name.data)
-                customer.set_last_name(update_customer_form.last_name.data)
-                customer.set_gender(update_customer_form.gender.data)
-                customer.set_remarks(update_customer_form.remarks.data)
-                customer.set_date(update_customer_form.date_joined.data)
-                customer.set_email(update_customer_form.email.data)
+                customers_list = []
+                appointment = True
+                sametime = False
+                samedate = False
+                samedoc = False
+                for key in customer_dict:
+                    if customer_dict[key].get_us() != idNumber:
+                        customer = customer_dict.get(key)
+                        customers_list.append(customer)
+                        print("form data is "+ str(update_customer_form.date_joined.data))
+                        for customer in customers_list:
+                            if update_customer_form.date_joined.data == customer.get_date():
+                                print("Same Date as existing")
+                                samedate = True
+                                if update_customer_form.time.data == customer.get_time():
+                                    print("Same Time")
+                                    sametime = True
+                                    if update_customer_form.doc.data == customer.get_doc():
+                                        print("Conflicting Appointment")
+                                        samedoc = True
+                                        appointment = False
+                                        break
+                                        """
+                                        Rtimelist = str(timelist)[1:-2]
+                                        Rtimelist = Rtimelist.strip("','")
+                                        Rdatelist = str(datelist)[1:-2]
+                                        Rdatelist = Rdatelist.strip('')
+                                        timelis = []
+                                        for key in customers_dict:
+                                        customer = customers_dict.get(key)
+                                        customers_list.append(customer)
+
+                                        bonk = customer.get_date()
+                                        if bonk == create_customer_form.date_joined.data:
+                                                date = customer.get_time()
+                                                timelis.append(date)
+                                                Rtimelist = str(timelis)[1:-2]
+                                                Rtimelist = Rtimelist.strip("','")
 
 
-                db['Customers'] = customer_dict
-                db.close()
 
 
-                return redirect(url_for('retrieve_consultation'))
 
+                                        return render_template("user/guest/xuzhi/ErrorDate.html", timelistval = Rtimelist, datelistval = create_customer_form.date_joined.data)
+                                        """
+                                    else:
+                                        appointment = True
+                                else:
+                                    appointment = True
+                            else:
+                                appointment = True
+
+                if appointment == True:
+                    customer = customer_dict.get(id)
+                    customer.set_doc(update_customer_form.doc.data)
+                    customer.set_first_name(update_customer_form.first_name.data)
+                    customer.set_last_name(update_customer_form.last_name.data)
+                    customer.set_gender(update_customer_form.gender.data)
+                    customer.set_remarks(update_customer_form.remarks.data)
+                    customer.set_date(update_customer_form.date_joined.data)
+                    customer.set_time(update_customer_form.time.data)
+                    customer.set_email(update_customer_form.email.data)
+
+                    #send email telling them details
+                    db['Customers'] = customer_dict
+                    db.close()
+
+
+                    return redirect(url_for('retrieve_consultation'))
+                else:
+                    return render_template('user/guest/xuzhi/updateConsultation.html', form=update_customer_form, staff = name, sametime = sametime, samedoc=samedoc, samedate = samedate, consultactive = True, staffsession = True)
 
             else:
 

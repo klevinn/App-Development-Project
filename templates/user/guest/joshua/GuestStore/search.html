@@ -98,18 +98,9 @@
 
             <!--<div class="col-md-3">-->
                 <!--<div class="row">-->
-<<<<<<< HEAD
-                    {% for product in products.items %}
-=======
                 <div class = "col">
-                    {% if products.count() == 0 %}
-                    <h3 class="text-danger">{{ products.count() }} products have been found</h3>
-                    {% else %}
-                    <h3 class="">{{ products.count() }} product(s) have been found</h3>
-                    {% endif %}
                     <div class="row">
-                    {% for product in products %}
->>>>>>> 069227c44f0859755951de262727704029098666
+                    {% for product in products.items %}
                     <div class="col-md-3">
                         <div id="product-1" class="single-product">
                             <div class="part-1" style="background-image: url('static/images/store/{{ product.img_file_name }}'); background-size: cover;">
@@ -125,6 +116,17 @@
                     </div>
                     {% endfor %}
                     </div>
+                    {% for page_num in products.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                    {% if page_num %}
+                        {% if products.page == page_num %}
+                            <a class="btn btn-info mb-4" href="{{ url_for('store', page=page_num) }}">{{ page_num }}</a>
+                        {% else %}
+                            <a class="btn btn-outline-info mb-4" href="{{ url_for('store', page=page_num) }}">{{ page_num }}</a>
+                        {% endif %}
+                    {% else %}
+                        ...
+                    {% endif %}
+                    {% endfor %}
                 </div>
                 <!--</div>-->
             <!--</div>-->
@@ -133,17 +135,5 @@
         
     </div>
 </section>
-
-{% for page_num in products.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
-    {% if page_num %}
-        {% if products.page == page_num %}
-            <a class="btn btn-info mb-4" href="{{ url_for('store', page=page_num) }}">{{ page_num }}</a>
-        {% else %}
-            <a class="btn btn-outline-info mb-4" href="{{ url_for('store', page=page_num) }}">{{ page_num }}</a>
-        {% endif %}
-    {% else %}
-        ...
-    {% endif %}
-{% endfor %}
 
 {% endblock %}
