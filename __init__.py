@@ -4094,7 +4094,7 @@ def Pzfier():
         valid_session = validate_session(idNumber, users_dict)
         db.close()
         if valid_session:
-            return render_template('Pzfier.html', user = UserName, av=av, usersession = True, newsactive = True)
+            return render_template('user/guest/xuzhi/Pzfier.html', user = UserName, av=av, usersession = True, newsactive = True)
         else:
             session.clear()
             return redirect(url_for('home'))
@@ -4102,12 +4102,12 @@ def Pzfier():
         StaffName = session["staff"]
         valid_session, name = validate_session_open_file_admin(StaffName)
         if valid_session:
-            return render_template('Pzfier.html',staff = name, staffsession = True, newsactive = True)
+            return render_template('user/guest/xuzhi/Pzfier.html',staff = name, staffsession = True, newsactive = True)
         else:
             session.clear()
             return redirect(url_for('home'))
     else:
-        return render_template('Pzfier.html')
+        return render_template('user/guest/xuzhi/Pzfier.html')
 
 
 
@@ -4132,7 +4132,7 @@ def Healthcare():
         valid_session = validate_session(idNumber, users_dict)
         db.close()
         if valid_session:
-            return render_template('Healthcare.html')
+            return render_template('user/guest/xuzhi/Healthcare.html')
         else:
             session.clear()
             return redirect(url_for('home'))
@@ -4140,12 +4140,12 @@ def Healthcare():
         StaffName = session["staff"]
         valid_session, name = validate_session_open_file_admin(StaffName)
         if valid_session:
-            return render_template('Healthcare.html', user = UserName, av=av, usersession = True, newsactive = True)
+            return render_template('user/guest/xuzhi/Healthcare.html', user = UserName, av=av, usersession = True, newsactive = True)
         else:
             session.clear()
             return redirect(url_for('home'))
     else:
-        return render_template('Healthcare.html',staff = name, staffsession = True, newsactive = True)
+        return render_template('user/guest/xuzhi/Healthcare.html',staff = name, staffsession = True, newsactive = True)
     
 
 
@@ -4170,7 +4170,7 @@ def minister():
         valid_session = validate_session(idNumber, users_dict)
         db.close()
         if valid_session:
-            return render_template('minister.html', user = UserName, av=av, usersession = True, newsactive = True)
+            return render_template('user/guest/xuzhi/minister.html', user = UserName, av=av, usersession = True, newsactive = True)
         else:
             session.clear()
             return redirect(url_for('home'))
@@ -4178,12 +4178,12 @@ def minister():
         StaffName = session["staff"]
         valid_session, name = validate_session_open_file_admin(StaffName)
         if valid_session:
-            return render_template('minister.html',staff = name, staffsession = True, newsactive = True)
+            return render_template('user/guest/xuzhi/minister.html',staff = name, staffsession = True, newsactive = True)
         else:
             session.clear()
             return redirect(url_for('home'))
     else:
-        return render_template('minister.html')
+        return render_template('user/guest/xuzhi/minister.html')
 
 
 
@@ -4208,7 +4208,7 @@ def UStudy():
         valid_session = validate_session(idNumber, users_dict)
         db.close()
         if valid_session:
-            return render_template('UStudy.html', user = UserName, av=av, usersession = True, newsactive = True)
+            return render_template('user/guest/xuzhi/UStudy.html', user = UserName, av=av, usersession = True, newsactive = True)
         else:
             session.clear()
             return redirect(url_for('home'))
@@ -4216,12 +4216,12 @@ def UStudy():
         StaffName = session["staff"]
         valid_session, name = validate_session_open_file_admin(StaffName)
         if valid_session:
-            return render_template('UStudy.html',staff = name, staffsession = True, newsactive = True)
+            return render_template('user/guest/xuzhi/UStudy.html',staff = name, staffsession = True, newsactive = True)
         else:
             session.clear()
             return redirect(url_for('home'))
     else:
-        return render_template('UStudy.html')
+        return render_template('user/guest/xuzhi/UStudy.html')
 
 
 @app.route("/News",methods=['GET', 'POST'])
