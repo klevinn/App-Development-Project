@@ -456,35 +456,48 @@ padding:200px;
     <img src="{{url_for('static', filename='images/xuzhi/france-coronavirus_4.jpg')}}" alt="" width="500" height="275" id="responsive">
   </div>
 </div>
-<div class="gallery3">
-  <a target="nav-link" href="/UStudy">
-        <img src="{{url_for('static', filename='down.jpg')}}" width="600" height="400">
-  </a>
-  <div class="desc">Covid-19 booster efficacy wanes significantly by fourth month: US study</div>
-        <div class="pader3">
-    </div>
-</div>
-
-<div class="gallery3">
-  <a target="nav-link" href="/Pzfier">
-   <img src="{{url_for('static', filename='paxlovid.jpg')}}" width="600" height="400">
-  </a>
-  <div class="desc">Singapore receives its first batch of Pfizer’s Paxlovid pill for COVID-19 treatment</div>
-<div class="pader2">
-
-</div>
-</div>
-
-<div class="gallery3">
-  <a target="nav-link" href="/Healthcare">
-    <img src="{{url_for('static', filename = 'ttsh-emergency-department-covid-19-12.jpg')}}" width="600" height="400">
-  </a>
-  <div class="desc"> Healthcare workers describe struggles as patients flood emergency rooms amid Omicron wave </div>
-
-  <div class="pader1">
+<div class="row" style="margin:0 10px 0 10px; background:white; padding:25px; border-radius:15px;">
+  <div class="col-md">
+    <img src="{{url_for('static', filename='images/xuzhi/dsc_8462.jpg')}}" alt="" width="500" height="275" id="responsive">
   </div>
+  <div class="col-md">
+    <h2>Covid 19 Article</h2>
+    <p>Recent rise in Singapore's COVID-19 cases 'not unexpected', says Ong Ye Kung</p>
+  <a href="/MOHnews" class="btn btn-primary">Go To Article</a>
+  </div>
+</div>
 
-    </div>
+<div class="row" style="margin:100px 10px 0 10px; background:white; padding:25px; border-radius:15px;">
+  <div class="col-md">
+    <h2>Covid 19 Article</h2>
+    <p>Covid-19 booster efficacy wanes significantly by fourth month: US study</p>
+  <a href="/Omni" class="btn btn-primary">Go To Article</a>
+  </div>
+  <div class="col-md">
+    <img src="{{url_for('static', filename='images/xuzhi/paxlovid.jpg')}}" alt="" width="500" height="275" id="responsive">
+  </div>
+</div>
+
+<div class="row" style="margin:100px 10px 0 10px; background:white; padding:25px; border-radius:15px;">
+  <div class="col-md">
+    <img src="{{url_for('static', filename='images/xuzhi/down.jpg')}}" alt="" width="500" height="275" id="responsive">
+  </div>
+  <div class="col-md">
+    <h2>Covid 19 Article</h2>
+    <p>Singapore receives its first batch of Pfizer’s Paxlovid pill for COVID-19 treatment</p>
+  <a href="/Vac" class="btn btn-primary">Go To Article</a>
+  </div>
+</div>
+
+<div class="row" style="margin:100px 10px 50px 10px; background:white; padding:25px; border-radius:15px;">
+  <div class="col-md">
+    <h2>Covid 19 Article</h2>
+    <p>Healthcare workers describe struggles as patients flood emergency rooms amid Omicron wave</p>
+  <a href="/World" class="btn btn-primary">Go To Article</a>
+  </div>
+  <div class="col-md">
+    <img src="{{url_for('static', filename='images/xuzhi/ttsh-emergency-department-covid-19-12.jpg')}}" alt="" width="500" height="275" id="responsive">
+  </div>
 </div>
 </div>
 {% endblock %}
