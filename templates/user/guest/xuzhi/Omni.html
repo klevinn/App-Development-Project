@@ -1,5 +1,13 @@
+
+
+{% if staffsession %}
+{% extends "admin_base.html" %}
+{% elif usersession %}
+{% extends "user_base.html" %}
+{% else %}
 {% extends "default_base.html" %}
-{% block title %}Omni {% endblock %}
+{% endif %}
+{% block title %}Omnicron | DoctorOnTheGo{% endblock %}
 
 {% block content %}
 <style>
