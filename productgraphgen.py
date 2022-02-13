@@ -2,7 +2,6 @@
 import shelve
 import matplotlib.pyplot as plt
 
-#manually update it
 
 prod_dict ={}
 db = shelve.open('user', 'c')

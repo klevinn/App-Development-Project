@@ -3,7 +3,8 @@
 from re import T
 from tkinter import S
 from xml.dom.domreg import registered
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+#flash was initially used but instead changed to session for display of messages
+from flask import Flask, render_template, request, redirect, url_for, session, flash, send_from_directory, abort
 #Shelve for Persistent Storage
 import shelve
 #os for stuff like environment variables
@@ -31,9 +32,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 #XuZhi
 from datetime import datetime, timedelta
-import dash
-from dash import dcc
-from dash import html
+from dash import dcc , html
 import plotly.graph_objects as go
 from dash.dependencies import Input, Output
 import Graph
@@ -63,6 +62,7 @@ app.config['MAIL_PORT'] = 465
 app.config['MAIL_USERNAME'] = 'doctoronthego2022@gmail.com'
 #Environment Variable set on my computer, because of pushing to Github this is for safety
 app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASS')
+#app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASS')
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 
@@ -82,6 +82,7 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 #For product
 PRODUCTPIC_UPLOAD_PATH = 'static/images/store'
 app.config['UPLOAD_FOLDER_PRODUCT'] = PRODUCTPIC_UPLOAD_PATH
+
 #Limiter for login security
 limiter = Limiter(app, key_func=get_remote_address)
 
@@ -114,6 +115,7 @@ def retriveuser(dic):
 def home():
     session.pop("Customer", None)
     if 'user' in session:
+        #First part is consistent throughout the site. Validation of user session and extracting values for the template
         idNumber = session["user"]
         usersession = True
         print("%s entering page" %(idNumber))
@@ -142,6 +144,7 @@ def home():
             return render_template('home.html')
 
     elif 'staff' in session:
+        #First part is consistent throughout the site. Validation of staff session and extracting values for the template
         StaffName = session["staff"]
         staffsession = True
         print("%s is entering the page" %(StaffName))
@@ -345,7 +348,7 @@ def signup():
             check_ban = check_banned(emailInput, userDict)
 
             
-            if (matched_pw == False) and (duplicated_email == False) and (duplicated_username == False) and (check_ban != True):
+            if matched_pw == False and duplicated_email == False and duplicated_username == False and check_ban != True:
                 print("Account Made!, Creating USER ID")
                 user = User.User()
                 user.set_username(usernameInput)
