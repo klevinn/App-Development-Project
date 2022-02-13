@@ -140,6 +140,172 @@
       }
     }
 
+div.gallery2 {
+  margin: 5px;
+  border: 1px solid #ccc;
+
+  width: 300px;
+}
+
+div.gallery3 {
+  margin: 5px;
+  border: 1px solid #ccc;
+  float: left;
+  width: 25%;
+  padding: 10px;
+  width: 300px;
+}
+
+
+div.gallery2:hover {
+  border: 1px solid #777;
+}
+
+div.gallery2 img {
+  width: 100%;
+  height: auto;
+}
+
+
+div.gallery3:hover {
+  border: 1px solid #777;
+}
+
+div.gallery3 img {
+  width: 100%;
+  height: auto;
+}
+
+div.desc {
+  padding: 15px;
+  text-align: center;
+}
+
+.desc {
+
+font-size:1.8em;
+
+}
+
+.botnews{
+
+margin-left:140px;
+
+}
+
+.botnews:after{
+
+  content: "";
+  display: table;
+  clear: both;
+
+}
+
+.botnews2 {
+
+margin-right:80px;
+
+}
+
+.botnews2:after {
+  content: "";
+  display: table;
+  clear: both;
+
+
+}
+.allnews {
+
+width:1200px;
+
+}
+.pad{
+
+padding-bottom:32px;
+}
+
+.pad2{
+
+padding-bottom:55px;
+}
+.pad3 {
+padding-bottom: 30px;
+
+}
+
+.pader3 {
+
+padding-bottom:28px;
+
+}
+
+.pader2 {
+
+padding-bottom:28px;
+
+}
+
+.pader4 {
+
+padding-bottom:28px;
+
+}
+
+.centered {
+    color: white;
+    font-size: 2em;
+    font-weight: bold;
+    background-color:rgba(0,0,0,0.6);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    text-align: center;
+    transform: translate(-50%, -50%);
+}
+
+.centered2 {
+             color: white;
+    font-size: 2em;
+    font-weight: bold;
+    background-color:rgba(0,0,0,0.6);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    text-align: center;
+    transform: translate(-50%, -50%);
+}
+
+.centered3 {
+     color: white;
+    font-size: 2em;
+    font-weight: bold;
+    background-color:rgba(0,0,0,0.6);
+    position: absolute;
+    text-align: center;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.centered4 {
+    color: white;
+    font-size: 2em;
+    font-weight: bold;
+    background-color:rgba(0,0,0,0.6);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+.space {
+
+padding:200px;
+
+
+
+}
+
 
 </style>
 <div class="upper_container">
@@ -289,6 +455,37 @@
   <div class="col-md">
     <img src="{{url_for('static', filename='images/xuzhi/france-coronavirus_4.jpg')}}" alt="" width="500" height="275" id="responsive">
   </div>
+</div>
+<div class="gallery3">
+  <a target="nav-link" href="/UStudy">
+        <img src="{{url_for('static', filename='down.jpg')}}" width="600" height="400">
+  </a>
+  <div class="desc">Covid-19 booster efficacy wanes significantly by fourth month: US study</div>
+        <div class="pader3">
+    </div>
+</div>
+
+<div class="gallery3">
+  <a target="nav-link" href="/Pzfier">
+   <img src="{{url_for('static', filename='paxlovid.jpg')}}" width="600" height="400">
+  </a>
+  <div class="desc">Singapore receives its first batch of Pfizer’s Paxlovid pill for COVID-19 treatment</div>
+<div class="pader2">
+
+</div>
+</div>
+
+<div class="gallery3">
+  <a target="nav-link" href="/Healthcare">
+    <img src="{{url_for('static', filename = 'ttsh-emergency-department-covid-19-12.jpg')}}" width="600" height="400">
+  </a>
+  <div class="desc"> Healthcare workers describe struggles as patients flood emergency rooms amid Omicron wave </div>
+
+  <div class="pader1">
+  </div>
+
+    </div>
+</div>
 </div>
 {% endblock %}
 {% block scripts %}

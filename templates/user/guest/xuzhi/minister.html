@@ -1,49 +1,65 @@
 {% extends "default_base.html" %}
-{% block title %}COVID News Jan 8{% endblock %}
+{% block title %}Omni {% endblock %}
 
 {% block content %}
 <style>
-    .Cont{
+    .Container{
 
 
     margin-left: auto;
     margin-right: auto;
-    width: 100em;
+    width: 50em;
+
+    }
+   .title{
+
+text-align:center;
 
     }
 
-p{
-padding:10px;
-}
+  p{
+  padding:10px;
+  }
+
+      .text1 {
+
+    font-size:1.5em;
+
+    }
+ .text2 {
+
+    font-size:1.5em;
+
+    }
+ .text3 {
+
+    font-size:1.5em;
+
+    }
+   .text4 {
+
+    font-size:1.5em;
+
+    }
 
 
-.text1  {
-
-font-size:1.5em;
-
-}
-
-.text2 {
-
-font-size:1.5em;
 
 
-}
+img {
 
-.text3 {
-
-font-size:1.5em;
-
-}
-
-.ig {
  margin-left: auto;
   margin-right: auto;
-display:block;
+  display:block;
 
 
 }
 
+
+.header {
+
+
+
+}
 
 .pad{
 
@@ -145,6 +161,17 @@ div.desc {
 font-size:1.8em;
 
 }
+.space {
+
+padding:60px;
+
+}
+
+h1{
+
+text-align:center;
+
+}
 .spac {
 
 padding:60px;
@@ -156,6 +183,7 @@ h1{
 text-align:center;
 
 }
+
 .botnews{
 
 margin-left:25%;
@@ -169,51 +197,53 @@ margin-left:25%;
   clear: both;
 
 }
+
 </style>
-<div class="Cont">
+<div class="title">
+<h1>Omicron Variant: What You Need to Know .</h1>
+ </div>
+<div class="Container">
 
 
-<p class="text1">
-SINGAPORE: Singapore reported 811 new COVID-19 cases as of noon on Saturday (Jan 8), including 544 imported infections.
+    <h2 class="header"> Symptoms</h2>
+    <p class="text1">
+SINGAPORE: The recent rise in COVID-19 cases, hitting five digits on some days, is "not unexpected", said Health Minister Ong Ye Kung on Saturday (Feb 12).
 
-There were no fatalities, with the death toll from coronavirus complications remaining at 837, according to the latest infection statistics on the Ministry of Health's (MOH) website.
+"Omicron is highly transmissible so reaching 15,000, 20,000 or more is something within our expectations. So far, it's been that. It's been staying around 10,000 for some days, which gives us some comfort," he said.
+
+"But as we have mentioned many times, the top line is much less important. The top line is important in the sense that we know where we are on the epidemic curve, that is still important information. But what's more important is the impact on the healthcare capacity."
+
+Singapore reported 10,505 new COVID-19 cases on Saturday, the fourth time this week that daily infections have exceeded the 10,000 mark.
 </p>
 
- <img class="ig" src="{{url_for('static', filename='merlin_187916850_c5d3b558-8b52-42d5-8865-658a9463d86f-superJumbo.jpg')}}" width="750" height="500">
+     <img src="{{url_for('static', filename='1479039.jpg')}}" width="750" height="500">
 
-<p class="text2">
+    <p class="text1">
+Despite the increase in cases, Mr Ong noted that the healthcare system is still holding up.
 
-Saturday’s case count was up from the 777 infections reported on Friday.
+"The percentage of people requiring oxygen has remained the same. So the numbers have not changed. The number of patients that require oxygen remains at 0.3 per cent. (The) number of patients that needed ICU, or unfortunately passed away is about 0.05 per cent. So we are looking at a level much much lower than Delta, so our healthcare system is still holding up," the Health Minister said.
 
-Among the new cases reported on Saturday, 267 were locally transmitted, comprising 253 in the community and 14 in migrant worker's dormitories.
+He added that although there has been an increase in the number of people visiting general practitioners (GPs) due to COVID-19, many of them had "mild or no symptoms" and are visiting clinics for various reasons.
 
-A total of 404 new Omicron infections were also confirmed on Saturday, comprising 243 imported cases and 161 local cases.
+"Many have to get MC so they don't have to go back to work or school. Some have to get discharge memos to show their employers so they can go back to school or work and others go there because it's one way to get ART kits as well," he said.
 
-The daily COVID-19 cases and new confirmed Omicron cases are presented as two separate sets of data on MOH's website.
-</p>
+Mr Ong was speaking on the sidelines of a topping out ceremony at the site of the new Woodlands Health campus.
 
-
-
-    <p class="text3">
+When asked if there will be any changes to COVID-19 measures, Mr Ong said the multi-ministry task force will be holding a press conference soon.
+    </p>
 
 
-        The weekly infection growth rate on Saturday was 1.73, up from Friday's 1.69. The statistic - viewed by authorities as a key indicator in calibrating COVID-19 measures - refers to the ratio of community cases for the past week over the week before.
-</p>
-
-        <p class="text3">
-
-A rate of more than 1 means that the number of new weekly cases is rising. The weekly infection growth rate surpassed 1 for the first time since Nov 12 on Tuesday.
-
-As of Saturday, Singapore has recorded 284,802 COVID-19 cases since the start of the pandemic.
-        </p>
 </div>
+
+<div class="space">
+
+</div>
+
 
 <h1> Other news articles you may enjoy</h1>
 
 
-<div class="spac">
 
-</div>
 <div class="botnews">
 <div class="gallery">
   <a target="nav-link" href="/MOHnews">
@@ -253,4 +283,5 @@ As of Saturday, Singapore has recorded 284,802 COVID-19 cases since the start of
   </div>
     </div>
 </div>
+
 {% endblock %}
