@@ -4,8 +4,7 @@ from re import T
 from tkinter import S
 from xml.dom.domreg import registered
 #flash was initially used but instead changed to session for display of messages
-from flask import Flask, render_template, request, redirect, url_for, session, flash, send_from_directory, abort, send_file
-import matplotlib.pyplot as plt
+from flask import Flask, render_template, request, redirect, url_for, session, flash, send_from_directory, abort
 #Shelve for Persistent Storage
 import shelve
 #os for stuff like environment variables
@@ -45,7 +44,6 @@ import User, Staff, Feedback, Customer
 from Security_Validation import validate_card_number, Sanitise, validate_expiry_date, validate_session, validate_session_open_file_admin, validate_session_admin
 #Functions to shorten code
 from Functions import duplicate_email, duplicate_username, get_user_name, check_banned, fix_unit_number, fix_expiry_year, allowed_file, generate_random_password, generate_staff_id, generate_feedback_id, get_file_extension, generate_user_id
-from productgraphgen import graph
 
 #Start Of Web Dev
 app = Flask(__name__)
@@ -84,8 +82,6 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 #For product
 PRODUCTPIC_UPLOAD_PATH = 'static/images/store'
 app.config['UPLOAD_FOLDER_PRODUCT'] = PRODUCTPIC_UPLOAD_PATH
-
-
 
 #Limiter for login security
 limiter = Limiter(app, key_func=get_remote_address)
@@ -1743,25 +1739,6 @@ def staffprod():
             return redirect(url_for('home'))
     else:
         return redirect(url_for('login'))
-
-@app.route('/graphdownload', methods=['GET', 'POST'])
-def graphdownload():
-    if "staff" in session:
-        StaffName = session["staff"]
-        valid_session, name = validate_session_open_file_admin(StaffName)
-        if valid_session:
-
-            try:
-                graph()
-            except:
-                print("Error")
-
-            return send_file('static/images/graph.png', as_attachment=True)
-        else:
-            session.clear()
-            return redirect(url_for('home'))
-    else:
-        abort(403)
 
 @app.route('/staffupdate/<id>/', methods=['GET', 'POST'])
 #@app.route('/staffupdate/<string:id>/', methods=['GET', 'POST'])
@@ -3811,12 +3788,20 @@ def update_consultation(id):
                 sametime = False
                 samedate = False
                 samedoc = False
+                timelist = []
+                datelist = []
                 for key in customer_dict:
                     if customer_dict[key].get_us() != idNumber:
                         customer = customer_dict.get(key)
                         customers_list.append(customer)
                         print("form data is "+ str(update_customer_form.date_joined.data))
                         for customer in customers_list:
+                            ti = customer.get_time()
+                            ti = str(ti)
+                            timelist.append(ti)
+                            date = customer.get_date()
+                            date = str(date)
+                            datelist.append(date)
                             if update_customer_form.date_joined.data == customer.get_date():
                                 print("Same Date as existing")
                                 samedate = True
@@ -3828,7 +3813,7 @@ def update_consultation(id):
                                         samedoc = True
                                         appointment = False
                                         break
-                                        """
+                                  
                                         Rtimelist = str(timelist)[1:-2]
                                         Rtimelist = Rtimelist.strip("','")
                                         Rdatelist = str(datelist)[1:-2]
@@ -3850,7 +3835,7 @@ def update_consultation(id):
 
 
                                         return render_template("user/guest/xuzhi/ErrorDate.html", timelistval = Rtimelist, datelistval = create_customer_form.date_joined.data)
-                                        """
+                                      
                                     else:
                                         appointment = True
                                 else:
