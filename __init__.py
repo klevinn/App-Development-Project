@@ -640,6 +640,7 @@ def passwordforget():
 @app.route('/passwordreset/<token>', methods=["GET", "POST"])
 def passwordreset(token):
     valid = False
+    data = ''
     try:
         data = s.loads(token)
         print(data)
@@ -2869,7 +2870,7 @@ def create_product():
                         file.save(filepath)
                     else:
                         print("Image not correct format")
-                        return redirect(url_for('retrieve_products'))
+                        return redirect(url_for('retrieve_products', page=1))
                 else:
                     print("No file inputted")
                     return redirect(url_for('retrieve_products'))
@@ -2878,7 +2879,7 @@ def create_product():
                 j_db.session.add(product)
                 j_db.session.commit()
 
-                return redirect(url_for('retrieve_products'))
+                return redirect(url_for('retrieve_products',page =1))
 
             return render_template('user/staff/joshua/StaffInventory/CRUDProducts/create_product.html', form=create_product_form, staff = name)
         else:

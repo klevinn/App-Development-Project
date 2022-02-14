@@ -119,33 +119,22 @@ font-size:1.1em;
     {{ render_field(form.doc, class="form-control") }}
 
     </div>
-    <div class ="br">
-  <!--output id="result"> You have selected nothing. Chose a doctor to learn more about them</output-->
+    <!--div class ="br">
+      <output id="result"> You have selected nothing. Chose a doctor to learn more about them</output>
+        </div>
+        <div class="br">
+          <div class="img">
+    <img id="img" src="">
+          </div>
+        </div>
+    <div class="br">
+      <output id="Quali"></output>
     </div>
-    <div class="row">
-      <div class="col">
-        <div class="img">
-          <img id="img" src="">
+        <div class = 'br' >
+          <output id="txt"></output>
         </div>
       </div>
-      <div class="col">
-        <div class="img">
-          <img id="img" src="">
-        </div>
-      </div>
-      <div class="col">
-        <div class="img">
-          <img id="img" src="">
-        </div>
-      </div>
-    </div>
-<!--div class="br">
-  <output id="Quali"></output>
-</div>
-    <div class = 'br' >
-      <output id="txt"></output>
-    </div-->
-  </div>
+  </div-->
   <div class="form-group">
     {# wtf.form_field(form.first_name, class="form-control") #}
     {{ render_field(form.first_name, class="form-control") }}
@@ -204,7 +193,7 @@ font-size:1.1em;
             if (value == "Dr Tan") {
            Dr.innerHTML = `Dr Tan`;
            quali.innerHTML = 'Graduate of the National University of Singapore Yong Loo Lin Medical School , (DCM). Eight years of experience '
-           img.src = "{{url_for('static', filename='Docto1.jpg')}}" ;
+           img.src = "{{url_for('static', filename='guest/xuzhi/Docto1.jpg')}}" ;
            document.getElementById("img").width = "400";
            document.getElementById("img").height = "400";
            document.getElementById("result").style.fontSize ="1.5em"
@@ -217,7 +206,7 @@ font-size:1.1em;
              Dr.innerHTML = `Dr Mok`;
 
              quali.innerHTML = 'University of British Columbia, Faculty of Medicine, MD. Nine years of experience '
-             img.src = "{{url_for('static', filename='doctor2.jpg')}}" ;
+             img.src = "{{url_for('static', filename='guest/xuzhi/doctor2.jpg')}}" ;
              document.getElementById("img").width = "400";
              document.getElementById("img").height = "400";
              document.getElementById("result").style.fontSize ="1.5em"
@@ -227,7 +216,7 @@ font-size:1.1em;
 
            }
            else if (value == "Dr Lim") {
-               img.src = "{{url_for('static', filename='doctor3.jpg')}}" ;
+               img.src = "{{url_for('static', filename='guest/xuzhi/doctor3.jpg')}}" ;
                Dr.innerHTML = `Dr Lim`;
 
                quali.innerHTML = 'National University of Singapore, PHD. Eight years of experience '
