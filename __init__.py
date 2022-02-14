@@ -1,8 +1,10 @@
 #imported modules
 #Flask for creation of web app
+"""
 from re import T
 from tkinter import S
 from xml.dom.domreg import registered
+"""
 #flash was initially used but instead changed to session for display of messages
 from flask import Flask, render_template, request, redirect, url_for, session, flash, send_from_directory, abort, send_file
 import matplotlib.pyplot as plt
@@ -1242,7 +1244,10 @@ def usercard():
                     except:
                         card_expiry_year = card_expiry_year
                     valid_card_expiry = validate_expiry_date(card_expiry_year, update_card.card_expiry_month.data)
-                    card_cvv = update_card.card_CVV.data
+                    if update_card.card_CVV.data == None:
+                        card_cvv = users_dict[idNumber].get_card_cvv()
+                    else:
+                        card_cvv = update_card.card_CVV.data
 
 
                     if valid_card_num == True and valid_card_expiry == True:
@@ -1305,7 +1310,6 @@ def usercard():
                             update_card.card_expiry_year.data = int(card_year)
                             update_card.card_expiry_month.data = int(card_month)
 
-                        update_card.card_CVV.data = user.get_card_cvv()
                         print(user.get_card_cvv())
                         return render_template('user/loggedin/user_cardinfo.html', form=update_card, user = UserName, valid_card_num = valid_card_num, valid_card_expiry=valid_card_expiry, av=av)
                 
@@ -1342,7 +1346,7 @@ def usercard():
                 else:
                     update_card.card_expiry_year.data = int(card_year)
                     update_card.card_expiry_month.data = int(card_month)
-                update_card.card_CVV.data = user.get_card_cvv()
+
                 print(user.get_card_cvv())
                 return render_template('user/loggedin/user_cardinfo.html', form=update_card, user = UserName, av=av)
         
@@ -2653,7 +2657,7 @@ def view_product():
             products = Product.query.filter(Product.id.contains(id))
             quantity_form = Forms.Quantity(request.form)
             if request.method == "POST" and quantity_form.validate():
-                if"cart" in session:
+                if "cart" in session:
                     cart = session["cart"]
                     for s in products:
                         if quantity_form.quantity.data <= s.stock:
@@ -2661,6 +2665,9 @@ def view_product():
                                 if i == s.name:
                                     if cart[i] + quantity_form.quantity.data <= s.stock:
                                         cart[i] = cart[i] + quantity_form.quantity.data
+                            if s.name not in cart:
+                                cart[s.name] = quantity_form.quantity.data
+
                         else:
                             not_enough = True
                     session["cart"] = cart
@@ -2670,6 +2677,8 @@ def view_product():
                         if quantity_form.quantity.data <= i.stock:
                             cart[i.name] = quantity_form.quantity.data
                             session["cart"] = cart
+                        else:
+                            not_enough = True
                 
                 return render_template('user/guest/joshua/GuestStore/view_product.html', products=products, user = UserName, av=av, usersession = True, storeactive = True, form = quantity_form, not_enough = not_enough)
             else:
@@ -2693,6 +2702,8 @@ def view_product():
                                 if i == s.name:
                                     if cart[i] + quantity_form.quantity.data <= s.stock:
                                         cart[i] = cart[i] + quantity_form.quantity.data
+                            if s.name not in cart:
+                                cart[s.name] = quantity_form.quantity.data
                         else:
                             not_enough = True
                     session["cart"] = cart
@@ -2702,6 +2713,8 @@ def view_product():
                         if quantity_form.quantity.data <= i.stock:
                             cart[i.name] = quantity_form.quantity.data
                             session["cart"] = cart
+                        else:
+                            not_enough = True
                 
                 return render_template('user/guest/joshua/GuestStore/view_product.html', products=products, staff = name, staffsession = True, storeactive = True, form = quantity_form, not_enough = not_enough)
             else:
@@ -2724,6 +2737,9 @@ def view_product():
                             if i == s.name:
                                 if cart[i] + quantity_form.quantity.data <= s.stock:
                                     cart[i] = cart[i] + quantity_form.quantity.data
+                            if s.name not in cart:
+                                cart[s.name] = quantity_form.quantity.data
+                            
                     else:
                         not_enough = True
                 session["cart"] = cart
@@ -2733,6 +2749,8 @@ def view_product():
                     if quantity_form.quantity.data <= i.stock:
                         cart[i.name] = quantity_form.quantity.data
                         session["cart"] = cart
+                    else:
+                        not_enough = True
             
             return render_template('user/guest/joshua/GuestStore/view_product.html', products=products, storeactive = True, form = quantity_form, not_enough = not_enough)
         else:
