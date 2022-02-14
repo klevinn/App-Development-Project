@@ -13,7 +13,6 @@
 
 
 
-
 {% block content %}
 
 
@@ -26,10 +25,6 @@
 
   }
 
-  *{
-
-  font-size:1.1em;
-  }
 
 #first_name {
 
@@ -103,12 +98,6 @@ font-size:1.1em;
   font-size:1.1em;
   }
 
-
-  #txt {
-
-
-  }
-
   .br {
 
   padding:5px;
@@ -126,11 +115,11 @@ font-size:1.1em;
 
     <div class="form-check form-check-inline radio-inline" >
 
-    {{ wtf.form_field(form.doc, class="form-control") }}
-
+    {# wtf.form_field(form.doc, class="form-control") #}
+    {{ render_field(form.doc, class="form-control") }}
 
     </div>
-    <div class ="br">
+	      <div class ="br">
   <output id="result"> You have selected nothing. Chose a doctor to learn more about them</output>
     </div>
     <div class="br">
@@ -143,49 +132,45 @@ font-size:1.1em;
 </div>
     <div class = 'br' >
       <output id="txt"></output>
-    </div>
+	</div>
+  <div class="form-group">
+    {# wtf.form_field(form.first_name, class="form-control") #}
+    {{ render_field(form.first_name, class="form-control") }}
   </div>
   <div class="form-group">
-    {{ wtf.form_field(form.first_name, class="form-control") }}
+    {# wtf.form_field(form.last_name, class="form-control") #}
+    {{ render_field(form.last_name, class="form-control") }}
   </div>
   <div class="form-group">
-    {{ wtf.form_field(form.last_name, class="form-control") }}
+    {# wtf.form_field(form.gender, class="form-control") #}
+    {{ render_field(form.gender, class="form-control") }}
   </div>
   <div class="form-group">
-    {{ wtf.form_field(form.gender, class="form-control") }}
-  </div>
-  <div class="form-group">
-    {{ wtf.form_field(form.email, class="form-control") }}
+    {# wtf.form_field(form.email, class="form-control") #}
+    {{ render_field(form.email, class="form-control") }}
   </div>
 
   <div class="form-group">
-    {{ wtf.form_field(form.date_joined, class="form-control datepicker") }}
+    {# wtf.form_field(form.date_joined, class="form-control datepicker") #}
+    {{ render_field(form.date_joined, class="form-control datepicker") }}
   </div>
   <div class="form-group">
-    {{ wtf.form_field(form.time, class="form-control datepicker") }}
-
+    {# wtf.form_field(form.time, class="form-control datepicker") #}
+    {{ render_field(form.time, class="form-control datepicker") }}
   </div>
 
   <div id="prof">
     <div class="form-group">
-      {{ wtf.form_field(form.remarks, class="form-control") }}
+      {# wtf.form_field(form.remarks, class="form-control") #}
+      {{ render_field(form.remarks, class="form-control") }}
     </div>
+    {% if samedate and sametime and samedoc %}<div class="text-danger"><span id="error">The Doctor for this date and time is unavailable</span></div>{% endif %}
   </div>
   <form action="retrieveConsultation">
   <input type="submit" value="Submit" class="btn btn-primary"/>
 </form>
 </div>
-<script>
-
-
-
-
-
-        </script>
 {% endblock %}
-
-
-{% block scripts %}
 {{super()}}
 <script type="text/javascript">
 
@@ -246,5 +231,4 @@ font-size:1.1em;
 
 
 </script>
-{% endblock %}
 
