@@ -1,9 +1,6 @@
 #imported modules
 #Flask for creation of web app
 """
-from re import T
-from tkinter import S
-from xml.dom.domreg import registered
 """
 #flash was initially used but instead changed to session for display of messages
 from flask import Flask, render_template, request, redirect, url_for, session, flash, send_from_directory, abort, send_file
@@ -111,7 +108,6 @@ class Product(j_db.Model):
 #Done By xuzhi
 def retriveuser(dic):
     username= session["user_id"]
-
     extracts= [username]
     a_subset = {key: dic[key] for key in extracts}
 #End of by Xuzhi
