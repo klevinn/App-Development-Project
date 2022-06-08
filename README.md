@@ -32,13 +32,15 @@ This project consists of us using Python, HTML & Flask to create a website
     - Login & Sign Up
 
 2. Alisa
-    - 
+    - Shopping Cart
+    - Chat Bot
 
 3. Joshua
-    -
+    - Store
+    - Product Management
 
 4. Xu Zhi
-    - 
+    - Consultation Page
 
 ---
 ### Modules Required
